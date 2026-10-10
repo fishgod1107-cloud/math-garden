@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>數學小花園 v3</title>
+<title>JOJO 數學小花園 v3</title>
 <style>
 :root{
   --pink:#ff8fb8;--pink-d:#f06292;--pink-l:#ffe3ee;
@@ -355,6 +355,15 @@ html,body{overscroll-behavior-y:contain}
 .gcard.no{animation:shake .4s}
 .gstars{font-size:64px;line-height:1.2}
 @media (max-width:560px){.gcards{grid-template-columns:repeat(3,1fr);gap:8px}.gcard{font-size:26px;min-height:78px}}
+/* 人物:應用題前面的小頭像、首頁「我的朋友」的按鈕、商店的客人 */
+.story .who{font-size:.62em;margin-right:6px;vertical-align:middle;white-space:nowrap}
+.kid.friend{min-height:58px}
+.kid.friend .fe{font-size:26px;white-space:nowrap}
+.cust{font-size:44px;white-space:nowrap}
+#talkBox .tav{white-space:nowrap}
+/* 首頁標題前面的名字:手機上自己佔一行,後面的中文才不會被擠到換行 */
+.jo{font-family:"Comic Sans MS","Segoe UI",sans-serif;letter-spacing:1px}
+@media (max-width:560px){.jo{display:block;line-height:1.15}h1{text-align:center}}
 /* 解說裡的十格板(湊十、破十) */
 .anim .frame .fc.sm{width:30px;height:30px;font-size:19px;border-radius:8px;border-style:solid;border-color:#eadcef}
 .anim .frame .fc.sm i{font-style:normal}
@@ -548,8 +557,8 @@ const Z=a=>zy(a[0],a[1]);
 
 /* ===== 文字(國字 + 注音) ===== */
 const T={
-  title:['數學小花園','ㄕㄨˋ ㄒㄩㄝˊ ㄒㄧㄠˇ ㄏㄨㄚ ㄩㄢˊ'],
-  welcome:['歡迎來到數學小花園!','ㄏㄨㄢ ㄧㄥˊ ㄌㄞˊ ㄉㄠˋ ㄕㄨˋ ㄒㄩㄝˊ ㄒㄧㄠˇ ㄏㄨㄚ ㄩㄢˊ'],
+  title:['數學小花園','ㄕㄨˋ ㄒㄩㄝˊ ㄒㄧㄠˇ ㄏㄨㄚ ㄩㄢˊ'], // 首頁標題的中文部分;前面的「JOJO」寫在 home() 裡,手機上會自己佔一行
+  welcome:['歡迎來到JOJO 數學小花園!','ㄏㄨㄢ ㄧㄥˊ ㄌㄞˊ ㄉㄠˋ ㄕㄨˋ ㄒㄩㄝˊ ㄒㄧㄠˇ ㄏㄨㄚ ㄩㄢˊ'],
   myname:['我的名字','ㄨㄛˇ ˙ㄉㄜ ㄇㄧㄥˊ ˙ㄗ'],
   sayIt:['用說的回答','ㄩㄥˋ ㄕㄨㄛ ˙ㄉㄜ ㄏㄨㄟˊ ㄉㄚˊ'],listening:['我在聽','ㄨㄛˇ ㄗㄞˋ ㄊㄧㄥ'],heard:['我聽到','ㄨㄛˇ ㄊㄧㄥ ㄉㄠˋ'],
   unclear:['聽不清楚,再說一次!','ㄊㄧㄥ ㄅㄨˋ ㄑㄧㄥ ˙ㄔㄨ ㄗㄞˋ ㄕㄨㄛ ㄧˊ ㄘˋ'],
@@ -1192,7 +1201,15 @@ function gLength(type){
 }
 
 /* ===== 應用題(理解題) ===== */
-const WHO=[['小美','ㄒㄧㄠˇ ㄇㄟˇ'],['小華','ㄒㄧㄠˇ ㄏㄨㄚˊ'],['妹妹','ㄇㄟˋ ˙ㄇㄟ'],['哥哥','ㄍㄜ ˙ㄍㄜ'],['小安','ㄒㄧㄠˇ ㄢ']];
+/* 題目和小遊戲裡出現的人物:喬妹(女生)、煜煜(男生)、柚子(女生)。
+   每一位還是「名字 + 注音」的寫法(所以可以直接放進句子裡),另外多帶:e 圖示、g 性別(f 女、m 男)、hi 在首頁點她時說的話。
+   要改人物的介紹或說的話,改這裡就好 */
+const person=(n,z,e,g,hi)=>Object.assign([n,z],{e,g,hi});
+const WHO=[
+  person('喬妹','ㄑㄧㄠˊ ㄇㄟˋ','👧🎀','f',['嗨!我是喬妹,一起來算數學吧!','ㄏㄞ ㄨㄛˇ ㄕˋ ㄑㄧㄠˊ ㄇㄟˋ ㄧˋ ㄑㄧˇ ㄌㄞˊ ㄙㄨㄢˋ ㄕㄨˋ ㄒㄩㄝˊ ˙ㄅㄚ']),
+  person('煜煜','ㄩˋ ㄩˋ','👦⭐','m',['我是煜煜,今天也要加油喔!','ㄨㄛˇ ㄕˋ ㄩˋ ㄩˋ ㄐㄧㄣ ㄊㄧㄢ ㄧㄝˇ ㄧㄠˋ ㄐㄧㄚ ㄧㄡˊ ㄛ']),
+  person('柚子','ㄧㄡˋ ˙ㄗ','👧🍊','f',['我是柚子,我們一起去買東西!','ㄨㄛˇ ㄕˋ ㄧㄡˋ ˙ㄗ ㄨㄛˇ ˙ㄇㄣ ㄧˋ ㄑㄧˇ ㄑㄩˋ ㄇㄞˇ ㄉㄨㄥ ˙ㄒㄧ']),
+];
 const ITEMS=[ // max:二年級題目裡一個人最多有幾個,讓數字合理一點
   {e:'🍎',n:['蘋果','ㄆㄧㄥˊ ㄍㄨㄛˇ'],m:['顆','ㄎㄜ'],food:1,max:30},
   {e:'🍪',n:['餅乾','ㄅㄧㄥˇ ㄍㄢ'],m:['片','ㄆㄧㄢˋ'],food:1,max:40},
@@ -1228,7 +1245,9 @@ function wp(type,e,ans,unit,ex,ds,tip,parts){ // tip 是答錯時的關鍵提示
     parts=[parts[0],W.thisYear,R(6,9),W.sui,C,...parts.slice(1)];teach.push([TT.noAge]);
   }
   const s=line(parts);
-  return num(s.h,`<div class="story">${e}</div>`,ans,type,{unit:Z(unit),say:s.say,ds,teach:[...teach,[TT.formula,':',`${ex} = ${ans}`]]});
+  // 題目裡提到的人物,把她們的圖示畫在前面(一位或兩位)
+  const who=[...new Set(parts.filter(p=>p&&p.e).map(p=>p.e))].map(x=>`<span class="who">${x}</span>`).join('');
+  return num(s.h,`<div class="story">${who}${e}</div>`,ans,type,{unit:Z(unit),say:s.say,ds,teach:[...teach,[TT.formula,':',`${ex} = ${ans}`]]});
 }
 const C=',',Q='?';
 function wAdd(t,g2){
@@ -1261,8 +1280,8 @@ function wChange(t){
   return wp(t,g.e+'💰',pay-p,T.yuan,`${pay} − ${p}`,[1,5,10],TT.wChange,[g.n,p,T.yuan,C,w,W.paid,pay,T.yuan,C,W.change,Q]);
 }
 function wBuy(t){
-  const p=R(2,9),n=R(2,9);
-  return wp(t,'🍞',p*n,T.yuan,`${p} × ${n}`,[1,2,p],TT.wBuy,[W.bread,p,T.yuan,C,W.buy,n,W.cost,Q]);
+  const w=pick(WHO),p=R(2,9),n=R(2,9);
+  return wp(t,'🍞',p*n,T.yuan,`${p} × ${n}`,[1,2,p],TT.wBuy,[W.bread,p,T.yuan,C,w,W.buy,n,W.cost,Q]);
 }
 function wTime(t){
   const w=pick(WHO),h=R(1,8),d=R(1,3);
@@ -1691,7 +1710,7 @@ function home(quiet){
   closeModal();setTimeout(()=>{if(scr==='home'&&!quiet)talk(pick(CHAT.home))},300);
   show('home',`
   <div class="row">${streakBadge()}<span class="sp"></span>${ptsBadge()}</div>
-  <div class="row center">${mascot()}<h1>${Z(T.title)}<span class="ver">v3</span></h1></div>
+  <div class="row center">${mascot()}<h1><span class="jo">JOJO </span>${Z(T.title)}<span class="ver">v3</span></h1></div>
   ${gardenHtml()}
   <div class="row center" style="margin-top:8px">${S.kids.map((k,i)=>`<button class="kid ${i===S.cur?'on':''}" onclick="switchKid(${i})">${i===S.cur?'⭐':'🙂'} <span>${esc((i===S.cur?S.name:k.name)||'？')}</span></button>`).join('')}
     ${S.kids.length<6?`<button class="kid" onclick="addKidAsk()">＋</button>`:''}</div>
@@ -1712,6 +1731,8 @@ function home(quiet){
     <button class="unit" onclick="start('${u.id}')">${bestTag(u.id)}
       <span class="ue">${u.e}</span><span>${Z(u.t)}</span></button>`).join('')}</div>
   <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}</div>
+  <h2 style="margin-top:16px">👭 ${Z(T.friends)}</h2>
+  <div class="row center">${WHO.map((p,k)=>`<button class="kid friend" onclick="friendHi(${k})"><span class="fe">${p.e}</span> ${Z(p)}</button>`).join('')}</div>
   <h2 style="margin-top:16px">🎮 ${Z(T.games)}</h2>
   <div class="row center">
     <button class="btn" onclick="shop()">🏪 ${Z(SHP.title)}</button>
@@ -1730,7 +1751,11 @@ function home(quiet){
     <button class="btn mint" onclick="records()">📊 ${Z(T.records)}</button>
     <button class="btn ghost small" onclick="S.mode=S.mode==='test'?'step':'test';save();sfx.tap();home(true)">${S.mode==='test'?'📝 '+Z(T.modeTest):'👣 '+Z(T.modeStep)}</button>
     <button class="btn ghost small" onclick="S.voice=S.voice===false;save();sfx.tap();home(true)">${S.voice===false?'🔇':'🔊'} ${Z(T.sound)}:${Z(S.voice===false?T.off:T.on)}</button>
-    <button class="btn ghost small" onclick="parentGate()">🔒 ${Z(T.parent)}</button>
+    <button class="btn ghost small" style="position:relative" onclick="parentGate()">🔒 ${Z(T.parent)}${backupDue()?'<span class="dot">!</span>':''}</button>
+  </div>
+  <div style="font-size:15px;font-weight:400;text-align:center;color:#8a7a90;margin-top:10px">
+    ${backupDue()?`🔔 給爸媽:${backupDue()<0?'還沒有備份過孩子的進度':`已經 ${backupDue()} 天沒有備份進度了`},請到爸媽專區備份。`
+      :!allLogs().length&&!S.kids.some((k,i)=>(i===S.cur?S.total:k.total)>0)?`給爸媽:之前備份過的話,可以 <button class="btn ghost small" style="min-height:36px;font-size:15px" onclick="pasteRestore()">貼上備份還原</button>`:''}
   </div>`);
 }
 function switchKid(i){if(i===S.cur)return;save();useKid(i);save();sfx.tap();home()}
@@ -1766,6 +1791,7 @@ function showText(title,text){
 }
 function copyBox(b){
   const t=$('#txtBox');t.focus();t.select();
+  if(t.value.startsWith('{"app":"mathGarden"'))backedUp(); // 複製的是備份文字:記下備份時間
   try{navigator.clipboard.writeText(t.value).then(()=>b.textContent='已複製',()=>b.textContent='請按 Ctrl+C 複製')}catch(e){b.textContent='請按 Ctrl+C 複製'}
 }
 function pasteRestore(){
@@ -2139,7 +2165,7 @@ function exportLog(){ // 給爸媽下載成 Excel 打得開的 CSV
   save();
   const all=S.kids.flatMap(k=>k.log.map(r=>({...r,n:r.n||k.name}))).sort((a,b)=>b.t-a.t); // 所有小朋友的紀錄
   const rows=[['日期','時間','名字','題目','分數','得到貼紙','當時貼紙總數'],...all.map(r=>{const u=unitOf(r.u);return [fmtDate(r.t),fmtTime(r.t),r.n||'',u?u.t[0]:r.u,r.s,r.p,r.own]})];
-  download(`數學小花園成績紀錄_${today()}.csv`,'﻿'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+  download(`JOJO數學小花園成績紀錄_${today()}.csv`,'﻿'+rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\r\n'),'text/csv;charset=utf-8');
 }
 const today=()=>fmtDate(Date.now()).replace(/\//g,'-');
 // 只有直接開檔案或本機才下載得了;放在線上時下載會沒反應,所以把下載按鈕收起來
@@ -2151,7 +2177,11 @@ function download(name,text,type){
   a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 /* 備份:整份資料(所有小朋友、禮物清單、設定)存成一個檔案,換電腦或清掉瀏覽資料後可以還原 */
-function exportBackup(){save();download(`數學小花園備份_${today()}.json`,JSON.stringify({app:'mathGarden',ver:1,data:S}),'application/json')}
+function exportBackup(){
+  save();const asText=!!dlAsText;
+  download(`JOJO數學小花園備份_${today()}.json`,JSON.stringify({app:'mathGarden',ver:1,data:S}),'application/json');
+  if(!asText)backedUp(); // 存成檔案就算備份好了;用文字的,要按了「複製」才算(見 copyBox)
+}
 function importBackup(input){
   const f=input.files[0];if(!f)return;
   const r=new FileReader();
@@ -2160,7 +2190,7 @@ function importBackup(input){
 }
 function restoreText(text){
   let o=null;try{o=JSON.parse(text)}catch(e){}
-  if(!o||o.app!=='mathGarden'||!o.data||typeof o.data!=='object')return note('這不是數學小花園的備份。');
+  if(!o||o.app!=='mathGarden'||!o.data||typeof o.data!=='object')return note('這不是JOJO 數學小花園的備份。');
   ask('還原後會蓋掉現在這台裝置上的所有資料,確定嗎?',()=>{
     try{localStorage.setItem(KEY,JSON.stringify(o.data))}catch(e){}
     S=load();parentZone();note('還原完成!');
@@ -2216,19 +2246,74 @@ function place(ti,si){
 }
 
 /* ===== 家長專區(給大人看,不加注音) ===== */
-let gate=null;
-function parentGate(){
-  gate=[R(6,9),R(6,9)];
-  modal(`<div class="parent"><h3>家長專區</h3><p>請回答:${gate[0]} × ${gate[1]} = ?</p>
-  <p><input id="gateIn" type="number" inputmode="numeric" style="width:6em;text-align:center"></p>
-  <div class="row center"><button class="btn" onclick="gateCheck()">確定</button><button class="btn ghost" onclick="closeModal()">取消</button></div></div>`);
+/* 家長密碼(S.pin,4 到 8 個數字,只存在這台裝置):第一次打開遊戲就請爸媽設定。
+   以前是用一題個位數乘法把關,但九九乘法正是這個遊戲在教的,小朋友學會就進得去了。
+   忘記密碼時改答一題兩位數乘兩位數(小朋友不會算);連錯 5 次要等 30 秒 */
+let gate=null,gateFails=0,gateLock=0; // gate:忘記密碼(或還沒有密碼)時出的乘法題;有密碼時是 null
+function pinSetup(){
+  modal(`<div class="parent" style="font-size:17px"><h3 style="margin-top:0">🔒 給爸媽:請${S.pin?'輸入新的':'先設定'}家長密碼</h3>
+    <p style="text-align:left">進入「爸媽專區」(調整貼紙和禮物、看弱點分析、備份進度)要輸入這組密碼。小朋友平常玩遊戲不需要密碼。</p>
+    <p><input id="pin1" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="4 到 8 個數字" style="width:11em;text-align:center"></p>
+    <p><input id="pin2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="再輸入一次" style="width:11em;text-align:center"></p>
+    <div id="pinMsg" style="color:#f06292;min-height:1.4em"></div>
+    <div class="row center"><button class="btn" onclick="pinSave()">設定好了</button>${S.pin?'<button class="btn ghost" onclick="closeModal()">取消</button>':''}</div>
+    <p style="color:#8a7a90;font-size:14px;text-align:left">密碼只存在這台裝置上。忘記的時候,在輸入密碼的畫面按「忘記密碼」,答對一題兩位數乘法就能進去重新設定。</p></div>`);
+  $('#pin1').focus();
+}
+function pinSave(){
+  const a=$('#pin1').value.trim(),b=$('#pin2').value.trim(),msg=t=>{$('#pinMsg').textContent=t};
+  if(!/^\d{4,8}$/.test(a))return msg('密碼要 4 到 8 個數字。');
+  if(a!==b)return msg('兩次輸入的不一樣,請再輸入一次。');
+  S.pin=a;save();closeModal();
+  if(scr==='parent')parentZone();
+}
+function parentGate(forgot){
+  const usePin=!!S.pin&&!forgot;
+  gate=usePin?null:[R(12,19),R(12,19)];
+  modal(`<div class="parent"><h3>家長專區</h3><p>${usePin?'請輸入家長密碼':`請回答:${gate[0]} × ${gate[1]} = ?`}</p>
+  <p><input id="gateIn" type="${usePin?'password':'number'}" inputmode="numeric" autocomplete="off" style="width:8em;text-align:center"></p>
+  <div id="gateMsg" style="color:#f06292;min-height:1.4em"></div>
+  <div class="row center"><button class="btn" onclick="gateCheck()">確定</button><button class="btn ghost" onclick="closeModal()">取消</button></div>
+  ${usePin?'<p><button class="btn ghost" onclick="parentGate(true)">忘記密碼</button></p>':''}</div>`);
   $('#gateIn').focus();
 }
-function gateCheck(){if(+$('#gateIn').value===gate[0]*gate[1]){closeModal();parentZone()}else{$('#gateIn').value='';$('#gateIn').focus()}}
+function gateCheck(){
+  const inp=$('#gateIn'),msg=t=>{$('#gateMsg').textContent=t};
+  if(Date.now()<gateLock)return msg(`錯太多次了,請等 ${Math.ceil((gateLock-Date.now())/1000)} 秒再試。`);
+  const v=inp.value.trim(),ok=gate?v!==''&&+v===gate[0]*gate[1]:v===S.pin;
+  if(ok){gateFails=0;closeModal();return parentZone()}
+  inp.value='';inp.focus();
+  if(++gateFails>=5){gateFails=0;gateLock=Date.now()+30000;return msg('錯太多次了,請等 30 秒再試。')}
+  msg(gate?'答案不對,再算一次。':'密碼不對。');
+}
+
+/* 備份提醒:進度只存在這台裝置的瀏覽器裡。iPad、iPhone 的 Safari 如果連續一個星期左右沒有開這個網站,可能會自動把資料清掉,
+   所以有新的成績、而且 7 天以上沒備份(或從來沒備份過)時,提醒爸媽備份 */
+const allLogs=()=>S.kids.flatMap((k,i)=>i===S.cur?S.log:k.log);
+function backupDue(){ // 0:不用提醒;-1:從來沒備份過;正數:幾天沒備份了
+  const logs=allLogs();if(logs.length<3)return 0;
+  const last=S.lastBackup||0,newest=Math.max(...logs.map(r=>r.t||0));
+  if(!last)return -1;
+  const days=Math.floor((Date.now()-last)/864e5);
+  return newest>last&&days>=7?days:0;
+}
+function backedUp(){ // 記下備份的時間
+  S.lastBackup=Date.now();save();
+  if(scr==='parent'&&!$('#modalBox').classList.contains('on'))parentZone();
+}
+function persistInfo(){ // 爸媽專區裡顯示:這台裝置有沒有答應長期保存資料
+  if(!navigator.storage||!navigator.storage.persisted)return;
+  navigator.storage.persisted().then(p=>{const e=$('#persistMsg');if(e)e.textContent=p?'這台裝置已經同意長期保存這個網站的資料,不過還是建議備份。':'這台裝置沒有保證會長期保存,請記得備份。'}).catch(()=>{});
+}
 function parentZone(){
   show('parent',`
   <div class="card parent">
     <div class="row"><b style="font-size:20px">🔒 家長專區</b><span class="sp"></span><button class="btn ghost" onclick="home()">回首頁</button></div>
+    ${backupDue()?`<div style="background:#fff3c9;border:2px solid #f0c94f;border-radius:12px;padding:8px 12px;margin:10px 0">🔔 ${backupDue()<0?'還沒有備份過孩子的進度。':`已經 ${backupDue()} 天沒有備份了。`}
+      <button class="btn" style="margin-left:6px" onclick="dlAsText='備份文字';exportBackup()">現在備份</button></div>`:''}
+    <h3>家長密碼</h3>
+    <div class="row"><button class="btn ghost" onclick="pinSetup()">${S.pin?'更改密碼':'設定密碼'}</button>
+      <span style="color:#8a7a90">${S.pin?'已經設定。':'<b>還沒有設定密碼。</b>'}密碼只存在這台裝置上;忘記時,在輸入密碼的畫面按「忘記密碼」。</span></div>
     <h3>小朋友(最多 6 位,各有自己的貼紙簿、禮物和成績)</h3>
     ${S.kids.map((k,i)=>`<div class="row" style="margin:4px 0">${i===S.cur?'👉':'　'} <b>${esc((i===S.cur?S.name:k.name)||'沒有名字')}</b>
       <span>集點卡 ${(i===S.cur?S.card:k.card).filter(Boolean).length} 張、成績 ${(i===S.cur?S.log:k.log).length} 筆</span>
@@ -2241,7 +2326,9 @@ function parentZone(){
       <button class="btn ghost" onclick="dlAsText='備份文字';exportBackup()">複製備份文字</button>
       <button class="btn ghost" onclick="pasteRestore()">貼上備份文字還原</button></div>
     <div style="color:#8a7a90">${CAN_DL?'':'線上版不能下載檔案,請用「複製備份文字」。'}「複製備份文字」和「貼上備份文字還原」也可以用來把資料從一台裝置搬到另一台。</div>
-    <div style="color:#8a7a90">資料存在這個瀏覽器裡,清除瀏覽資料或換電腦就會不見。建議偶爾下載備份檔,需要時再還原。</div>
+    <div style="color:#8a7a90">進度只存在這台裝置的瀏覽器裡,清除瀏覽資料或換裝置就會不見。<b>iPad、iPhone 的 Safari 如果連續一個星期左右沒有開這個網站,也可能自動把進度清掉。</b>
+      請每隔一陣子按「複製備份文字」,貼到備忘錄或 LINE 記事本存起來;有新的成績而且超過 7 天沒備份時,首頁會提醒。<span id="persistMsg"></span></div>
+    <div style="color:#8a7a90">${S.lastBackup?`上次備份:${fmtDate(S.lastBackup)} ${fmtTime(S.lastBackup)}`:'還沒有備份過。'}</div>
     <h3>貼紙點數</h3>
     <div class="row">可以用的點數 <b>${pts()}</b> 點(貼紙簿上貼了 ${filled()} 張,換禮物用掉 ${S.spent||0} 點;還沒貼的 ${S.tray.length} 張,還沒選的 ${S.owed} 張)
       <button class="btn ghost" onclick="adj(-1)">−1</button><button class="btn ghost" onclick="adj(1)">+1</button></div>
@@ -2276,8 +2363,9 @@ function parentZone(){
       <button class="btn ghost" onclick="ask('要把禮物清單恢復成預設嗎?',()=>{S.gifts=JSON.parse(JSON.stringify(DEFAULT_GIFTS));save();parentZone()})">恢復預設</button>
     </div>
     <h3>重新開始</h3>
-    <button class="btn ghost" onclick="ask('確定要清除所有小朋友的點數、貼紙和紀錄嗎?',()=>{try{localStorage.setItem(KEY,'{}')}catch(e){}S=load();home()})">清除全部紀錄</button>
+    <button class="btn ghost" onclick="ask('確定要清除所有小朋友的點數、貼紙和紀錄嗎?',()=>{try{localStorage.setItem(KEY,'{}')}catch(e){}S=load();home();pinSetup()})">清除全部紀錄</button>
   </div>`);
+  persistInfo();
 }
 function giftRow(g){
   return `<div class="g"><input class="ge_" value="${esc(g.e)}"><input class="gn" value="${esc(g.n)}" placeholder="禮物名稱">
@@ -2830,20 +2918,20 @@ function shopNext(){
   if(scr!=='shop')return;
   if(P.round>=SHOP_ROUNDS){$('#scard').remove();return playEnd(P.miss,'shop()',SHP.done)}
   P.round++;P.step=1;P.val='';P.tray=[];P.tries=0;P.busy=false;
-  P.cust=pick(['🐰','🐱','🐻','🐶','🐼','🐸','🐷','🐥']);
+  P.cust=pick(WHO.filter(w=>w!==P.cust)); // 客人是喬妹、煜煜、柚子,輪流來(不會連續兩次同一位)
   P.items=shuffle(SHOP_ITEMS).slice(0,2).map(([e,n])=>({e,n,p:P.g2?R(5,45):R(1,9)}));
   P.total=P.items[0].p+P.items[1].p;
   P.pay=P.g2?(P.total<50?50:100):(P.total<10?10:20); // 客人付的錢一定比總價多,所以一定要找錢
   P.back=P.pay-P.total;P.den=P.g2?[50,10,5,1]:[10,5,1];
   $('#sprog').textContent=`🧑‍🤝‍🧑 ${P.round} / ${SHOP_ROUNDS}`;
   shopDraw();
-  const [a,b]=P.items;speak(`我要買${a.n}和${b.n}。${a.n}${a.p}元,${b.n}${b.p}元。一共要多少元?`);
+  const [a,b]=P.items;speak(`${P.cust[0]}說:我要買${a.n}和${b.n}。${a.n}${a.p}元,${b.n}${b.p}元。一共要多少元?`);
 }
 const shopTray=()=>P.tray.map((v,k)=>`<button class="coinb" onclick="shopUn(${k})"><span class="coin c${v}">${v}</span></button>`).join('');
 function shopDraw(){
   const sumText=`${P.items[0].p} + ${P.items[1].p} = ${P.total}`;
   $('#scard').innerHTML=`
-    <div class="row" style="flex-wrap:nowrap"><span class="cust" id="cust">${P.cust}</span><div class="bubble" style="margin:0">${Z(SHP.buy)}</div></div>
+    <div class="row" style="flex-wrap:nowrap"><span class="cust" id="cust">${P.cust.e}</span><div class="bubble" style="margin:0"><b style="color:var(--pink-d)">${Z(P.cust)}</b>:${Z(SHP.buy)}</div></div>
     <div class="shelf">${P.items.map(it=>`<div class="sitem"><span class="se">${it.e}</span><span class="tag">${it.p} ${Z(T.yuan)}</span></div>`).join('<span class="splus">＋</span>')}</div>
     ${P.step===1?`<div class="prompt center">${Z(SHP.total)}</div>
       <div class="fill"><span class="inp act" id="sinp">?</span><span>${Z(T.yuan)}</span></div>`
@@ -2882,7 +2970,7 @@ function shopGive(){ // 第二步:找錢
   const bye=ms=>{P.busy=true;$('#smsg').innerHTML=pp(eq,0,'an-sum');setTimeout(shopNext,ms)};
   if(sum===P.back){
     sfx.ok();burst();$('#cust').classList.add('happy');speak(SHP.thanks[0]+sayOps(eq));
-    $('#scard .bubble').innerHTML=Z(SHP.thanks);return bye(2000);
+    $('#scard .bubble').innerHTML=`<b style="color:var(--pink-d)">${Z(P.cust)}</b>:${Z(SHP.thanks)}`;return bye(2000);
   }
   P.miss++;P.tries++;sfx.bad();shopShake('#stray');
   if(P.tries>=3){ // 錯三次:示範從大的錢開始拿
@@ -2890,6 +2978,14 @@ function shopGive(){ // 第二步:找錢
     $('#stray').innerHTML=shopTray();speak(sayOps(eq));return bye(2800);
   }
   const m=sum<P.back?SHP.more:SHP.less;$('#smsg').innerHTML=`<span class="hint">${Z(m)}</span>`;speak(m[0]);
+}
+
+/* ==================== 人物:首頁的「我的朋友」,點一下她會打招呼 ==================== */
+Object.assign(T,{friends:['我的朋友','ㄨㄛˇ ˙ㄉㄜ ㄆㄥˊ ˙ㄧㄡ']});
+function friendHi(k){ // 和小動物的對話框用同一個,只是頭像換成這位朋友
+  const p=WHO[k],t=$('#talkBox');sfx.tap();
+  t.innerHTML=`<span class="tav">${p.e}</span><span>${Z(p.hi)}</span>`;t.classList.add('on');
+  clearTimeout(talkT);talkT=setTimeout(()=>t.classList.remove('on'),4500);speak(p.hi[0]);
 }
 
 /* ==================== v3:講得更簡單——解說用的短句和小工具 ==================== */
@@ -3146,7 +3242,7 @@ function askAnswer(p){
 
 /* 實體鍵盤也可以作答 */
 document.addEventListener('keydown',e=>{
-  if($('#modalBox').classList.contains('on')){if(e.key==='Enter'){if($('#gateIn'))gateCheck();else if($('#kidIn'))addKid()}return}
+  if($('#modalBox').classList.contains('on')){if(e.key==='Enter'){if($('#gateIn'))gateCheck();else if($('#kidIn'))addKid();else if($('#pin1'))pinSave()}return}
   if((scr==='lesson'&&L&&L.wait)||(scr==='shop'&&P&&P.step===1)||(scr==='vquiz'&&V&&V.pad)){if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')key('ok');return}
   if(scr!=='play')return;
   if(G.done||G.act==null)return;
@@ -3154,6 +3250,9 @@ document.addEventListener('keydown',e=>{
 });
 boot(3); // 全部讀完,準備畫首頁
 try{home();$('#appRoot').setAttribute('data-ok','1')}catch(e){showErr(e.message+' '+(e.stack||''))} // data-ok:啟動成功(上面的檢查看這個)
+// 請瀏覽器盡量不要自動清掉這個網站的資料(不一定會答應,所以還是要備份)
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{})}catch(e){}
+if(!S.pin)pinSetup(); // 第一次使用(或還沒有家長密碼):先請爸媽設定
 </script>
 </body>
 </html>
