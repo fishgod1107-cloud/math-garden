@@ -296,9 +296,10 @@ h1{animation:bob 3.2s ease-in-out infinite}
 .book small{position:absolute;right:4px;bottom:0;font-size:13px;color:var(--pink-d)}
 
 /* 視窗 */
-#modalBox{position:fixed;inset:0;background:#5a4a6366;display:none;align-items:center;justify-content:center;z-index:70;padding:16px}
+#modalBox{position:fixed;inset:0;background:#5a4a6366;display:none;align-items:flex-start;justify-content:center;z-index:70;padding:16px;overflow-y:auto}
 #modalBox.on{display:flex}
-#modalBox .card{max-width:480px;width:100%;text-align:center;animation:pop .35s}
+#modalBox .card{max-width:480px;width:100%;text-align:center;animation:pop .35s;margin:auto} /* margin:auto:放得下就置中,放不下就從上面開始、可以捲動 */
+.pinmask{-webkit-text-security:disc;text-security:disc} /* 把輸入的密碼遮成圓點(不用 password 欄位,平板才不會跳出「要儲存密碼嗎」) */
 
 /* 家長專區 */
 .parent{font-size:16px;font-weight:400;user-select:text}
@@ -355,12 +356,15 @@ html,body{overscroll-behavior-y:contain}
 .gcard.no{animation:shake .4s}
 .gstars{font-size:64px;line-height:1.2}
 @media (max-width:560px){.gcards{grid-template-columns:repeat(3,1fr);gap:8px}.gcard{font-size:26px;min-height:78px}}
-/* 人物:應用題前面的小頭像、首頁「我的朋友」的按鈕、商店的客人 */
+/* 爸媽專區的操作說明 */
+.guide details{background:#fff;border:1px solid #eadcef;border-radius:10px;padding:8px 12px;margin:6px 0}
+.guide summary{cursor:pointer;font-weight:700;color:var(--purple-d)}
+.guide details[open] summary{margin-bottom:4px}
+.guide ul{margin:4px 0 2px;padding-left:1.3em}
+.guide li{margin:5px 0;line-height:1.6}
+/* 人物:應用題前面的小頭像、商店的客人 */
 .story .who{font-size:.62em;margin-right:6px;vertical-align:middle;white-space:nowrap}
-.kid.friend{min-height:58px}
-.kid.friend .fe{font-size:26px;white-space:nowrap}
 .cust{font-size:44px;white-space:nowrap}
-#talkBox .tav{white-space:nowrap}
 /* 首頁標題前面的名字:手機上自己佔一行,後面的中文才不會被擠到換行 */
 .jo{font-family:"Comic Sans MS","Segoe UI",sans-serif;letter-spacing:1px}
 @media (max-width:560px){.jo{display:block;line-height:1.15}h1{text-align:center}}
@@ -730,9 +734,10 @@ function load(){
   return d;
 }
 const filled=()=>S.card.filter(Boolean).length; // 貼在貼紙簿上的貼紙數
-const pts=()=>filled()-(S.spent||0); // 點數 = 貼上去的貼紙數 − 換禮物花掉的
+const pts=()=>Math.max(0,filled()-(S.spent||0)); // 點數 = 貼上去的貼紙數 − 換禮物花掉的(合併兩台裝置的進度後,不會出現負的)
 function spend(c){S.spent=(S.spent||0)+c} // 只扣點數,貼好的貼紙留著
-function save(){S.kids[S.cur]=kidOf(S);try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let saveFailed=false; // 這台裝置存不進去(無痕模式、空間滿了、被瀏覽器擋住);首頁會提醒爸媽,不然玩了半天才發現沒存到
+function save(){S.kids[S.cur]=kidOf(S);try{localStorage.setItem(KEY,JSON.stringify(S));saveFailed=false}catch(e){saveFailed=true}}
 let S=load();
 
 /* ===== 音效、語音、動畫 ===== */
@@ -1202,14 +1207,22 @@ function gLength(type){
 
 /* ===== 應用題(理解題) ===== */
 /* 題目和小遊戲裡出現的人物:喬妹(女生)、煜煜(男生)、柚子(女生)。
-   每一位還是「名字 + 注音」的寫法(所以可以直接放進句子裡),另外多帶:e 圖示、g 性別(f 女、m 男)、hi 在首頁點她時說的話。
-   要改人物的介紹或說的話,改這裡就好 */
-const person=(n,z,e,g,hi)=>Object.assign([n,z],{e,g,hi});
+   每一位還是「名字 + 注音」的寫法(所以可以直接放進句子裡),另外多帶:e 圖示、g 性別(f 女、m 男)。
+   人物只出現在題目和小小商店裡,首頁沒有另外介紹。要改人物,改這裡就好 */
+const person=(n,z,e,g)=>Object.assign([n,z],{e,g});
 const WHO=[
-  person('喬妹','ㄑㄧㄠˊ ㄇㄟˋ','👧🎀','f',['嗨!我是喬妹,一起來算數學吧!','ㄏㄞ ㄨㄛˇ ㄕˋ ㄑㄧㄠˊ ㄇㄟˋ ㄧˋ ㄑㄧˇ ㄌㄞˊ ㄙㄨㄢˋ ㄕㄨˋ ㄒㄩㄝˊ ˙ㄅㄚ']),
-  person('煜煜','ㄩˋ ㄩˋ','👦⭐','m',['我是煜煜,今天也要加油喔!','ㄨㄛˇ ㄕˋ ㄩˋ ㄩˋ ㄐㄧㄣ ㄊㄧㄢ ㄧㄝˇ ㄧㄠˋ ㄐㄧㄚ ㄧㄡˊ ㄛ']),
-  person('柚子','ㄧㄡˋ ˙ㄗ','👧🍊','f',['我是柚子,我們一起去買東西!','ㄨㄛˇ ㄕˋ ㄧㄡˋ ˙ㄗ ㄨㄛˇ ˙ㄇㄣ ㄧˋ ㄑㄧˇ ㄑㄩˋ ㄇㄞˇ ㄉㄨㄥ ˙ㄒㄧ']),
+  person('喬妹','ㄑㄧㄠˊ ㄇㄟˋ','👧🎀','f'),
+  person('煜煜','ㄩˋ ㄩˋ','👦⭐','m'),
+  person('柚子','ㄧㄡˋ ˙ㄗ','👧🍊','f'),
 ];
+// 其他偶爾出現的名字(都是隨意取的,不是真的人),讓題目有變化。圖示只有一個,和三位主角分得出來
+const OTHERS=[
+  person('小美','ㄒㄧㄠˇ ㄇㄟˇ','👧','f'),person('小華','ㄒㄧㄠˇ ㄏㄨㄚˊ','👦','m'),person('小安','ㄒㄧㄠˇ ㄢ','🧒','f'),
+  person('阿明','ㄚ ㄇㄧㄥˊ','👦','m'),person('小晴','ㄒㄧㄠˇ ㄑㄧㄥˊ','👧','f'),person('小宇','ㄒㄧㄠˇ ㄩˇ','👦','m'),
+  person('小傑','ㄒㄧㄠˇ ㄐㄧㄝˊ','🧒','m'),person('小君','ㄒㄧㄠˇ ㄐㄩㄣ','👧','f'),
+];
+const someone=()=>R(0,9)<7?pick(WHO):pick(OTHERS); // 出場的人:十次裡大約七次是三位主角,三次是其他名字
+function twoPeople(){const a=someone();let b;do{b=someone()}while(b===a);return [a,b]} // 兩個不一樣的人
 const ITEMS=[ // max:二年級題目裡一個人最多有幾個,讓數字合理一點
   {e:'🍎',n:['蘋果','ㄆㄧㄥˊ ㄍㄨㄛˇ'],m:['顆','ㄎㄜ'],food:1,max:30},
   {e:'🍪',n:['餅乾','ㄅㄧㄥˇ ㄍㄢ'],m:['片','ㄆㄧㄢˋ'],food:1,max:40},
@@ -1246,25 +1259,26 @@ function wp(type,e,ans,unit,ex,ds,tip,parts){ // tip 是答錯時的關鍵提示
   }
   const s=line(parts);
   // 題目裡提到的人物,把她們的圖示畫在前面(一位或兩位)
-  const who=[...new Set(parts.filter(p=>p&&p.e).map(p=>p.e))].map(x=>`<span class="who">${x}</span>`).join('');
+  // (以「人」來分,不是以圖示來分:兩個人剛好用同一個圖示時,還是要畫兩個)
+  const who=[...new Set(parts.filter(p=>p&&p.e))].map(p=>`<span class="who">${p.e}</span>`).join('');
   return num(s.h,`<div class="story">${who}${e}</div>`,ans,type,{unit:Z(unit),say:s.say,ds,teach:[...teach,[TT.formula,':',`${ex} = ${ans}`]]});
 }
 const C=',',Q='?';
 function wAdd(t,g2){
-  const w=pick(WHO),it=pick(ITEMS),s=g2?R(25,it.max):R(5,20),a=g2?R(11,s-11):R(2,s-2),b=s-a;
+  const w=someone(),it=pick(ITEMS),s=g2?R(25,it.max):R(5,20),a=g2?R(11,s-11):R(2,s-2),b=s-a;
   return wp(t,it.e,s,it.m,`${a} + ${b}`,[1,2,10],TT.wAdd,[w,W.has,a,it.m,it.n,C,W.bought,b,it.m,C,W.total,it.m,Q]);
 }
 function wSub(t,g2){
-  const w=pick(WHO),it=pick(ITEMS),a=g2?R(25,it.max):R(5,20),b=g2?R(11,a-11):R(1,a-1);
+  const w=someone(),it=pick(ITEMS),a=g2?R(25,it.max):R(5,20),b=g2?R(11,a-11):R(1,a-1);
   return wp(t,it.e,a-b,it.m,`${a} − ${b}`,[1,2,10],TT.wSub,[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.left,it.m,Q]);
 }
 function wCmp(t,g2){
-  const [w1,w2]=shuffle(WHO),it=pick(ITEMS),a=g2?R(25,it.max):R(5,20),b=g2?R(11,a-11):R(1,a-1);
+  const [w1,w2]=twoPeople(),it=pick(ITEMS),a=g2?R(25,it.max):R(5,20),b=g2?R(11,a-11):R(1,a-1);
   const ask=R(0,1)?[w1,W.bi,w2,W.more]:[w2,W.bi,w1,W.less];
   return wp(t,it.e,a-b,it.m,`${a} − ${b}`,[1,2,10],TT.wCmp,[w1,W.has,a,it.m,it.n,C,w2,W.has,b,it.m,C,...ask,it.m,Q]);
 }
 function wQueue(t){
-  const w=pick(WHO),a=R(2,8),b=R(2,8);
+  const w=someone(),a=R(2,8),b=R(2,8);
   return wp(t,'🧍‍♀️🧍🧍‍♀️🧍',a+b+1,W.ren,`${a} + 1 + ${b}`,[1,2],TT.wQueue,[W.queue,C,w,W.front,a,W.people,C,W.back,b,W.people,C,W.howMany,Q]);
 }
 function wMul(t){
@@ -1272,23 +1286,23 @@ function wMul(t){
   return wp(t,'📦'+it.e,a*b,it.m,`${a} × ${b}`,[1,2,a],TT.wMul,[W.box,a,it.m,it.n,C,b,W.boxes,it.m,Q]);
 }
 function wTwo(t){
-  const w=pick(WHO),it=pick(ITEMS.filter(x=>x.food)),a=R(15,it.max-10),b=R(3,9),c=R(5,20);
+  const w=someone(),it=pick(ITEMS.filter(x=>x.food)),a=R(15,it.max-10),b=R(3,9),c=R(5,20);
   return wp(t,it.e,a-b+c,it.m,`${a} − ${b} + ${c}`,[1,2,10],TT.wTwo,[w,W.has,a,it.m,it.n,C,W.ate,b,it.m,C,W.momGave,c,it.m,C,W.nowHas,it.m,Q]);
 }
 function wChange(t){
-  const w=pick(WHO),g=pick(GOODS),pay=g.pay,p=R(g.lo,g.hi);
+  const w=someone(),g=pick(GOODS),pay=g.pay,p=R(g.lo,g.hi);
   return wp(t,g.e+'💰',pay-p,T.yuan,`${pay} − ${p}`,[1,5,10],TT.wChange,[g.n,p,T.yuan,C,w,W.paid,pay,T.yuan,C,W.change,Q]);
 }
 function wBuy(t){
-  const w=pick(WHO),p=R(2,9),n=R(2,9);
+  const w=someone(),p=R(2,9),n=R(2,9);
   return wp(t,'🍞',p*n,T.yuan,`${p} × ${n}`,[1,2,p],TT.wBuy,[W.bread,p,T.yuan,C,w,W.buy,n,W.cost,Q]);
 }
 function wTime(t){
-  const w=pick(WHO),h=R(1,8),d=R(1,3);
+  const w=someone(),h=R(1,8),d=R(1,3);
   return wp(t,'📚✏️',h+d,T.dian,`${h} + ${d}`,[1,2],TT.wTime,[w,h,W.hw,C,W.wrote,d,W.hour,C,W.done,Q]);
 }
 function wOrig(t){
-  const w=pick(WHO),it=pick(ITEMS.filter(x=>x.food)),b=R(3,9),c=R(5,it.max-10);
+  const w=someone(),it=pick(ITEMS.filter(x=>x.food)),b=R(3,9),c=R(5,it.max-10);
   return wp(t,it.e,b+c,it.m,`${b} + ${c}`,[1,2,10],TT.wOrig,[w,W.ate,b,it.m,it.n,W.after,C,W.remain,c,it.m,C,W.orig,it.m,Q]);
 }
 /* ===== 日曆、公尺公分換算、統計表 ===== */
@@ -1558,7 +1572,7 @@ const CR={many:['多','ㄉㄨㄛ'],few:['少','ㄕㄠˇ'],hasQ:['有幾','ㄧㄡ
   more:['「比…多」要用加的。','ㄅㄧˇ ㄉㄨㄛ ㄧㄠˋ ㄩㄥˋ ㄐㄧㄚ ˙ㄉㄜ'],less:['「比…少」要用減的。','ㄅㄧˇ ㄕㄠˇ ㄧㄠˋ ㄩㄥˋ ㄐㄧㄢˇ ˙ㄉㄜ'],
   so1:['比較多,所以','ㄅㄧˇ ㄐㄧㄠˋ ㄉㄨㄛ ㄙㄨㄛˇ ㄧˇ'],so2:['比較少,要用減的。','ㄅㄧˇ ㄐㄧㄠˋ ㄕㄠˇ ㄧㄠˋ ㄩㄥˋ ㄐㄧㄢˇ ˙ㄉㄜ']};
 function wCmpR(t,g2){ // 反過來的比較:知道差多少,問另一個人有幾個
-  const [w1,w2]=shuffle(WHO),it=pick(ITEMS),a=g2?R(25,Math.max(26,it.max-20)):R(6,14),d=g2?R(11,Math.min(a-11,20)):R(1,5),k=g2?R(0,2):R(0,1);
+  const [w1,w2]=twoPeople(),it=pick(ITEMS),a=g2?R(25,Math.max(26,it.max-20)):R(6,14),d=g2?R(11,Math.min(a-11,20)):R(1,5),k=g2?R(0,2):R(0,1);
   if(k===0)return wp(t,it.e,a+d,it.m,`${a} + ${d}`,[1,2,10],CR.more,[w2,W.bi,w1,CR.many,d,it.m,it.n,C,w1,W.has,a,it.m,C,w2,CR.hasQ,it.m,Q]);
   if(k===1)return wp(t,it.e,a-d,it.m,`${a} − ${d}`,[1,2,10],CR.less,[w2,W.bi,w1,CR.few,d,it.m,it.n,C,w1,W.has,a,it.m,C,w2,CR.hasQ,it.m,Q]);
   return wp(t,it.e,a-d,it.m,`${a} − ${d}`,[1,2,10],[w1,CR.so1,w2,CR.so2],[w1,W.has,a,it.m,it.n,C,w1,W.bi,w2,CR.many,d,it.m,C,w2,CR.hasQ,it.m,Q]);
@@ -1731,8 +1745,6 @@ function home(quiet){
     <button class="unit" onclick="start('${u.id}')">${bestTag(u.id)}
       <span class="ue">${u.e}</span><span>${Z(u.t)}</span></button>`).join('')}</div>
   <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}</div>
-  <h2 style="margin-top:16px">👭 ${Z(T.friends)}</h2>
-  <div class="row center">${WHO.map((p,k)=>`<button class="kid friend" onclick="friendHi(${k})"><span class="fe">${p.e}</span> ${Z(p)}</button>`).join('')}</div>
   <h2 style="margin-top:16px">🎮 ${Z(T.games)}</h2>
   <div class="row center">
     <button class="btn" onclick="shop()">🏪 ${Z(SHP.title)}</button>
@@ -1754,8 +1766,10 @@ function home(quiet){
     <button class="btn ghost small" style="position:relative" onclick="parentGate()">🔒 ${Z(T.parent)}${backupDue()?'<span class="dot">!</span>':''}</button>
   </div>
   <div style="font-size:15px;font-weight:400;text-align:center;color:#8a7a90;margin-top:10px">
-    ${backupDue()?`🔔 給爸媽:${backupDue()<0?'還沒有備份過孩子的進度':`已經 ${backupDue()} 天沒有備份進度了`},請到爸媽專區備份。`
-      :!allLogs().length&&!S.kids.some((k,i)=>(i===S.cur?S.total:k.total)>0)?`給爸媽:之前備份過的話,可以 <button class="btn ghost small" style="min-height:36px;font-size:15px" onclick="pasteRestore()">貼上備份還原</button>`:''}
+    ${saveFailed?'<b style="color:#f06292">⚠️ 給爸媽:這台裝置現在沒辦法儲存進度(可能是無痕模式,或瀏覽器擋住了)。關掉這一頁之後,這次的貼紙和成績會不見。</b><br>':''}${backupDue()?`🔔 給爸媽:${backupDue()<0?'還沒有備份過孩子的進度':`已經 ${backupDue()} 天沒有備份進度了`},請到爸媽專區備份。`
+      :!allLogs().length&&!S.kids.some((k,i)=>(i===S.cur?S.total:k.total)>0)?`給爸媽:之前備份過的話,可以
+        <label class="btn ghost small" style="min-height:36px;font-size:15px;cursor:pointer">選備份檔還原<input type="file" accept=".json,.txt,application/json,text/plain" style="display:none" onchange="importBackup(this)"></label>
+        <button class="btn ghost small" style="min-height:36px;font-size:15px" onclick="pasteRestore()">貼上備份文字</button>`:''}
   </div>`);
 }
 function switchKid(i){if(i===S.cur)return;save();useKid(i);save();sfx.tap();home()}
@@ -2169,17 +2183,18 @@ function exportLog(){ // 給爸媽下載成 Excel 打得開的 CSV
 }
 const today=()=>fmtDate(Date.now()).replace(/\//g,'-');
 // 只有直接開檔案或本機才下載得了;放在線上時下載會沒反應,所以把下載按鈕收起來
-const CAN_DL=location.protocol==='file:'||/^(localhost|127\.)/.test(location.hostname);
+// 一般的網頁(包含放在 GitHub Pages 上)都可以下載;只有被包在別的網頁裡面顯示的時候下載會沒反應,那時才收起來
+const CAN_DL=location.protocol==='file:'||window.self===window.top;
 let dlAsText=''; // 設了標題就不下載,改成顯示文字讓人複製
 function download(name,text,type){
   if(dlAsText){const t=dlAsText;dlAsText='';return showText(t,text.replace(/^﻿/,''))}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));
-  a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000) /* iPad 會先問「要下載嗎」,太早收掉檔案會下載失敗,所以等久一點 */;
 }
 /* 備份:整份資料(所有小朋友、禮物清單、設定)存成一個檔案,換電腦或清掉瀏覽資料後可以還原 */
 function exportBackup(){
   save();const asText=!!dlAsText;
-  download(`JOJO數學小花園備份_${today()}.json`,JSON.stringify({app:'mathGarden',ver:1,data:S}),'application/json');
+  download(`JOJO數學小花園備份_${today()}.json`,backupJson(),'application/json');
   if(!asText)backedUp(); // 存成檔案就算備份好了;用文字的,要按了「複製」才算(見 copyBox)
 }
 function importBackup(input){
@@ -2188,13 +2203,80 @@ function importBackup(input){
   r.onload=()=>{input.value='';restoreText(r.result)};
   r.readAsText(f);
 }
+/* 匯入備份:這台裝置還沒有進度就直接用備份;已經有進度,讓爸媽選「合併」或「取代」。
+   合併是給兩台裝置輪流玩的情況用的:A 的備份匯進 B、之後 B 的備份再匯進 A,兩邊就會一樣 */
+let pendingRestore=null; // 等爸媽選好怎麼匯入的那份備份
 function restoreText(text){
   let o=null;try{o=JSON.parse(text)}catch(e){}
   if(!o||o.app!=='mathGarden'||!o.data||typeof o.data!=='object')return note('這不是JOJO 數學小花園的備份。');
-  ask('還原後會蓋掉現在這台裝置上的所有資料,確定嗎?',()=>{
-    try{localStorage.setItem(KEY,JSON.stringify(o.data))}catch(e){}
-    S=load();parentZone();note('還原完成!');
+  save();pendingRestore=o.data;
+  if(!S.kids.some(k=>k.log.length||k.total>0||(k.tray||[]).length||k.owed>0))return restoreReplace();
+  modal(`<div class="parent"><h3 style="margin-top:0">這台裝置已經有進度了,要怎麼匯入?</h3>
+    <p><button class="btn" onclick="restoreMerge()">合併兩邊的進度(建議)</button></p>
+    <p style="color:#8a7a90;text-align:left">兩邊的成績紀錄都會留著,最高分取高的,備份裡多出來的貼紙會加進來。名字一樣的小朋友會合在一起。</p>
+    <p><button class="btn ghost" onclick="ask('這台裝置上現在的進度會全部被備份蓋掉,確定嗎?',restoreReplace)">用備份取代這台的進度</button></p>
+    <p><button class="btn ghost" onclick="pendingRestore=null;closeModal()">取消</button></p></div>`);
+}
+function restoreReplace(){
+  const d=pendingRestore;pendingRestore=null;if(!d)return;
+  try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
+  S=load();closeModal();parentZone();
+  if(S.pin)note('還原完成!');else pinSetup(); // 舊的備份裡沒有家長密碼:還原以後馬上請爸媽設定
+}
+// 把一份存檔整理成「每位小朋友一筆」,缺的欄位補上(很舊的存檔沒有分小朋友,就當成只有一位)
+function kidsOf(d){
+  const list=Array.isArray(d.kids)&&d.kids.length?d.kids:[d];
+  return list.map(k=>{
+    const x=Object.assign(blankKid(''),kidOf(k));
+    for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
+    for(const f of ['best','stat','bestPaid'])if(!x[f]||typeof x[f]!=='object')x[f]={};
+    x.name=String(x.name||'');return x;
   });
+}
+/* 合併同一位小朋友在兩台裝置上的進度(a 是這台的,b 是備份裡的),以這台為主,把備份裡「這台沒有的」加進來:
+   - 成績紀錄:兩邊都留(同一筆不重複)
+   - 貼紙:備份裡多出來的那幾回合得到幾張,就補幾張讓她去貼紙簿挑(不是把兩邊的貼紙數相加,那樣每合併一次就會變多)
+   - 換過的禮物:備份裡多出來的加進來,點數也跟著扣
+   - 最高分取高的;弱點分析取作答次數比較多的那一邊(兩邊的次數沒辦法精確相加,所以是近似的);錯題本取還要練比較多次的
+   同一份備份合併兩次,第二次不會再多出任何東西 */
+function mergeKid(a,b){
+  const copy=o=>JSON.parse(JSON.stringify(o)),k=copy(a);
+  const lk=r=>r.t+'|'+r.u+'|'+r.s,have=new Set(a.log.map(lk)),fresh=b.log.filter(r=>!have.has(lk(r)));
+  k.log=[...a.log,...fresh].sort((x,y)=>y.t-x.t).slice(0,500);
+  const stickers=fresh.reduce((n,r)=>n+(r.p||0),0);k.owed=(k.owed||0)+stickers;
+  for(const id in b.best)k.best[id]=Math.max(k.best[id]||0,b.best[id]||0);
+  const tries=s=>s?(s.r||0)+(s.w||0):-1;
+  for(const id in b.stat){
+    const x=k.stat[id],y=b.stat[id];if(!y)continue;
+    const due=Math.max(y.due||0,x?x.due||0:0);
+    if(tries(y)>tries(x))k.stat[id]=Object.assign(copy(y),{due});else x.due=due;
+  }
+  const rk=r=>[r.d,r.n,r.c,r.m?1:0].join('|'),mine={},theirs={};let gifts=0;
+  a.redeemed.forEach(r=>{mine[rk(r)]=(mine[rk(r)]||0)+1});
+  b.redeemed.forEach(r=>{
+    const key=rk(r);theirs[key]=(theirs[key]||0)+1;
+    if(theirs[key]>(mine[key]||0)){k.redeemed.push(copy(r));k.spent=(k.spent||0)+(r.c||0);gifts++} // 備份裡多換的禮物
+    else if(r.given){const m=k.redeemed.find(x=>rk(x)===key&&!x.given);if(m)m.given=true} // 同一個禮物,有一邊已經標成拿到了
+  });
+  const dayNum=s=>{const p=String(s).split('-').map(Number);return p[0]*10000+p[1]*100+p[2]};
+  k.days=[...new Set([...a.days,...b.days])].sort((p,q)=>dayNum(p)-dayNum(q)).slice(-60);
+  return {kid:k,logs:fresh.length,stickers,gifts};
+}
+function restoreMerge(){
+  const d=pendingRestore;pendingRestore=null;if(!d)return;
+  save();let logs=0,stickers=0,gifts=0;const added=[];
+  for(const b of kidsOf(d)){
+    const i=S.kids.findIndex(k=>(k.name||'').trim()===b.name.trim());
+    if(i>=0){const m=mergeKid(Object.assign(blankKid(''),S.kids[i]),b);S.kids[i]=m.kid;logs+=m.logs;stickers+=m.stickers;gifts+=m.gifts;continue}
+    if(!b.log.length&&!(b.total>0))continue; // 備份裡沒玩過的空白小朋友不用搬
+    // 這台沒有這個名字:先看有沒有還沒取名字、也沒玩過的空位可以放,沒有就新增一位(最多 6 位)
+    const blank=S.kids.findIndex(k=>!(k.name||'').trim()&&!k.log.length&&!(k.total>0));
+    if(blank>=0)S.kids[blank]=b;else if(S.kids.length<6)S.kids.push(b);else continue;
+    added.push(b.name||'沒有名字');logs+=b.log.length;
+  }
+  useKid(S.cur);save();closeModal();parentZone();
+  const got=[logs&&`${logs} 筆成績`,stickers&&`${stickers} 張貼紙(到貼紙簿就可以挑)`,gifts&&`${gifts} 個換過的禮物`].filter(Boolean);
+  note('合併完成!'+(got.length?`加入了 ${got.join('、')}。`:'這份備份裡沒有這台裝置沒有的新紀錄。')+(added.length?`新增的小朋友:${added.join('、')}。`:''));
 }
 
 /* ===== 集點貼紙簿:新貼紙放在旁邊,拖到格子裡才算一點 ===== */
@@ -2253,8 +2335,8 @@ let gate=null,gateFails=0,gateLock=0; // gate:忘記密碼(或還沒有密碼)�
 function pinSetup(){
   modal(`<div class="parent" style="font-size:17px"><h3 style="margin-top:0">🔒 給爸媽:請${S.pin?'輸入新的':'先設定'}家長密碼</h3>
     <p style="text-align:left">進入「爸媽專區」(調整貼紙和禮物、看弱點分析、備份進度)要輸入這組密碼。小朋友平常玩遊戲不需要密碼。</p>
-    <p><input id="pin1" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="4 到 8 個數字" style="width:11em;text-align:center"></p>
-    <p><input id="pin2" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password" placeholder="再輸入一次" style="width:11em;text-align:center"></p>
+    <p><input id="pin1" class="pinmask" type="text" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="4 到 8 個數字" style="width:11em;text-align:center"></p>
+    <p><input id="pin2" class="pinmask" type="text" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="再輸入一次" style="width:11em;text-align:center"></p>
     <div id="pinMsg" style="color:#f06292;min-height:1.4em"></div>
     <div class="row center"><button class="btn" onclick="pinSave()">設定好了</button>${S.pin?'<button class="btn ghost" onclick="closeModal()">取消</button>':''}</div>
     <p style="color:#8a7a90;font-size:14px;text-align:left">密碼只存在這台裝置上。忘記的時候,在輸入密碼的畫面按「忘記密碼」,答對一題兩位數乘法就能進去重新設定。</p></div>`);
@@ -2271,7 +2353,7 @@ function parentGate(forgot){
   const usePin=!!S.pin&&!forgot;
   gate=usePin?null:[R(12,19),R(12,19)];
   modal(`<div class="parent"><h3>家長專區</h3><p>${usePin?'請輸入家長密碼':`請回答:${gate[0]} × ${gate[1]} = ?`}</p>
-  <p><input id="gateIn" type="${usePin?'password':'number'}" inputmode="numeric" autocomplete="off" style="width:8em;text-align:center"></p>
+  <p><input id="gateIn" class="${usePin?'pinmask':''}" type="${usePin?'text':'number'}" inputmode="numeric" autocomplete="off" style="width:8em;text-align:center"></p>
   <div id="gateMsg" style="color:#f06292;min-height:1.4em"></div>
   <div class="row center"><button class="btn" onclick="gateCheck()">確定</button><button class="btn ghost" onclick="closeModal()">取消</button></div>
   ${usePin?'<p><button class="btn ghost" onclick="parentGate(true)">忘記密碼</button></p>':''}</div>`);
@@ -2293,13 +2375,74 @@ const allLogs=()=>S.kids.flatMap((k,i)=>i===S.cur?S.log:k.log);
 function backupDue(){ // 0:不用提醒;-1:從來沒備份過;正數:幾天沒備份了
   const logs=allLogs();if(logs.length<3)return 0;
   const last=S.lastBackup||0,newest=Math.max(...logs.map(r=>r.t||0));
-  if(!last)return -1;
+  if(!last)return Date.now()-Math.min(...logs.map(r=>r.t||Date.now()))>=3*864e5?-1:0; // 從來沒備份過:玩了三天以上才開始提醒
   const days=Math.floor((Date.now()-last)/864e5);
   return newest>last&&days>=7?days:0;
+}
+/* 換裝置:在舊裝置把備份存成一個檔案(下載,或用手機平板的「分享」直接傳到 LINE、郵件、雲端硬碟),
+   到新裝置按「匯入備份檔」選那個檔案。這是手動搬一次,不是自動同步;還原會蓋掉新裝置上原本的進度 */
+const backupJson=()=>JSON.stringify({app:'mathGarden',ver:1,data:S});
+const CAN_SHARE=CAN_DL&&typeof navigator.share==='function'&&typeof navigator.canShare==='function'&&typeof File==='function';
+function shareBackup(){ // 用系統的分享選單把備份檔傳出去(副檔名用 .txt,各家瀏覽器才都肯分享)
+  save();
+  try{
+    const f=new File([backupJson()],`JOJO數學小花園備份_${today()}.txt`,{type:'text/plain'});
+    if(navigator.canShare({files:[f]}))return navigator.share({files:[f],title:'JOJO 數學小花園備份'}).then(backedUp,()=>{}); // 按取消就不算備份
+  }catch(e){}
+  exportBackup(); // 這台不能分享檔案:改成下載
+}
+function backupNow(){ // 「現在備份」:能分享就分享,不然下載,再不行就顯示文字讓人複製
+  if(CAN_SHARE)return shareBackup();
+  if(!CAN_DL)dlAsText='備份文字';
+  exportBackup();
 }
 function backedUp(){ // 記下備份的時間
   S.lastBackup=Date.now();save();
   if(scr==='parent'&&!$('#modalBox').classList.contains('on'))parentZone();
+}
+/* 爸媽專區最上面的操作說明:一個主題一格,點標題才展開,平常不佔位置。
+   功能有增減時,記得回來改這裡的文字 */
+function guideHtml(){
+  const sec=(title,items)=>`<details><summary>${title}</summary><ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul></details>`;
+  return `<h3>📖 操作說明(點標題展開)</h3><div class="guide">
+  ${sec('第一次使用',[
+    '回到首頁,在「我的名字」填上孩子的名字;「單元練習」底下選一年級或二年級。',
+    '家裡有不只一個孩子:按名字旁邊的「＋」新增(最多 6 位),每個人有自己的貼紙、禮物和成績。點名字就能換人。',
+    '每台裝置第一次打開時,會先請你設定家長密碼(4 到 8 個數字)。之後可以在下面的「家長密碼」更改。每台裝置的密碼是分開的。'])}
+  ${sec('孩子怎麼玩',[
+    '<b>練習</b>:「綜合挑戰」「綜合練習」或任何一個單元,每回合 10 題。首頁的小花園裡每個單元有一株植物,越熟練長得越大,點它也可以直接練;有 💧 表示那個單元有錯題還沒練熟。',
+    '<b>兩種作答方式</b>(首頁最下面的按鈕切換):「一題一題」是答完馬上知道對錯,第一次答錯有提示、可以再試一次;「考試模式」是整頁 10 題寫完再一起對答案。',
+    '題目旁邊:🔊 唸題目、🎤 用說的回答;一題一題時還有 💡「給我提示」,不扣分。',
+    '<b>例題教學</b>:選一種題型,小老師一步一步算給她看,看完可以只練那一種。',
+    '<b>小遊戲</b>:小小商店(算總價、找錢)、數字配對(湊 10、湊 20、乘法,可以開「蓋牌挑戰」)、數線跳跳。',
+    '<b>用說的</b>:口算問答(小老師唸題目,孩子說答案)、問問小老師(孩子問「八加七是多少」,小老師回答並解釋)。'])}
+  ${sec('貼紙和禮物',[
+    '一回合 80 分以上得 1 張貼紙,100 分得 3 張。另外,練完錯題、比自己上次進步、連續練習 3 天、小遊戲每天第一次過關,各會多送 1 張。',
+    '得到貼紙後,要到「貼紙簿」挑選,再把它拖到格子裡(或點一下),才算 1 點。',
+    '孩子在「禮物屋」用點數換禮物。換了以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。',
+    '「禮物清單」可以改成你們家自己的禮物和需要的點數,不一定要花錢,例如「多聽一個故事」。',
+    '「貼紙點數」的 +1、−1 可以手動加減;「神秘禮物拉霸」可以調整要幾點,或整個關掉。'])}
+  ${sec('看孩子學得怎麼樣',[
+    '本頁的「弱點分析」:每一種題型答對幾成,需要加強的排在前面,還會列出她常犯的錯(例如忘了進位)。',
+    '首頁的「成績紀錄」:每一回合的日期和分數。本頁可以下載成 Excel 打得開的檔案。',
+    '答錯的題型會進「錯題再練」(首頁會出現一張紅色的卡片),同一種題型再答對兩次才算學會。',
+    '難度會自己調整:某種題型最近 5 題對 4 題以上,就會出比較難的;退步了會換回基本題。'])}
+  ${sec('備份和換裝置',[
+    '<b>進度只存在這台裝置上</b>,不會上傳,別人看不到;但換裝置、清除瀏覽資料,或 iPad 一個星期左右沒開這個網站,都可能不見。',
+    '<b>備份</b>:到下面的「備份與還原」按「分享備份檔」或「下載備份檔」,存到自己找得到的地方(寄給自己、LINE 傳給自己、雲端硬碟)。',
+    '<b>備份提醒</b>:首頁最下面出現 🔔、「爸媽專區」按鈕上有紅點,就是在提醒該備份了。玩了三天以上還沒備份過,或是有新成績而且超過 7 天沒備份,才會提醒。',
+    '<b>換新裝置</b>:在新裝置打開網站,首頁最下面按「選備份檔還原」,選剛才的檔案。',
+    '<b>兩台裝置都在用</b>:匯入時選「合併兩邊的進度」,兩邊的成績和貼紙都會留著。',
+    '備份裡有孩子的名字、成績和家長密碼,不要傳給別人。'])}
+  ${sec('遇到問題',[
+    '<b>沒有聲音</b>:看首頁最下面是不是「唸題目:開」、裝置有沒有開靜音;下面的「語音」可以換聲音、按「試聽」。',
+    '<b>麥克風不能用</b>:第一次按 🎤 時裝置會問要不要允許,要選允許。iPad 上有時要先按一下麥克風才會開始聽。真的不能用時,可以改用按的回答。',
+    '<b>進度不見了</b>:用之前的備份匯入就能回來,所以平常要備份。',
+    '<b>首頁出現紅字「這台裝置現在沒辦法儲存進度」</b>:通常是用了瀏覽器的無痕(私密)模式,或瀏覽器擋住了儲存。請改用一般的視窗開啟;不處理的話,關掉這一頁後這次的貼紙和成績不會留下來。',
+    '<b>忘記家長密碼</b>:在輸入密碼的畫面按「忘記密碼」,答對一題兩位數乘法就能進來重新設定。',
+    '<b>看不到新版本</b>:把瀏覽器的這個分頁關掉再重新開。',
+    '<b>畫面出現「程式出錯了」的白色框</b>:請把那段文字拍下來,交給幫你維護的人。'])}
+  </div>`;
 }
 function persistInfo(){ // 爸媽專區裡顯示:這台裝置有沒有答應長期保存資料
   if(!navigator.storage||!navigator.storage.persisted)return;
@@ -2310,7 +2453,8 @@ function parentZone(){
   <div class="card parent">
     <div class="row"><b style="font-size:20px">🔒 家長專區</b><span class="sp"></span><button class="btn ghost" onclick="home()">回首頁</button></div>
     ${backupDue()?`<div style="background:#fff3c9;border:2px solid #f0c94f;border-radius:12px;padding:8px 12px;margin:10px 0">🔔 ${backupDue()<0?'還沒有備份過孩子的進度。':`已經 ${backupDue()} 天沒有備份了。`}
-      <button class="btn" style="margin-left:6px" onclick="dlAsText='備份文字';exportBackup()">現在備份</button></div>`:''}
+      <button class="btn" style="margin-left:6px" onclick="backupNow()">現在備份</button></div>`:''}
+    ${guideHtml()}
     <h3>家長密碼</h3>
     <div class="row"><button class="btn ghost" onclick="pinSetup()">${S.pin?'更改密碼':'設定密碼'}</button>
       <span style="color:#8a7a90">${S.pin?'已經設定。':'<b>還沒有設定密碼。</b>'}密碼只存在這台裝置上;忘記時,在輸入密碼的畫面按「忘記密碼」。</span></div>
@@ -2321,11 +2465,14 @@ function parentZone(){
       ${S.kids.length>1?`<button class="btn ghost" onclick="removeKid(${i})">刪除</button>`:''}</div>`).join('')}
     <div style="color:#8a7a90">要新增小朋友,請在首頁按名字旁邊的「＋」。</div>
     <h3>備份與還原</h3>
-    <div class="row">${CAN_DL?`<button class="btn ghost" onclick="exportBackup()">下載備份檔</button>`:''}
-      <label class="btn ghost" style="cursor:pointer">從備份檔還原<input type="file" accept=".json,application/json" style="display:none" onchange="importBackup(this)"></label>
-      <button class="btn ghost" onclick="dlAsText='備份文字';exportBackup()">複製備份文字</button>
+    <div class="row">${CAN_SHARE?`<button class="btn" onclick="shareBackup()">分享備份檔</button>`:''}
+      ${CAN_DL?`<button class="btn ${CAN_SHARE?'ghost':''}" onclick="exportBackup()">下載備份檔</button>`:''}
+      <label class="btn ghost" style="cursor:pointer">匯入備份檔<input type="file" accept=".json,.txt,application/json,text/plain" style="display:none" onchange="importBackup(this)"></label></div>
+    <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="dlAsText='備份文字';exportBackup()">複製備份文字</button>
       <button class="btn ghost" onclick="pasteRestore()">貼上備份文字還原</button></div>
-    <div style="color:#8a7a90">${CAN_DL?'':'線上版不能下載檔案,請用「複製備份文字」。'}「複製備份文字」和「貼上備份文字還原」也可以用來把資料從一台裝置搬到另一台。</div>
+    <div style="color:#8a7a90"><b>換裝置的做法:</b>在舊裝置按${CAN_SHARE?'「分享備份檔」(可以直接傳到 LINE、郵件或雲端硬碟)或':''}${CAN_DL?'「下載備份檔」':'「複製備份文字」'},把它送到新裝置,再到新裝置按${CAN_DL?'「匯入備份檔」選那個檔案':'「貼上備份文字還原」'}。
+      這是手動搬一次,兩台裝置不會自動同步。備份裡有孩子的名字、成績和家長密碼,不要傳給別人。</div>
+    <div style="color:#8a7a90"><b>兩台裝置都在用:</b>匯入時選「合併兩邊的進度」,兩邊的成績和貼紙都會留著。先把 A 的備份匯進 B,再把 B 的備份匯進 A,兩台就會一樣;之後想對齊時再做一次。</div>
     <div style="color:#8a7a90">進度只存在這台裝置的瀏覽器裡,清除瀏覽資料或換裝置就會不見。<b>iPad、iPhone 的 Safari 如果連續一個星期左右沒有開這個網站,也可能自動把進度清掉。</b>
       請每隔一陣子按「複製備份文字」,貼到備忘錄或 LINE 記事本存起來;有新的成績而且超過 7 天沒備份時,首頁會提醒。<span id="persistMsg"></span></div>
     <div style="color:#8a7a90">${S.lastBackup?`上次備份:${fmtDate(S.lastBackup)} ${fmtTime(S.lastBackup)}`:'還沒有備份過。'}</div>
@@ -2918,7 +3065,7 @@ function shopNext(){
   if(scr!=='shop')return;
   if(P.round>=SHOP_ROUNDS){$('#scard').remove();return playEnd(P.miss,'shop()',SHP.done)}
   P.round++;P.step=1;P.val='';P.tray=[];P.tries=0;P.busy=false;
-  P.cust=pick(WHO.filter(w=>w!==P.cust)); // 客人是喬妹、煜煜、柚子,輪流來(不會連續兩次同一位)
+  {const last=P.cust;do{P.cust=someone()}while(P.cust===last)} // 客人多半是喬妹、煜煜、柚子,偶爾是別的小朋友;不會連續兩次同一位
   P.items=shuffle(SHOP_ITEMS).slice(0,2).map(([e,n])=>({e,n,p:P.g2?R(5,45):R(1,9)}));
   P.total=P.items[0].p+P.items[1].p;
   P.pay=P.g2?(P.total<50?50:100):(P.total<10?10:20); // 客人付的錢一定比總價多,所以一定要找錢
@@ -2978,14 +3125,6 @@ function shopGive(){ // 第二步:找錢
     $('#stray').innerHTML=shopTray();speak(sayOps(eq));return bye(2800);
   }
   const m=sum<P.back?SHP.more:SHP.less;$('#smsg').innerHTML=`<span class="hint">${Z(m)}</span>`;speak(m[0]);
-}
-
-/* ==================== 人物:首頁的「我的朋友」,點一下她會打招呼 ==================== */
-Object.assign(T,{friends:['我的朋友','ㄨㄛˇ ˙ㄉㄜ ㄆㄥˊ ˙ㄧㄡ']});
-function friendHi(k){ // 和小動物的對話框用同一個,只是頭像換成這位朋友
-  const p=WHO[k],t=$('#talkBox');sfx.tap();
-  t.innerHTML=`<span class="tav">${p.e}</span><span>${Z(p.hi)}</span>`;t.classList.add('on');
-  clearTimeout(talkT);talkT=setTimeout(()=>t.classList.remove('on'),4500);speak(p.hi[0]);
 }
 
 /* ==================== v3:講得更簡單——解說用的短句和小工具 ==================== */
