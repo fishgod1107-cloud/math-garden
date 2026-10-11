@@ -426,6 +426,47 @@ html,body{overscroll-behavior-y:contain}
 .bln.popped{animation:blpop .3s forwards;pointer-events:none}
 .bln.wrong{animation:shake .4s;background:#eee;color:#8a7a90;font-size:19px}
 @keyframes blpop{60%{transform:scale(1.25);opacity:.7}100%{transform:scale(0);opacity:0}}
+/* 養成遊戲 */
+.gstage{text-align:center}
+.gname{font-size:26px;color:var(--pink-d);margin-bottom:4px}
+.gart{position:relative;min-height:170px;display:flex;align-items:flex-end;justify-content:center}
+.gpot{width:190px;margin:0 auto;position:relative}.gpot svg{width:100%;display:block}
+.gegg{width:140px;margin:6px auto;transform-origin:50% 90%}.gegg svg,.gshell svg{display:block;width:100%;height:auto}
+.gegg.wob{animation:gwob 1.3s ease-in-out infinite}
+@keyframes gwob{25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+.ghatch{position:relative;width:140px;height:168px;margin:6px auto}
+.ghatch .gpetb{position:absolute;left:50%;top:0;transform:translateX(-50%)}
+.ghatch .gshell{position:absolute;left:0;right:0;bottom:0}
+.gpetb{position:relative;display:inline-block;line-height:1.1}.gpetb .bun{filter:none}
+.gacc{position:absolute;line-height:1}
+.gacc.b3{right:-.12em;bottom:0;font-size:.34em}
+.gacc.b4{left:50%;bottom:-.1em;transform:translateX(-50%);font-size:.3em}
+.gbar{height:16px;border-radius:8px;background:#f0e6f3;max-width:260px;margin:8px auto 0;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#ff9ec4,#ffd166);transition:width .5s}
+.gnum{font-size:18px;color:#8a7a90;text-align:center}
+.gfx{position:absolute;left:50%;top:30%;font-size:46px;pointer-events:none;animation:gfx 1.1s ease-out forwards}
+@keyframes gfx{from{transform:translate(-50%,20px) scale(.5);opacity:0}30%{opacity:1}to{transform:translate(-50%,-70px) scale(1.2);opacity:0}}
+.gseeds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.gseed{background:#fff9df;border:3px solid #ffd166;border-radius:20px;padding:8px 2px;font-size:18px;color:var(--ink);display:flex;flex-direction:column;align-items:center;min-width:0}
+.gseed svg{width:72%;display:block}
+.gseed:active{transform:translateY(3px)}
+.gfield{position:relative;border-radius:26px;background:linear-gradient(#d9f2ff 0 52%,#bfe8a8 52%);padding:40px 10px 10px;min-height:130px;overflow:hidden}
+.gfl{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:2px}
+.gfl span{width:58px;transform-origin:50% 100%;animation:sway 3s ease-in-out infinite}.gfl svg{width:100%;display:block}
+.grb{position:absolute;left:10px;top:0;font-size:40px}
+.gbf{position:absolute;right:14%;top:6px;font-size:26px;animation:bob 2s ease-in-out infinite}.gbf.b{right:44%;top:12px}
+.gdex{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gdex>div{background:#fff;border-radius:16px;padding:6px 2px;text-align:center;font-size:16px;min-width:0}
+.gdex svg{width:66%;display:block;margin:0 auto}.gdex small{font-size:inherit;display:block}
+.gdex .lock svg{filter:brightness(0);opacity:.15}
+.gpets{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.gpets>div{background:#fff;border-radius:16px;padding:8px 2px;text-align:center;font-size:16px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.gpets .gpetb{font-size:56px}.gpets .lock{opacity:.45;justify-content:center;min-height:120px}
+.gq{font-size:44px;color:#b9a6c0}.gbud{color:#e59a00}
+.gpets .btn.small{min-height:40px;font-size:15px;padding:2px 8px}
+.careq .prompt{text-align:left}
+.goff .btn{background:#cfc6d4;box-shadow:0 5px 0 #b3a9ba;opacity:.7;cursor:default}
+@media (max-width:560px){.gpets{grid-template-columns:repeat(3,1fr)}.gdex{grid-template-columns:repeat(3,1fr)}.gdex>div{font-size:15px}.gseed{font-size:15px}.gname{font-size:22px}.gfl span{width:48px}}
 @media (max-width:560px){.blns{gap:22px 8px}.bln{font-size:17px}.bln.wrong{font-size:14px}.bsign{font-size:42px}}
 .tk:active b{background:#fff3c9}
 @media (max-width:560px){.tk .fr{font-size:30px}.tk b{font-size:18px;padding:2px 3px;min-width:0}}
@@ -759,8 +800,12 @@ const BIG=30; // 貼滿這麼多張,可以換一個獎品,或換 1 枚硬幣;貼
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj'];
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0});
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow'];
+// 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
+// 養成遊戲的總開關:false 的時候首頁只顯示灰色的「準備中」,不能點、也不累積愛心;等內容成熟了改成 true 就開放
+const GROW_READY=false;
+const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0()});
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -983,7 +1028,8 @@ const PETS={
 // 動物隨機出現:每次回首頁、每開始一回合就換一隻(同一回合裡從頭到尾是同一隻)
 let curPet=pick(Object.keys(PETS));
 const pet=()=>PETS[curPet];
-function newPet(){curPet=pick(Object.keys(PETS).filter(k=>k!==curPet))}
+// 養成遊戲裡選了「小夥伴」的話,就固定是牠,不再隨機換
+function newPet(){const b=typeof S!=='undefined'&&S&&S.grow&&GROW_READY&&S.growOff!==true&&S.grow.buddy;curPet=PETS[b]?b:pick(Object.keys(PETS).filter(k=>k!==curPet))}
 // 把幾段「國字 + 注音」接成一句,例如 J(['聽','ㄊㄧㄥ'],pet().kind,['老師說','ㄌㄠˇ ㄕ ㄕㄨㄛ'])
 const J=(...p)=>[p.map(x=>x[0]).join(''),p.map(x=>x[1]).filter(Boolean).join(' ')];
 function bunnySvg(id){ // 畫動物的臉:會眨眼睛、動耳朵;答錯時(.sad)嘴巴往下。不給 id 就畫現在選的那一隻
@@ -1796,6 +1842,16 @@ function home(quiet){
     <button class="unit" onclick="start('${u.id}')">${bestTag(u.id)}
       <span class="ue">${u.e}</span><span>${Z(u.t)}</span></button>`).join('')}</div>
   <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}<br>🪙 ${Z(T.rule3)}</div>
+  ${growOn()?`<h2 style="margin-top:16px">🌱 ${Z(GW.title)}　<span class="hearts" style="font-size:20px;vertical-align:middle">💗 × ${gw().hearts}</span></h2>
+  <div class="hgrid" style="--n:2">
+    <button class="btn mint" onclick="growGarden()">${hb('🌷',Z(GW.garden))}</button>
+    <button class="btn purple" onclick="growPet()">${hb(gw().pet&&gw().pet.step>1?PETS[gw().pet.id].e:'🥚',Z(GW.pet))}</button>
+  </div>`:GROW_READY?'':`<h2 style="margin-top:16px;opacity:.5">🌱 ${Z(GW.title)}</h2>
+  <div class="hgrid goff" style="--n:2">
+    <button class="btn" disabled>${hb('🌷',Z(GW.garden))}</button>
+    <button class="btn" disabled>${hb('🥚',Z(GW.pet))}</button>
+  </div>
+  <div class="gnum">🔧 ${Z(GW.soon)}</div>`}
   <h2 style="margin-top:16px">🎮 ${Z(T.games)}</h2>
   <div class="hgrid">
     <button class="btn" onclick="shop()">${hb('🏪',Z(SHP.title))}</button>
@@ -2038,6 +2094,7 @@ function finish(){
   S.owed+=n+bonus;G.picked=[];pickOpts=null;
   tally();
   S.best[id]=Math.max(S.best[id]||0,sc);
+  const hearts=addHearts(step?G.pts.filter(p=>p>0).length:sc/10); // 養成遊戲的愛心:答對幾題就幾顆
   // 成績紀錄:時間、名字、題目、分數、這次得到幾張、當時一共有幾張貼紙(含還沒貼、還沒選的)
   S.log.unshift({t:Date.now(),n:S.name,u:id,s:sc,p:n+bonus,own:pts()+S.tray.length+S.owed});S.log.length=Math.min(S.log.length,500);
   save();
@@ -2051,6 +2108,7 @@ function finish(){
     <h2>${full?'🌟 '+Z(T.perfect):n?'🌟 '+Z(T.near):Z(T.keep)}</h2>
     ${why?`<div class="tip">🎁 ${Z(why)}</div>`:''}
     ${n+bonus?'<div id="pickBox"></div>':`<div class="tip">🌟 ${Z(T.need80)}</div>`}
+    ${hearts?`<div class="tip">💗 + ${hearts}　${Z(GW.gotHearts)}</div>`:''}
     ${full||step?'':`<div class="tip">👇 ${Z(T.review)}</div>`}
     <div class="row center">${again}</div>
   </div>`;
@@ -2321,6 +2379,7 @@ function kidsOf(d){
     const x=Object.assign(blankKid(''),kidOf(k));
     for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
     for(const f of ['best','stat','bestPaid'])if(!x[f]||typeof x[f]!=='object')x[f]={};
+    x.grow=growFix(x.grow);
     x.name=String(x.name||'');return x;
   });
 }
@@ -2349,6 +2408,9 @@ function mergeKid(a,b){
     if(theirs[key]>(mine[key]||0)){k.redeemed.push(copy(r));k.spent=(k.spent||0)+(r.c||0);if(r.k!=='coin')gifts++} // 備份裡多換的禮物
     else if(r.given){const m=k.redeemed.find(x=>rk(x)===key&&!x.given);if(m)m.given=true} // 同一個禮物,有一邊已經標成拿到了
   });
+  // 養成遊戲:取進度比較多的那一邊(開過的花、養大的寵物比較多;一樣多就看愛心),不相加——相加的話每合併一次就多一倍
+  const gs=g=>{g=growFix(g);return [g.garden.length+g.pets.length*3+(g.plant?g.plant.step:0)+(g.pet?g.pet.step:0),g.hearts]},ga=gs(a.grow),gb=gs(b.grow);
+  k.grow=copy(growFix(gb[0]>ga[0]||(gb[0]===ga[0]&&gb[1]>ga[1])?b.grow:a.grow));
   const dayNum=s=>{const p=String(s).split('-').map(Number);return p[0]*10000+p[1]*100+p[2]};
   k.days=[...new Set([...a.days,...b.days])].sort((p,q)=>dayNum(p)-dayNum(q)).slice(-60);
   return {kid:k,logs:fresh.length,stickers,gifts};
@@ -2514,6 +2576,12 @@ function guideHtml(){
     '孩子換了獎品以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。換硬幣不用打勾。',
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
+  ${!GROW_READY?'':sec('養成遊戲',[
+    '首頁的「我的小花園」和「我的寵物」:小花從種子、發芽、長葉子、含苞到開花;寵物從一顆神秘的蛋、出生、小寶寶到長大。',
+    '<b>要做題目才會長大</b>:點「澆水」「餵食」這些照顧動作,會出一題她這個年級的題目,第一次就答對才長大一點;答錯會告訴她答案,再換一題。這些題目也會記到弱點分析。',
+    '平常練習每答對 1 題得 1 顆愛心 💗,小遊戲過關得 3 顆,可以在養成畫面按「用愛心照顧」。',
+    '一朵花大約要答對 40 題,一隻寵物大約 70 題。開過的花會收進花園和圖鑑(共 12 種);養大的寵物(共 5 種)可以選一隻當「小夥伴」,首頁和題目旁邊的小老師就固定是牠。',
+    '<b>不會餓、不會生病、不會枯掉</b>,幾天沒玩也不會退步。愛心和貼紙是分開的,養成遊戲不會多送貼紙。不想用的話,可以在本頁下面的「養成遊戲」關掉。'])}
   ${sec('看孩子學得怎麼樣',[
     '本頁的「弱點分析」:每一種題型答對幾成,需要加強的排在前面,還會列出她常犯的錯(例如忘了進位)。',
     '首頁的「成績紀錄」:每一回合的日期和分數。本頁可以下載成 Excel 打得開的檔案。',
@@ -2577,6 +2645,12 @@ function parentZone(){
     ${analysisHtml()}
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的弱點分析和錯題本嗎?',()=>{S.stat={};save();parentZone()})">清除弱點分析和錯題本</button></div>
     <div style="color:#8a7a90">換禮物只會扣點數,貼好的貼紙會留在貼紙簿上。除了 80 分以上的貼紙,練完錯題、比上次進步、連續練習 3 天也會多送 1 張(每回合最多多 1 張;「比上次進步」同一個單元一天只送一次)。數字配對每天第一次過關也會送 1 張。</div>
+    ${!GROW_READY?'<h3>養成遊戲(我的小花園、我的寵物)</h3><div style="color:#8a7a90">還在準備中,目前首頁只顯示灰色的按鈕,不能點,也不會累積愛心。</div>':`<h3>養成遊戲(我的小花園、我的寵物)</h3>
+    <label><input type="checkbox" ${growOn()?'checked':''} onchange="S.growOff=!this.checked;save();parentZone()"> 在首頁顯示養成遊戲(取消勾選就不顯示,也不再累積愛心)</label>
+    <div class="row">💗 愛心 <b>${gw().hearts}</b> 顆;花園開了 ${gw().garden.length} 朵,養大了 ${gw().pets.length} 隻
+      <button class="btn ghost" onclick="gw().hearts=Math.max(0,gw().hearts-5);save();parentZone()">−5</button><button class="btn ghost" onclick="gw().hearts+=5;save();parentZone()">+5</button>
+      <button class="btn ghost" onclick="ask('確定要把這位小朋友的小花園和寵物全部重新開始嗎?',()=>{S.grow=GROW0();save();parentZone()})">重新開始養成</button></div>
+    <div style="color:#8a7a90">小花和寵物要靠做題目才會長大:在養成畫面點「澆水」「餵食」會出一題,答對長大一點;平常練習每答對 1 題也會得到 1 顆愛心(小遊戲過關 3 顆),可以拿來照顧。不會餓、不會生病、也不會枯掉,幾天沒玩不會退步。愛心和貼紙是分開的,不影響獎品。</div>`}
     <h3>神秘禮物拉霸</h3>
     <label><input type="checkbox" ${S.slotOff?'':'checked'} onchange="S.slotOff=!this.checked;save()"> 在禮物屋顯示拉霸(取消勾選就不顯示)</label>
     <label>拉一次要 <input type="number" min="1" value="${spinCost()}" style="width:4.5em" onchange="S.spinCost=Math.max(1,Math.round(+this.value)||5);save()"> 張貼紙</label>
@@ -3059,11 +3133,13 @@ function playEnd(miss,again,doneT,m3=0,m2=2){ // m3、m2:點錯幾次以內是�
   const stars=miss<=m3?3:miss<=m2?2:1,dk=dayKey();
   S.days=S.days||[];if(!S.days.includes(dk))S.days=[...S.days,dk].slice(-60); // 玩遊戲也算今天有練習
   const bonus=S.gamePaid!==dk;if(bonus){S.gamePaid=dk;S.owed++}
+  const hearts=addHearts(3); // 養成遊戲的愛心:小遊戲過關 3 顆
   save();sfx.win();confetti(stars*60);mascotAnim('jump');
   $('#gres').innerHTML=`<div class="card" style="text-align:center;margin-top:12px">
     <div class="gstars">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div>
     <h2>🎉 ${Z(doneT)}</h2><div>${Z(T.gMiss1)} ${miss} ${Z(T.gMiss2)}</div>
     ${bonus?`<div class="tip">🎁 ${Z(T.gBonus)}</div>`:''}
+    ${hearts?`<div class="tip">💗 + ${hearts}　${Z(GW.gotHearts)}</div>`:''}
     <div class="row center" style="margin-top:10px"><button class="btn" onclick="${again}">🔁 ${Z(T.replay)}</button>
       ${S.owed?`<button class="btn purple" onclick="book()">📒 ${Z(T.goStick)}</button>`:''}${homeBtn()}</div></div>`;
   speak(`${doneT[0]}點錯${miss}次。`+(bonus?T.gBonus[0]:''));
@@ -3782,6 +3858,225 @@ KINDS.push(
   {id:'wAdd4',u:'w3',types:'cf',n:N_ADD,gen:t=>wAdd4(t)},
   {id:'wSub4',u:'w3',types:'cf',n:N_SUB,gen:t=>wSub4(t)},
 );
+
+/* ==================== 養成遊戲:我的小花園、我的寵物 ====================
+   要做題目才會長大:點照顧動作(澆水、餵食…)→ 出一題 → 第一次就答對,長大 1 點;答錯會給答案,再換一題。
+   平常練習每答對 1 題也得 1 顆愛心(小遊戲過關 3 顆),1 顆愛心也是 1 點。
+   不會餓、不會生病、不會枯掉;愛心和貼紙是分開的,不會多送貼紙 */
+const GW={
+  title:['我的養成','ㄨㄛˇ ˙ㄉㄜ ㄧㄤˇ ㄔㄥˊ'],garden:['我的小花園','ㄨㄛˇ ˙ㄉㄜ ㄒㄧㄠˇ ㄏㄨㄚ ㄩㄢˊ'],pet:['我的寵物','ㄨㄛˇ ˙ㄉㄜ ㄔㄨㄥˇ ㄨˋ'],
+  water:['澆水','ㄐㄧㄠ ㄕㄨㄟˇ'],sun:['曬太陽','ㄕㄞˋ ㄊㄞˋ ㄧㄤˊ'],fert:['施肥','ㄕ ㄈㄟˊ'],
+  hug:['抱抱保暖','ㄅㄠˋ ㄅㄠˋ ㄅㄠˇ ㄋㄨㄢˇ'],sing:['唱歌給它聽','ㄔㄤˋ ㄍㄜ ㄍㄟˇ ㄊㄚ ㄊㄧㄥ'],feed:['餵','ㄨㄟˋ'],bath:['洗澡','ㄒㄧˇ ㄗㄠˇ'],play:['陪牠玩','ㄆㄟˊ ㄊㄚ ㄨㄢˊ'],
+  pstage:[['種子在土裡','ㄓㄨㄥˇ ˙ㄗ ㄗㄞˋ ㄊㄨˇ ㄌㄧˇ'],['發芽了','ㄈㄚ ㄧㄚˊ ˙ㄌㄜ'],['長葉子了','ㄓㄤˇ ㄧㄝˋ ˙ㄗ ˙ㄌㄜ'],['含苞了','ㄏㄢˊ ㄅㄠ ˙ㄌㄜ']],
+  estage:[['神秘的蛋','ㄕㄣˊ ㄇㄧˋ ˙ㄉㄜ ㄉㄢˋ'],['蛋在動了','ㄉㄢˋ ㄗㄞˋ ㄉㄨㄥˋ ˙ㄌㄜ'],['出生了','ㄔㄨ ㄕㄥ ˙ㄌㄜ'],['小寶寶','ㄒㄧㄠˇ ㄅㄠˇ ˙ㄅㄠ']],
+  pickSeed:['選一包種子種下去!','ㄒㄩㄢˇ ㄧˋ ㄅㄠ ㄓㄨㄥˇ ˙ㄗ ㄓㄨㄥˋ ㄒㄧㄚˋ ㄑㄩˋ'],
+  pickEgg:['選一顆蛋,看看會孵出誰!','ㄒㄩㄢˇ ㄧˋ ㄎㄜ ㄉㄢˋ ㄎㄢˋ ㄎㄢˋ ㄏㄨㄟˋ ㄈㄨ ㄔㄨ ㄕㄟˊ'],
+  careHint:['答對一題,就長大一點!','ㄉㄚˊ ㄉㄨㄟˋ ㄧˋ ㄊㄧˊ ㄐㄧㄡˋ ㄓㄤˇ ㄉㄚˋ ㄧˋ ㄉㄧㄢˇ'],
+  useHearts:['用愛心照顧','ㄩㄥˋ ㄞˋ ㄒㄧㄣ ㄓㄠˋ ㄍㄨˋ'],
+  heartsFrom:['練習答對的題目會變成愛心','ㄌㄧㄢˋ ㄒㄧˊ ㄉㄚˊ ㄉㄨㄟˋ ˙ㄉㄜ ㄊㄧˊ ㄇㄨˋ ㄏㄨㄟˋ ㄅㄧㄢˋ ㄔㄥˊ ㄞˋ ㄒㄧㄣ'],
+  wrongNext:['沒關係,換一題再試試!','ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ ㄏㄨㄢˋ ㄧˋ ㄊㄧˊ ㄗㄞˋ ㄕˋ ˙ㄕ'],nextQ:['換一題','ㄏㄨㄢˋ ㄧˋ ㄊㄧˊ'],
+  ansIs:['答案是','ㄉㄚˊ ㄢˋ ㄕˋ'],later:['等一下再來','ㄉㄥˇ ㄧˊ ㄒㄧㄚˋ ㄗㄞˋ ㄌㄞˊ'],
+  book:['花的圖鑑','ㄏㄨㄚ ˙ㄉㄜ ㄊㄨˊ ㄐㄧㄢˋ'],myPets:['我養大的寵物','ㄨㄛˇ ㄧㄤˇ ㄉㄚˋ ˙ㄉㄜ ㄔㄨㄥˇ ㄨˋ'],
+  buddy:['當小夥伴','ㄉㄤ ㄒㄧㄠˇ ㄏㄨㄛˇ ㄅㄢˋ'],isBuddy:['小夥伴','ㄒㄧㄠˇ ㄏㄨㄛˇ ㄅㄢˋ'],
+  noneYet:['還沒有,加油!','ㄏㄞˊ ㄇㄟˊ ㄧㄡˇ ㄐㄧㄚ ㄧㄡˊ'],
+  bloom:['開花了!種到花園裡了!','ㄎㄞ ㄏㄨㄚ ˙ㄌㄜ ㄓㄨㄥˋ ㄉㄠˋ ㄏㄨㄚ ㄩㄢˊ ㄌㄧˇ ˙ㄌㄜ'],
+  grown:['長大了!變成你的寵物了!','ㄓㄤˇ ㄉㄚˋ ˙ㄌㄜ ㄅㄧㄢˋ ㄔㄥˊ ㄋㄧˇ ˙ㄉㄜ ㄔㄨㄥˇ ㄨˋ ˙ㄌㄜ'],
+  soon:['還在準備中,敬請期待!','ㄏㄞˊ ㄗㄞˋ ㄓㄨㄣˇ ㄅㄟˋ ㄓㄨㄥ ㄐㄧㄥˋ ㄑㄧㄥˇ ㄑㄧˊ ㄉㄞˋ'],
+  gotHearts:['得到愛心','ㄉㄜˊ ㄉㄠˋ ㄞˋ ㄒㄧㄣ'],
+  sizes:[['小花盆','ㄒㄧㄠˇ ㄏㄨㄚ ㄆㄣˊ'],['小花圃','ㄒㄧㄠˇ ㄏㄨㄚ ㄆㄨˇ'],['大花園','ㄉㄚˋ ㄏㄨㄚ ㄩㄢˊ']],
+};
+// 12 種花。c:花瓣顏色;s:花瓣的邊;k:花心;shape:花的形狀(用畫的,不用表情符號,舊平板才不會缺字)
+const FLOWERS=[
+  {id:'tulip',n:['鬱金香','ㄩˋ ㄐㄧㄣ ㄒㄧㄤ'],c:'#ff6f91',s:'#e0486e',shape:'tulip'},
+  {id:'sunflower',n:['向日葵','ㄒㄧㄤˋ ㄖˋ ㄎㄨㄟˊ'],c:'#ffc93c',s:'#eaa800',k:'#8a5a2b',shape:'daisy',np:14},
+  {id:'rose',n:['玫瑰','ㄇㄟˊ ˙ㄍㄨㄟ'],c:'#e63e62',s:'#b92545',shape:'rose'},
+  {id:'daisy',n:['小雛菊','ㄒㄧㄠˇ ㄔㄨˊ ㄐㄩˊ'],c:'#ffffff',s:'#d9cfe0',k:'#ffd24d',shape:'daisy',np:12},
+  {id:'sakura',n:['櫻花','ㄧㄥ ㄏㄨㄚ'],c:'#ffc1d9',s:'#f08db5',k:'#ff7aa8',shape:'round'},
+  {id:'lily',n:['百合','ㄅㄞˇ ㄏㄜˊ'],c:'#fff4e0',s:'#f0c88a',k:'#ff9f43',shape:'star'},
+  {id:'lavender',n:['薰衣草','ㄒㄩㄣ ㄧ ㄘㄠˇ'],c:'#b39ddb',s:'#8f76c4',shape:'spike'},
+  {id:'glory',n:['牽牛花','ㄑㄧㄢ ㄋㄧㄡˊ ㄏㄨㄚ'],c:'#7e8cf0',s:'#5a69d6',k:'#ffffff',shape:'round'},
+  {id:'cosmos',n:['波斯菊','ㄅㄛ ㄙ ㄐㄩˊ'],c:'#ff8fc7',s:'#e866a8',k:'#ffd24d',shape:'daisy',np:8},
+  {id:'carnation',n:['康乃馨','ㄎㄤ ㄋㄞˇ ㄒㄧㄣ'],c:'#ff8fa3',s:'#e8607a',shape:'rose'},
+  {id:'bell',n:['風鈴花','ㄈㄥ ㄌㄧㄥˊ ㄏㄨㄚ'],c:'#9ad0f5',s:'#62a9dc',shape:'tulip'},
+  {id:'hibiscus',n:['扶桑花','ㄈㄨˊ ㄙㄤ ㄏㄨㄚ'],c:'#ff5c5c',s:'#d93a3a',k:'#ffd24d',shape:'star'},
+];
+const FLOWER_NEED=[10,10,10,10]; // 花:四個階段各要幾點(種子→發芽→長葉子→含苞→開花),一朵共 40 點
+const PET_NEED=[15,15,20,20];    // 寵物:四個階段各要幾點(蛋→蛋在動→出生→小寶寶→長大),一隻共 70 點
+const EGGS=[['#ffd6e7','#ff9ec4'],['#d6f0ff','#8ec9f5'],['#fff3c4','#ffd166'],['#e3d6ff','#b79cf0'],['#d9f7e4','#8fe3c0']]; // 蛋的顏色和裡面是誰無關,孵出來才知道
+function growOn(){return GROW_READY&&S.growOff!==true}
+// 把存檔裡的養成資料整理成一定可以用的樣子(舊存檔沒有、或備份裡的內容不完整,都不會出錯)
+function growFix(g){
+  const d=GROW0();if(!g||typeof g!=='object')return d;
+  d.hearts=Math.max(0,Math.round(+g.hearts)||0);
+  d.garden=Array.isArray(g.garden)?g.garden.filter(id=>FLOWERS.some(f=>f.id===id)):[];
+  d.pets=Array.isArray(g.pets)?[...new Set(g.pets.filter(id=>PETS[id]))]:[];
+  if(g.plant&&FLOWERS.some(f=>f.id===g.plant.kind))d.plant={kind:g.plant.kind,step:Math.min(3,Math.max(0,g.plant.step|0)),g:Math.max(0,g.plant.g|0)};
+  if(g.pet&&PETS[g.pet.id])d.pet={id:g.pet.id,egg:Math.abs(g.pet.egg|0)%EGGS.length,step:Math.min(3,Math.max(0,g.pet.step|0)),g:Math.max(0,g.pet.g|0)};
+  d.buddy=d.pets.includes(g.buddy)?g.buddy:null;
+  return d;
+}
+function gw(){if(!S.grow||!Array.isArray(S.grow.garden)||!Array.isArray(S.grow.pets))S.grow=growFix(S.grow);return S.grow}
+function addHearts(n){if(!growOn()||!(n>0))return 0;gw().hearts+=n;return n} // 呼叫的地方自己會存檔
+
+/* ----- 畫花和蛋 ----- */
+function flowerHead(f,x,y,r){
+  const st=`fill="${f.c}" stroke="${f.s}" stroke-width="1.2"`,k=f.k||'#ffd24d';
+  const pet=(n,rx,ry,d)=>Array.from({length:n},(_,i)=>`<ellipse cx="${x}" cy="${y-d}" rx="${rx}" ry="${ry}" ${st} transform="rotate(${i*360/n} ${x} ${y})"/>`).join('');
+  if(f.shape==='tulip')return `<ellipse cx="${x-r*.45}" cy="${y}" rx="${r*.5}" ry="${r}" ${st} transform="rotate(-16 ${x-r*.45} ${y})"/><ellipse cx="${x+r*.45}" cy="${y}" rx="${r*.5}" ry="${r}" ${st} transform="rotate(16 ${x+r*.45} ${y})"/><ellipse cx="${x}" cy="${y+r*.1}" rx="${r*.55}" ry="${r}" ${st}/>`;
+  if(f.shape==='rose')return `<circle cx="${x}" cy="${y}" r="${r}" ${st}/><circle cx="${x}" cy="${y}" r="${r*.68}" fill="none" stroke="${f.s}" stroke-width="1.6"/><path d="M${x-r*.36} ${y} a${r*.36} ${r*.36} 0 1 1 ${r*.5} ${r*.3}" fill="none" stroke="${f.s}" stroke-width="1.6" stroke-linecap="round"/>`;
+  if(f.shape==='spike')return Array.from({length:6},(_,i)=>{const yy=y+r*.8-i*r*.38,rr=r*(.32-i*.025);return i<5?`<circle cx="${x-r*.22}" cy="${yy}" r="${rr}" ${st}/><circle cx="${x+r*.22}" cy="${yy-r*.12}" r="${rr}" ${st}/>`:`<circle cx="${x}" cy="${yy}" r="${rr}" ${st}/>`}).join('');
+  if(f.shape==='star')return pet(6,r*.3,r*.75,r*.6)+`<circle cx="${x}" cy="${y}" r="${r*.25}" fill="${k}"/>`;
+  if(f.shape==='daisy')return pet(f.np||12,r*.22,r*.6,r*.62)+`<circle cx="${x}" cy="${y}" r="${r*.42}" fill="${k}"/>`;
+  return pet(5,r*.55,r*.6,r*.6)+`<circle cx="${x}" cy="${y}" r="${r*.32}" fill="${k}"/>`;
+}
+// st:0 種子在土裡、1 發芽、2 長葉子、3 含苞、4 開花;pot:要不要畫花盆(花園和圖鑑裡的不畫)
+function flowerSvg(id,st,pot=true){
+  const f=FLOWERS.find(x=>x.id===id)||FLOWERS[0],gr='#58b874',b=pot?103:138,top=[b,b-20,b-48,b-62,b-66][st];let s='';
+  if(st>=1){
+    const leaf=(y,dir,sz)=>`<ellipse cx="${50+dir*sz*.9}" cy="${y}" rx="${sz}" ry="${sz*.45}" fill="${gr}" transform="rotate(${-dir*28} ${50+dir*sz*.9} ${y})"/>`;
+    s+=`<path d="M50 ${b} Q${st>1?44:50} ${(b+top)/2} 50 ${top}" stroke="${gr}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+    s+=st===1?leaf(top+2,-1,8)+leaf(top+2,1,8):leaf(b-16,-1,13)+leaf(b-27,1,13)+(st>=3?leaf(b-41,-1,10):'');
+  }
+  if(st===3)s+=`<ellipse cx="50" cy="${top-8}" rx="8" ry="12" fill="${gr}"/><ellipse cx="50" cy="${top-14}" rx="5" ry="7" fill="${f.c}" stroke="${f.s}" stroke-width="1"/>`;
+  if(st===4)s+=flowerHead(f,50,top-12,17);
+  const potH=pot?`<path d="M26 108 h48 l-6 28 h-36 z" fill="#e58f5a"/><rect x="22" y="100" width="56" height="11" rx="5.5" fill="#f2a672"/><ellipse cx="50" cy="103" rx="23" ry="3.5" fill="#8a5a3c"/>${st===0?'<ellipse cx="50" cy="101" rx="5" ry="3.2" fill="#d9b382"/>':''}`:'';
+  return `<svg viewBox="${pot?'0 0 100 140':'0 38 100 102'}" aria-hidden="true">${potH}${s}</svg>`;
+}
+// st:0 完整的蛋、1 有裂痕、2 只剩下半邊蛋殼(寶寶從上面探出頭)
+function eggSvg(i,st){
+  const [c,d]=EGGS[i%EGGS.length],egg=`<ellipse cx="50" cy="64" rx="36" ry="46" fill="${c}" stroke="${d}" stroke-width="2.5"/><circle cx="36" cy="52" r="6" fill="${d}"/><circle cx="62" cy="40" r="4.5" fill="${d}"/><circle cx="64" cy="78" r="7" fill="${d}"/><circle cx="40" cy="90" r="4" fill="${d}"/>`;
+  if(st>=2)return `<svg viewBox="0 0 100 120" aria-hidden="true"><defs><clipPath id="eggClip${i}"><path d="M0 66 l10 -9 10 9 10 -9 10 9 10 -9 10 9 10 -9 10 9 10 -9 10 9 V120 H0z"/></clipPath></defs><g clip-path="url(#eggClip${i})">${egg}</g></svg>`;
+  return `<svg viewBox="0 0 100 120" aria-hidden="true">${egg}${st===1?'<path d="M22 62 l9 -7 8 8 9 -8 8 8 9 -7 9 7" fill="none" stroke="#7a6a80" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>':''}</svg>`;
+}
+function petStageHtml(p){
+  if(p.step<=1)return `<div class="gegg ${p.step?'wob':''}">${eggSvg(p.egg,p.step)}</div>`;
+  if(p.step===2)return `<div class="ghatch"><div class="gpetb" style="font-size:96px">${bunnySvg(p.id)}</div><div class="gshell">${eggSvg(p.egg,2)}</div></div>`;
+  return `<div class="gpetb" style="font-size:110px">${bunnySvg(p.id)}<span class="gacc b3">🍼</span></div>`;
+}
+const growBar=(g,need)=>`<div class="gbar"><i style="width:${Math.round(g/need*100)}%"></i></div><div class="gnum">${g} / ${need}</div>`;
+const heartsRow=t=>gw().hearts?`<div class="row center" style="margin-top:10px"><button class="btn ghost" onclick="careHearts('${t}')"><span>💗 ${Z(GW.useHearts)} × ${gw().hearts}</span></button></div>`:`<div class="gnum" style="margin-top:8px">💗 ${Z(GW.heartsFrom)}</div>`;
+const careBtns=(t,list)=>`<div class="hgrid" style="--n:${list.length};--m:${list.length};margin-top:8px">${list.map(([e,h],i)=>`<button class="btn ${['','mint','purple'][i]}" onclick="careAsk('${t}','${e}')">${hb(e,h)}</button>`).join('')}</div>`;
+
+/* ----- 我的小花園 ----- */
+function growGarden(quiet){
+  if(!GROW_READY)return;
+  const g=gw(),p=g.plant,uniq=[...new Set(g.garden)],size=uniq.length>=9?2:uniq.length>=3?1:0;if(!quiet)sfx.tap();
+  let top;
+  if(p){
+    const f=FLOWERS.find(x=>x.id===p.kind);
+    top=`<div class="gname">${Z(f.n)}・${Z(GW.pstage[p.step])}</div><div class="gpot gart" id="gart">${flowerSvg(p.kind,p.step)}</div>${growBar(p.g,FLOWER_NEED[p.step])}
+      <div class="tip center">${Z(GW.careHint)}</div>${careBtns('plant',[['💧',Z(GW.water)],['☀️',Z(GW.sun)],['🌿',Z(GW.fert)]])}${heartsRow('plant')}`;
+  }else{
+    // 選種子:還沒開過的花優先
+    const have=new Set(g.garden),list=[...shuffle(FLOWERS.filter(f=>!have.has(f.id))),...shuffle(FLOWERS.filter(f=>have.has(f.id)))].slice(0,3);
+    top=`<div class="gname">🌰 ${Z(GW.pickSeed)}</div><div class="gseeds">${list.map(f=>`<button class="gseed" onclick="plantSeed('${f.id}')">${flowerSvg(f.id,4,false)}<span>${Z(f.n)}</span></button>`).join('')}</div>`;
+  }
+  show('ggarden',`
+  <div class="row">${homeBtn()}<span class="sp"></span><span class="hearts">💗 × ${g.hearts}</span></div>
+  <div class="row center">${mascot()}<h1>🌷 ${Z(GW.garden)}</h1></div>
+  <div class="card gstage">${top}</div>
+  <h2>🏡 ${Z(GW.sizes[size])}　🌸 × ${g.garden.length}</h2>
+  <div class="gfield">${uniq.length>=9?'<span class="grb">🌈</span>':''}${uniq.length>=6?'<span class="gbf">🦋</span>':''}${uniq.length>=FLOWERS.length?'<span class="gbf b">🐝</span>':''}
+    <div class="gfl">${g.garden.length?g.garden.slice(-24).map((id,i)=>`<span style="animation-delay:${-(i*.3).toFixed(1)}s">${flowerSvg(id,4,false)}</span>`).join(''):`<div class="gnum">${Z(GW.noneYet)}</div>`}</div></div>
+  <h2>📖 ${Z(GW.book)}　${uniq.length} / ${FLOWERS.length}</h2>
+  <div class="gdex">${FLOWERS.map(f=>{const ok=uniq.includes(f.id);return `<div class="${ok?'':'lock'}">${flowerSvg(f.id,4,false)}<small>${ok?Z(f.n):'?'}</small></div>`}).join('')}</div>`);
+}
+function plantSeed(id){
+  const g=gw(),f=FLOWERS.find(x=>x.id===id);if(g.plant||!f)return;
+  g.plant={kind:id,step:0,g:0};save();growGarden(true);sfx.ok();speak(`種下${f.n[0]}的種子了!答對題目,它就會長大喔!`);
+}
+
+/* ----- 我的寵物 ----- */
+function growPet(quiet){
+  if(!GROW_READY)return;
+  const g=gw(),p=g.pet;if(!quiet)sfx.tap();
+  let top;
+  if(p){
+    const a=PETS[p.id],born=p.step>=2;
+    top=`<div class="gname">${born?Z(a.kind)+'・':''}${Z(GW.estage[p.step])}</div><div class="gart" id="gart">${petStageHtml(p)}</div>${growBar(p.g,PET_NEED[p.step])}
+      <div class="tip center">${Z(GW.careHint)}</div>${careBtns('pet',born?[['🍽️',Z(J(GW.feed,a.food))],['🛁',Z(GW.bath)],['🎾',Z(GW.play)]]:[['🤗',Z(GW.hug)],['🎵',Z(GW.sing)]])}${heartsRow('pet')}`;
+  }else{
+    const eggs=shuffle(EGGS.map((_,i)=>i)).slice(0,3);
+    top=`<div class="gname">🥚 ${Z(GW.pickEgg)}</div><div class="gseeds">${eggs.map(i=>`<button class="gseed" onclick="eggPick(${i})">${eggSvg(i,0)}</button>`).join('')}</div>`;
+  }
+  const ids=Object.keys(PETS);
+  show('gpet',`
+  <div class="row">${homeBtn()}<span class="sp"></span><span class="hearts">💗 × ${g.hearts}</span></div>
+  <div class="row center">${mascot()}<h1>🐾 ${Z(GW.pet)}</h1></div>
+  <div class="card gstage">${top}</div>
+  <h2>🏠 ${Z(GW.myPets)}　${g.pets.length} / ${ids.length}</h2>
+  <div class="gpets">${ids.map(id=>g.pets.includes(id)
+    ?`<div><div class="gpetb">${bunnySvg(id)}<span class="gacc b4">🎀</span></div><div>${Z(PETS[id].kind)}</div>${g.buddy===id?`<div class="gbud">⭐ ${Z(GW.isBuddy)}</div>`:`<button class="btn ghost small" onclick="setBuddy('${id}')">${Z(GW.buddy)}</button>`}</div>`
+    :`<div class="lock"><div class="gq">?</div></div>`).join('')}</div>`);
+}
+function eggPick(i){
+  const g=gw();if(g.pet)return;
+  const left=Object.keys(PETS).filter(id=>!g.pets.includes(id)); // 還沒養過的優先
+  g.pet={id:pick(left.length?left:Object.keys(PETS)),egg:i,step:0,g:0};save();growPet(true);sfx.ok();speak('選好了!答對題目,蛋就會慢慢孵出來喔!');
+}
+function setBuddy(id){const g=gw();if(!g.pets.includes(id))return;g.buddy=id;save();newPet();sfx.ok();growPet(true);speak(`${PETS[id].kind[0]}${PETS[id].name[0]}現在是你的小夥伴了!`)}
+
+/* ----- 照顧:出一題,第一次就答對才長大 ----- */
+let CQ=null;
+function careQ(){ // 現在這個年級的選擇題;錯題本裡還要練的題型比較常出
+  const ks=KINDS.filter(k=>UNITS[S.grade].some(u=>u.id===k.u)&&k.types.includes('c')),due=ks.filter(k=>(S.stat[k.id]||{}).due>0);
+  for(let n=0;n<80;n++){const q=genKind(due.length&&Math.random()<.4?pick(due):pick(ks),'c',1);if(q&&q.type==='c'&&q.opts&&q.opts.length)return q}
+  return null;
+}
+function careAsk(target,emo){
+  const g=gw();if(!(target==='plant'?g.plant:g.pet))return;
+  const q=careQ();if(!q)return;
+  CQ={target,emo,q,done:false};sfx.tap();
+  modal(`<div class="careq">
+    <div class="row" style="flex-wrap:nowrap"><div class="prompt sp">${q.p}</div><button class="spk" onclick="speak(qSay(CQ.q),true)">🔊</button></div>
+    ${q.v?`<div class="visual">${q.v}</div>`:''}
+    <div class="opts ${q.opts.some(o=>o.h.includes('class="zc"')||/ [+−×] /.test(o.h))?'long':''}">${q.opts.map((o,j)=>`<button class="opt" onclick="careAns(${j})">${o.h}</button>`).join('')}</div>
+    <div id="careFb"></div>
+    <div class="row center" id="careBtn" style="margin-top:10px"><button class="btn ghost small" onclick="closeModal()">${Z(GW.later)}</button></div></div>`);
+  speak(qSay(q));
+}
+function careAns(j){
+  const c=CQ;if(!c||c.done||!c.q.opts[j])return;c.done=true; // 一題只能答一次,連點不會算兩次
+  const ok=!!c.q.opts[j].ok,bs=document.querySelectorAll('#modalBody .opt');
+  statAdd(c.q.kind,ok); // 也記到弱點分析和錯題本
+  if(ok){closeModal();return growAdd(c.target,1,c.emo)}
+  sfx.bad();mascotAnim('sad');bs.forEach((b,k)=>b.classList.add(c.q.opts[k].ok?'sel':'bad'));
+  const t=c.q.teach&&Array.isArray(c.q.teach[0])?line(c.q.teach[0]):null;
+  $('#careFb').innerHTML=`<div class="tip">${Z(GW.ansIs)} <b>${c.q.ansH}</b>${t?`<br>💡 ${t.h}`:''}</div>`;
+  $('#careBtn').innerHTML=`<button class="btn" onclick="careAsk('${c.target}','${c.emo}')">🔁 ${Z(GW.nextQ)}</button><button class="btn ghost small" onclick="closeModal()">${Z(GW.later)}</button>`;
+  speak(GW.wrongNext[0]);
+}
+// 用練習得到的愛心照顧:一次最多用到升上下一個階段為止
+function careHearts(target){
+  const g=gw(),o=target==='plant'?g.plant:g.pet;if(!o||g.hearts<=0)return;
+  const k=Math.min(g.hearts,(target==='plant'?FLOWER_NEED:PET_NEED)[o.step]-o.g);if(k<=0)return;
+  g.hearts-=k;growAdd(target,k,'💗');
+}
+function growAdd(target,n,emo){
+  const g=gw(),isP=target==='plant',o=isP?g.plant:g.pet,need=isP?FLOWER_NEED:PET_NEED;if(!o)return;
+  o.g+=n;let up=false,done=false;
+  while(!done&&o.g>=need[o.step]){o.g-=need[o.step];o.step++;up=true;if(o.step>=4)done=true}
+  if(done){
+    if(isP){g.garden.push(o.kind);g.plant=null}
+    else{if(!g.pets.includes(o.id))g.pets.push(o.id);if(!g.buddy)g.buddy=o.id;g.pet=null;newPet()} // 第一隻養大的自動當小夥伴
+  }
+  save();(isP?growGarden:growPet)(true);
+  const art=$('#gart');
+  if(art){art.insertAdjacentHTML('beforeend',`<span class="gfx">${emo}</span>`);const r=art.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,up?14:6)}
+  if(done){
+    sfx.win();confetti(200);
+    if(isP){
+      const f=FLOWERS.find(x=>x.id===o.kind);speak(`哇!${f.n[0]}開花了!種到花園裡了!再選一包種子吧!`);
+      modal(`<div class="gpot" style="width:170px">${flowerSvg(o.kind,4)}</div><h2>🌸 ${Z(f.n)}</h2><div>${Z(GW.bloom)}</div><button class="btn mint" onclick="closeModal()">${Z(T.yes)}</button>`);
+    }else{
+      const a=PETS[o.id];speak(`哇!${a.kind[0]}${a.name[0]}長大了!變成你的寵物了!`);
+      modal(`<div class="gpetb" style="font-size:150px">${bunnySvg(o.id)}<span class="gacc b4">🎀</span></div><h2>${Z(a.kind)} ${Z(a.name)}</h2><div>${Z(GW.grown)}</div><button class="btn mint" onclick="closeModal()">${Z(T.yes)}</button>`);
+    }
+  }else if(up){
+    sfx.win();confetti(60);mascotAnim('jump');
+    speak(isP?GW.pstage[o.step][0]+'!':o.step===2?`哇!蛋裂開了!是${PETS[o.id].kind[0]}!`:GW.estage[o.step][0]+'!');
+  }else sfx.ok();
+}
 
 /* 實體鍵盤也可以作答 */
 document.addEventListener('keydown',e=>{
