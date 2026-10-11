@@ -689,6 +689,8 @@ const T={
   next:['下一題','ㄒㄧㄚˋ ㄧˋ ㄊㄧˊ'],seeScore:['看成績','ㄎㄢˋ ㄔㄥˊ ㄐㄧ'],
   again:['再想一想喔!','ㄗㄞˋ ㄒㄧㄤˇ ㄧˋ ㄒㄧㄤˇ ㄛ'],
   final:['沒關係,正確答案是','ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ ㄓㄥˋ ㄑㄩㄝˋ ㄉㄚˊ ㄢˋ ㄕˋ'],
+  tUsed:['這次花了','ㄓㄜˋ ㄘˋ ㄏㄨㄚ ˙ㄌㄜ'],tMin:['分','ㄈㄣ'],tSec:['秒','ㄇㄧㄠˇ'],tBest:['最快紀錄','ㄗㄨㄟˋ ㄎㄨㄞˋ ㄐㄧˋ ㄌㄨˋ'],tNew:['新紀錄!','ㄒㄧㄣ ㄐㄧˋ ㄌㄨˋ'],
+  owedOld1:['之前還有','ㄓ ㄑㄧㄢˊ ㄏㄞˊ ㄧㄡˇ'],owedOld2:['張沒選,一起選吧!','ㄓㄤ ㄇㄟˊ ㄒㄩㄢˇ ㄧˋ ㄑㄧˇ ㄒㄩㄢˇ ˙ㄅㄚ'],
   youGot:['你得到','ㄋㄧˇ ㄉㄜˊ ㄉㄠˋ'],fen:['分','ㄈㄣ'],
   perfect:['滿分!可以選 2 張貼紙!','ㄇㄢˇ ㄈㄣ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],
   near:['很棒喔!可以選 1 張貼紙!','ㄏㄣˇ ㄅㄤˋ ㄛ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],
@@ -800,12 +802,12 @@ const BIG=30; // 貼滿這麼多張,可以換一個獎品,或換 1 枚硬幣;貼
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow'];
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime'];
 // 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
 // 養成遊戲的總開關:false 的時候首頁只顯示灰色的「準備中」,不能點、也不累積愛心;等內容成熟了改成 true 就開放
 const GROW_READY=false;
 const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0()});
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{}});
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -1951,10 +1953,11 @@ function start(id){
   // mode:step 一題一題(馬上對答案,答錯可以再試一次)、test 整頁寫完再一起對答案
   // vd:直式每一格填的數字;wst:操作題現在的樣子;tries/first/trap1/pts:一題一題時每題試了幾次、第一次對不對、第一次犯的錯、得幾分
   G={u,qs,ans:Array(qs.length).fill(null),act:null,cell:null,done:false,mode:step?'step':'test',cur:0,vd:[],wst:[],tries:[],first:[],trap1:[],pts:[],hinted:[],last:[],combo:0};
+  G.t0=Date.now();G.tSkip=0;G.timed=timerOn(id); // 碼錶:只記這回合花了多久,不倒數、不影響分數
   sfx.tap();
   show('play',`
   <div class="phead">
-    <div class="row" style="flex-wrap:nowrap"><button class="btn ghost small" onclick="goHome()">🏠</button><span class="sp ttl">${u.e} ${Z(u.t)}</span><span class="hearts" id="progBox"></span></div>
+    <div class="row" style="flex-wrap:nowrap"><button class="btn ghost small" onclick="goHome()">🏠</button><span class="sp ttl">${u.e} ${Z(u.t)}</span>${G.timed?'<span style="font-size:22px">⏱️</span>':''}<span class="hearts" id="progBox"></span></div>
     <div class="ptalk" id="playTalk"></div>
   </div>
   <div id="res"></div>
@@ -2078,6 +2081,13 @@ function teachHtml(q,i,right){
 function moreTeach(b,i){ // 「多看一點」:把收起來的句子打開,並且唸出來
   b.closest('.teach').querySelector('.more').hidden=false;b.remove();sfx.tap();speak(G.qs[i].moreSay,true);
 }
+// 要不要計時:爸媽專區設定。off 不計時(預設)、mix 只有綜合挑戰和綜合練習、all 每一種練習
+function timerOn(id){return S.timer==='all'||(S.timer==='mix'&&(id==='mix'||id==='mix2'))}
+const fmtSecs=s=>(s>=60?`<b>${Math.floor(s/60)}</b> ${Z(T.tMin)} `:'')+`<b>${s%60}</b> ${Z(T.tSec)}`;
+addEventListener('visibilitychange',()=>{ // 切到別的 App 或關螢幕的時間不算進碼錶
+  if(document.hidden)hidAt=Date.now();else{if(hidAt&&G&&G.timed&&!G.done)G.tSkip=(G.tSkip||0)+Date.now()-hidAt;hidAt=0}
+});
+let hidAt=0;
 function finish(){
   // 一題一題:第一次就答對 10 分,第二次才答對 5 分
   const step=G.mode==='step',sc=step?G.pts.reduce((a,b)=>a+(b||0),0):G.qs.filter((_,i)=>isRight(i)).length*10,full=sc===100,id=G.u.id,wrong=10-sc/10;
@@ -2091,12 +2101,16 @@ function finish(){
     else if(streak()>=3&&streak()%3===0&&S.streakPaid!==dk){why=T.bDays;S.streakPaid=dk}
   }
   const bonus=why?1:0;
+  const owedBefore=S.owed; // 之前得到、但還沒選的貼紙(上一回合沒選完、小遊戲送的…),成績卡上會分開說明
   S.owed+=n+bonus;G.picked=[];pickOpts=null;
   tally();
   S.best[id]=Math.max(S.best[id]||0,sc);
   const hearts=addHearts(step?G.pts.filter(p=>p>0).length:sc/10); // 養成遊戲的愛心:答對幾題就幾顆
+  // 碼錶:這回合花了幾秒(切到別的畫面的時間不算)。最快紀錄只在 80 分以上才記,免得為了快而亂猜;兩種作答方式分開記
+  const secs=G.timed?Math.max(1,Math.round((Date.now()-G.t0-(G.tSkip||0))/1000)):0,tk=id+'|'+G.mode,oldT=(S.bestTime=S.bestTime||{})[tk]||0,newT=secs>0&&sc>=80&&(!oldT||secs<oldT);
+  if(newT)S.bestTime[tk]=secs;
   // 成績紀錄:時間、名字、題目、分數、這次得到幾張、當時一共有幾張貼紙(含還沒貼、還沒選的)
-  S.log.unshift({t:Date.now(),n:S.name,u:id,s:sc,p:n+bonus,own:pts()+S.tray.length+S.owed});S.log.length=Math.min(S.log.length,500);
+  S.log.unshift({t:Date.now(),n:S.name,u:id,s:sc,p:n+bonus,own:pts()+S.tray.length+S.owed,d:secs||undefined});S.log.length=Math.min(S.log.length,500);
   save();
   const again=`<button class="btn" onclick="start('${id==='retry'&&!dueKinds().length?'mix':id}')">🔁 ${Z(T.replay)}</button>${homeBtn()}`;
   $('#res').innerHTML=`
@@ -2107,8 +2121,10 @@ function finish(){
     <div class="big">${sc} <span style="font-size:.4em">${Z(T.fen)}</span></div>
     <h2>${full?'🌟 '+Z(T.perfect):n?'🌟 '+Z(T.near):Z(T.keep)}</h2>
     ${why?`<div class="tip">🎁 ${Z(why)}</div>`:''}
+    ${n+bonus&&owedBefore?`<div class="tip">📒 ${Z(T.owedOld1)} ${owedBefore} ${Z(T.owedOld2)}</div>`:''}
     ${n+bonus?'<div id="pickBox"></div>':`<div class="tip">🌟 ${Z(T.need80)}</div>`}
     ${hearts?`<div class="tip">💗 + ${hearts}　${Z(GW.gotHearts)}</div>`:''}
+    ${secs?`<div class="tip">⏱️ ${Z(T.tUsed)} ${fmtSecs(secs)}${newT&&oldT?`　🎉 ${Z(T.tNew)}`:''}${oldT?`<br>🏅 ${Z(T.tBest)} ${fmtSecs(newT?secs:oldT)}`:''}</div>`:''}
     ${full||step?'':`<div class="tip">👇 ${Z(T.review)}</div>`}
     <div class="row center">${again}</div>
   </div>`;
@@ -2378,7 +2394,7 @@ function kidsOf(d){
   return list.map(k=>{
     const x=Object.assign(blankKid(''),kidOf(k));
     for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
-    for(const f of ['best','stat','bestPaid'])if(!x[f]||typeof x[f]!=='object')x[f]={};
+    for(const f of ['best','stat','bestPaid','bestTime'])if(!x[f]||typeof x[f]!=='object')x[f]={};
     x.grow=growFix(x.grow);
     x.name=String(x.name||'');return x;
   });
@@ -2395,6 +2411,7 @@ function mergeKid(a,b){
   k.log=[...a.log,...fresh].sort((x,y)=>y.t-x.t).slice(0,500);
   const stickers=fresh.reduce((n,r)=>n+(r.p||0),0);k.owed=(k.owed||0)+stickers;
   for(const id in b.best)k.best[id]=Math.max(k.best[id]||0,b.best[id]||0);
+  k.bestTime=k.bestTime||{};for(const id in b.bestTime||{})if(b.bestTime[id]>0)k.bestTime[id]=k.bestTime[id]>0?Math.min(k.bestTime[id],b.bestTime[id]):b.bestTime[id]; // 最快紀錄取比較快的
   const tries=s=>s?(s.r||0)+(s.w||0):-1;
   for(const id in b.stat){
     const x=k.stat[id],y=b.stat[id];if(!y)continue;
@@ -2576,6 +2593,10 @@ function guideHtml(){
     '孩子換了獎品以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。換硬幣不用打勾。',
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
+  ${sec('計時(碼錶)',[
+    '預設不計時。可以在本頁下面的「計時」打開:只有綜合挑戰和綜合練習,或每一種練習都計時。',
+    '是碼錶,不是倒數:時間到不會結束,也不影響分數和貼紙。做題時不顯示跳動的數字,做完才顯示這次花了多久、和她自己的最快紀錄比。',
+    '最快紀錄只在 80 分以上才會更新,「一題一題」和「考試模式」分開記。基本運算還不熟的時候建議先不要開。'])}
   ${!GROW_READY?'':sec('養成遊戲',[
     '首頁的「我的小花園」和「我的寵物」:小花從種子、發芽、長葉子、含苞到開花;寵物從一顆神秘的蛋、出生、小寶寶到長大。',
     '<b>要做題目才會長大</b>:點「澆水」「餵食」這些照顧動作,會出一題她這個年級的題目,第一次就答對才長大一點;答錯會告訴她答案,再換一題。這些題目也會記到弱點分析。',
@@ -2651,6 +2672,9 @@ function parentZone(){
       <button class="btn ghost" onclick="gw().hearts=Math.max(0,gw().hearts-5);save();parentZone()">−5</button><button class="btn ghost" onclick="gw().hearts+=5;save();parentZone()">+5</button>
       <button class="btn ghost" onclick="ask('確定要把這位小朋友的小花園和寵物全部重新開始嗎?',()=>{S.grow=GROW0();save();parentZone()})">重新開始養成</button></div>
     <div style="color:#8a7a90">小花和寵物要靠做題目才會長大:在養成畫面點「澆水」「餵食」會出一題,答對長大一點;平常練習每答對 1 題也會得到 1 顆愛心(小遊戲過關 3 顆),可以拿來照顧。不會餓、不會生病、也不會枯掉,幾天沒玩不會退步。愛心和貼紙是分開的,不影響獎品。</div>`}
+    <h3>計時(碼錶)</h3>
+    <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
+    <div style="color:#8a7a90">是碼錶,不是倒數:只記這回合花了多久,時間到不會結束,也不影響分數和貼紙。做題的時候畫面上只有一個 ⏱️ 小圖示,不會有跳動的數字;做完才顯示「這次花了多久」和自己的最快紀錄。最快紀錄只在 80 分以上才會更新,免得為了快而亂猜。切到別的 App 的時間不算。</div>
     <h3>神秘禮物拉霸</h3>
     <label><input type="checkbox" ${S.slotOff?'':'checked'} onchange="S.slotOff=!this.checked;save()"> 在禮物屋顯示拉霸(取消勾選就不顯示)</label>
     <label>拉一次要 <input type="number" min="1" value="${spinCost()}" style="width:4.5em" onchange="S.spinCost=Math.max(1,Math.round(+this.value)||5);save()"> 張貼紙</label>
