@@ -93,10 +93,18 @@ h2{font-size:28px;margin:8px 0;color:var(--purple-d)}
 .mix{position:relative;width:100%;margin-top:14px;min-height:120px;border-radius:28px;padding:12px 18px;display:flex;align-items:center;justify-content:center;gap:16px;
   background:linear-gradient(120deg,#ffd1e3,#fff3b8,#c9f3e2,#d9c8fb);box-shadow:0 7px 0 #e9a9c6;border:4px solid #fff;text-align:left;line-height:1.5}
 .mix:active{transform:translateY(4px);box-shadow:0 3px 0 #e9a9c6}
+.mix.boss{background:linear-gradient(120deg,#e9dcff,#ffd9e6)}
+/* 首頁最上面四張卡片:矮一點,每張只有兩排字(名稱一排、說明一排) */
+.mixes .mix{min-height:84px;margin-top:0;padding:8px 14px;gap:12px}
+.mixes .mix .ue{font-size:40px}.mixes .mix .mt{font-size:24px;white-space:nowrap}.mixes .mix .ms{font-size:15px;white-space:nowrap}
+.mixes{margin-top:14px}
+.mixes .mix .best{top:6px;right:auto;left:12px;font-size:14px} /* 最高分放左上角(圖示旁邊的空位),才不會蓋到名稱和說明 */
+@media (max-width:560px){.mixes{gap:10px}.mixes .mix{min-height:76px}.mixes .mix .ue{font-size:36px}.mixes .mix .mt{font-size:22px}.mixes .mix .ms{font-size:14px}}
+.mix.off{filter:grayscale(1);opacity:.55;animation:none;cursor:default}.mix.off:active{transform:none}
 .mix .ue{font-size:52px;line-height:1}.mix .mt{font-size:28px;color:var(--pink-d)}.mix .ms{font-size:17px}
 .mix .best{position:absolute;top:8px;right:16px;font-size:17px;color:#e59a00}
 .story{font-size:60px;line-height:1.2}
-.mixes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mixes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.mixes .mix{min-width:0}
 .dot{position:absolute;top:-8px;right:-6px;min-width:30px;height:30px;border-radius:15px;background:#ff5252;color:#fff;font-size:18px;line-height:30px;animation:pop 1s infinite}
 /* 一頁多題 */
 .q{margin-bottom:16px;position:relative;scroll-margin:150px 0 210px}
@@ -465,6 +473,10 @@ html,body{overscroll-behavior-y:contain}
 .gq{font-size:44px;color:#b9a6c0}.gbud{color:#e59a00}
 .gpets .btn.small{min-height:40px;font-size:15px;padding:2px 8px}
 .careq .prompt{text-align:left}
+/* 每日暖身 */
+.wexpr{display:flex;justify-content:center;align-items:center;gap:.25em;flex-wrap:wrap}
+.wexpr .inp{font-size:.9em;min-width:1.9em}
+.wrep{display:flex;flex-direction:column;gap:2px;margin:4px 0}.wrep span{background:#fff;border-radius:10px;padding:2px 10px}
 .goff .btn{background:#cfc6d4;box-shadow:0 5px 0 #b3a9ba;opacity:.7;cursor:default}
 @media (max-width:560px){.gpets{grid-template-columns:repeat(3,1fr)}.gdex{grid-template-columns:repeat(3,1fr)}.gdex>div{font-size:15px}.gseed{font-size:15px}.gname{font-size:22px}.gfl span{width:48px}}
 @media (max-width:560px){.blns{gap:22px 8px}.bln{font-size:17px}.bln.wrong{font-size:14px}.bsign{font-size:42px}}
@@ -691,6 +703,9 @@ const T={
   final:['沒關係,正確答案是','ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ ㄓㄥˋ ㄑㄩㄝˋ ㄉㄚˊ ㄢˋ ㄕˋ'],
   tUsed:['這次花了','ㄓㄜˋ ㄘˋ ㄏㄨㄚ ˙ㄌㄜ'],tMin:['分','ㄈㄣ'],tSec:['秒','ㄇㄧㄠˇ'],tBest:['最快紀錄','ㄗㄨㄟˋ ㄎㄨㄞˋ ㄐㄧˋ ㄌㄨˋ'],tNew:['新紀錄!','ㄒㄧㄣ ㄐㄧˋ ㄌㄨˋ'],
   owedOld1:['之前還有','ㄓ ㄑㄧㄢˊ ㄏㄞˊ ㄧㄡˇ'],owedOld2:['張沒選,一起選吧!','ㄓㄤ ㄇㄟˊ ㄒㄩㄢˇ ㄧˋ ㄑㄧˇ ㄒㄩㄢˇ ˙ㄅㄚ'],
+  warmSub:['基本算式 10 題','ㄐㄧ ㄅㄣˇ ㄙㄨㄢˋ ㄕˋ ㄊㄧˊ'],bossSub:['一天一次','ㄧˋ ㄊㄧㄢ ㄧˊ ㄘˋ'],bossDone:['明天再來','ㄇㄧㄥˊ ㄊㄧㄢ ㄗㄞˋ ㄌㄞˊ'],bossLock:['二年級開始','ㄦˋ ㄋㄧㄢˊ ㄐㄧˊ ㄎㄞ ㄕˇ'],
+  bossPerfect:['滿分!打敗大魔王!可以選 3 張貼紙!','ㄇㄢˇ ㄈㄣ ㄉㄚˇ ㄅㄞˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],bossNear:['打敗大魔王!可以選 2 張貼紙!','ㄉㄚˇ ㄅㄞˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],
+  bossMiss1:['再答對','ㄗㄞˋ ㄉㄚˊ ㄉㄨㄟˋ'],bossMiss2:['題就打敗大魔王了,明天再挑戰!','ㄊㄧˊ ㄐㄧㄡˋ ㄉㄚˇ ㄅㄞˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ ˙ㄌㄜ ㄇㄧㄥˊ ㄊㄧㄢ ㄗㄞˋ ㄊㄧㄠˇ ㄓㄢˋ'],
   youGot:['你得到','ㄋㄧˇ ㄉㄜˊ ㄉㄠˋ'],fen:['分','ㄈㄣ'],
   perfect:['滿分!可以選 2 張貼紙!','ㄇㄢˇ ㄈㄣ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],
   near:['很棒喔!可以選 1 張貼紙!','ㄏㄣˇ ㄅㄤˋ ㄛ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄓㄤ ㄊㄧㄝ ㄓˇ'],
@@ -802,12 +817,12 @@ const BIG=30; // 貼滿這麼多張,可以換一個獎品,或換 1 枚硬幣;貼
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime'];
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails'];
 // 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
-// 養成遊戲的總開關:false 的時候首頁只顯示灰色的「準備中」,不能點、也不累積愛心;等內容成熟了改成 true 就開放
+// 養成遊戲的總開關:false 的時候首頁不顯示這一區,不能進入、也不累積愛心;等內容成熟了改成 true 就開放
 const GROW_READY=false;
 const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{}});
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0});
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -1767,8 +1782,9 @@ function renderPick(){ // 成績卡上的選貼紙區
 
 const WORD_T=['應用題','ㄧㄥˋ ㄩㄥˋ ㄊㄧˊ'];
 const MIXES={
-  mix:{id:'mix',e:'🌈',t:['綜合挑戰','ㄗㄨㄥˋ ㄏㄜˊ ㄊㄧㄠˇ ㄓㄢˋ'],s:['應用題比較多','ㄧㄥˋ ㄩㄥˋ ㄊㄧˊ ㄅㄧˇ ㄐㄧㄠˋ ㄉㄨㄛ']},
+  // 首頁照這個順序排(由簡單到難):每日暖身 → 綜合練習 → 綜合挑戰 → 今日大魔王
   mix2:{id:'mix2',e:'🎠',t:['綜合練習','ㄗㄨㄥˋ ㄏㄜˊ ㄌㄧㄢˋ ㄒㄧˊ'],s:['每一種題目都有','ㄇㄟˇ ㄧˋ ㄓㄨㄥˇ ㄊㄧˊ ㄇㄨˋ ㄉㄡ ㄧㄡˇ']},
+  mix:{id:'mix',e:'🌈',t:['綜合挑戰','ㄗㄨㄥˋ ㄏㄜˊ ㄊㄧㄠˇ ㄓㄢˋ'],s:['應用題比較多','ㄧㄥˋ ㄩㄥˋ ㄊㄧˊ ㄅㄧˇ ㄐㄧㄠˋ ㄉㄨㄛ']},
 };
 
 const UNITS={
@@ -1799,7 +1815,23 @@ const UNITS={
 const findUnit=id=>Object.values(UNITS).flat().find(u=>u.id===id); // 三個年級的單元都找
 // 每個單元都從自己的小題型裡抽題,這樣每一題都帶著題型代號
 for(const u of [...UNITS[1],...UNITS[2]])u.gen=t=>genOf(u.id,t); // 三年級的單元在後面「v4:三年級」那一段加進來,那裡會做同樣的事
-const SPECIAL={retry:{id:'retry',e:'📕',t:['錯題再練','ㄘㄨㄛˋ ㄊㄧˊ ㄗㄞˋ ㄌㄧㄢˋ']}};
+const SPECIAL={retry:{id:'retry',e:'📕',t:['錯題再練','ㄘㄨㄛˋ ㄊㄧˊ ㄗㄞˋ ㄌㄧㄢˋ']},boss:{id:'boss',e:'👹',t:['今日大魔王','ㄐㄧㄣ ㄖˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ']}};
+/* 今日大魔王:二、三年級才有,一天一次,10 題裡 6 題難題 + 4 題一般題,貼紙加倍 */
+const BOSS_HARD={ // 每個年級比較難的題型
+  2:['wTwo','wChange','wOrig','wCmpR2','wTime','add3','sub3','chain','box2','share','pickF2'],
+  3:['wTwo3','wDivPack','wDiv','wMul3','divR','mul21','add4','sub4','elapsed','perim','area','fracAdd','decAdd'],
+};
+const bossOpen=()=>S.grade>=2&&S.bossDay!==dayKey(); // 現在可以挑戰嗎
+function bossList(){
+  const hard=BOSS_HARD[S.grade]||BOSS_HARD[2],ks=KINDS.filter(k=>UNITS[S.grade].some(u=>u.id===k.u));
+  const h=shuffle(ks.filter(k=>hard.includes(k.id))),e=shuffle(ks.filter(k=>!hard.includes(k.id)));
+  const hn=Math.max(4,6-(S.bossFails||0)); // 平常 6 題難題;上次沒打敗就少 1 題,最少 4 題,打敗了就恢復
+  return shuffle([...Array.from({length:hn},(_,i)=>h[i%h.length]),...e.slice(0,10-hn)]).map(k=>({gen:t=>genKind(k,t)}));
+}
+function bossCard(){
+  const lock=S.grade<2,done=!lock&&S.bossDay===dayKey();
+  return `<button class="mix boss ${lock||done?'off':''}" ${lock||done?'disabled':`onclick="start('boss')"`}>${bestTag('boss')}<span class="ue">👹</span><span><span class="mt">${Z(SPECIAL.boss.t)}</span><br><span class="ms">${lock?'🔒 '+Z(T.bossLock):done?'✅ '+Z(T.bossDone):'🌟 + 1　'+Z(T.bossSub)}</span></span></button>`;
+}
 
 /* ===== 畫面 ===== */
 let scr='home',G=null;
@@ -1828,12 +1860,11 @@ function home(quiet){
     ${S.kids.length<6?`<button class="kid" onclick="addKidAsk()">＋</button>`:''}</div>
   <div class="row center" style="margin-top:8px"><span>${Z(T.myname)}</span>
     <input class="name" maxlength="8" value="${esc(S.name)}" oninput="S.name=this.value;save();document.querySelector('.kid.on span').textContent=this.value||'？'" placeholder="✏️"></div>
-  <div class="mixes">${Object.values(MIXES).map(m=>`
+  <div class="mixes"><button class="mix" onclick="warm()"><span class="ue">🔥</span><span><span class="mt">${Z(T.warm)}</span><br><span class="ms">${warmFix(S.warm).day===dayKey()?'✅ ':''}${Z(T.warmSub)}</span></span></button>${Object.values(MIXES).map(m=>`
     <button class="mix" onclick="start('${m.id}')">${bestTag(m.id)}
-      <span class="ue">${m.e}</span><span><span class="mt">${Z(m.t)}</span><br><span class="ms">${Z(m.s)}</span></span></button>`).join('')}</div>
-  <div class="tip center" style="margin-top:8px">${S.grade===1?`🌱 ${Z(T.g1)} 10 ${Z(T.qn2)}`:S.grade===3?`🌷 ${Z(T.g2)} 3 ${Z(T.qn2)} ＋ 🌳 ${Z(T.g3)} 7 ${Z(T.qn2)}`:`🌱 ${Z(T.g1)} 3 ${Z(T.qn2)} ＋ 🌷 ${Z(T.g2)} 7 ${Z(T.qn2)}`}</div>
+      <span class="ue">${m.e}</span><span><span class="mt">${Z(m.t)}</span><br><span class="ms">${Z(m.s)}</span></span></button>`).join('')}${bossCard()}</div>
   ${dueKinds().length?`<button class="mix retry" onclick="start('retry')"><span class="ue">📕</span><span><span class="mt">${Z(SPECIAL.retry.t)}</span><br>
-    <span class="ms">${Z(T.has1)} ${dueKinds().length} ${Z(T.dueKinds)}</span></span></button>`:recHtml()}
+    <span class="ms">${Z(T.has1)} ${dueKinds().length} ${Z(T.dueKinds)}</span></span></button>`:''} ${''/* 「今天推薦你玩」的卡片先不顯示(recHtml 還留著,要恢復時放回這裡) */}
   <h2 style="margin-top:16px">✏️ ${Z(T.practice)}</h2>
   <div class="grade">
     <button class="${S.grade===1?'on':''}" onclick="setGrade(1)">🌱 ${Z(T.g1)}</button>
@@ -1848,12 +1879,7 @@ function home(quiet){
   <div class="hgrid" style="--n:2">
     <button class="btn mint" onclick="growGarden()">${hb('🌷',Z(GW.garden))}</button>
     <button class="btn purple" onclick="growPet()">${hb(gw().pet&&gw().pet.step>1?PETS[gw().pet.id].e:'🥚',Z(GW.pet))}</button>
-  </div>`:GROW_READY?'':`<h2 style="margin-top:16px;opacity:.5">🌱 ${Z(GW.title)}</h2>
-  <div class="hgrid goff" style="--n:2">
-    <button class="btn" disabled>${hb('🌷',Z(GW.garden))}</button>
-    <button class="btn" disabled>${hb('🥚',Z(GW.pet))}</button>
-  </div>
-  <div class="gnum">🔧 ${Z(GW.soon)}</div>`}
+  </div>`:''} ${''/* 養成遊戲還沒開放(GROW_READY 是 false)時,首頁完全不顯示這一區 */}
   <h2 style="margin-top:16px">🎮 ${Z(T.games)}</h2>
   <div class="hgrid">
     <button class="btn" onclick="shop()">${hb('🏪',Z(SHP.title))}</button>
@@ -1932,6 +1958,7 @@ function setGrade(g){S.grade=g;save();sfx.tap();home(true)}
 /* ===== 作答:10 題排在同一頁,全部寫完再一起對答案 ===== */
 function start(id){
   if(id==='retry'&&!dueKinds().length)return home();
+  if(id==='boss'&&!bossOpen())return home(true); // 一年級沒有;今天打過了也不能再打
   newPet();
   const u=unitOf(id),types=shuffle([...'cccccfffff']),qs=[],seen=new Set();
   const w1=findUnit('w1'),w2=findUnit('w2'),o1=UNITS[1].filter(x=>x!==w1),o2=UNITS[2].filter(x=>x!==w2);
@@ -1943,6 +1970,7 @@ function start(id){
   const list=id==='mix'?(g1?shuffle([w1,w1,w1,w1,...shuffle(o1).slice(0,6)]):[...shuffle([lw,pick(lo),pick(lo)]),...shuffle([hw,hw,hw,hw,...shuffle(ho).slice(0,3)])])
     :id==='mix2'?(g1?shuffle([...UNITS[1],pick(UNITS[1])]):[...shuffle(lu).slice(0,3),...shuffle(hu).slice(0,7)])
     :id==='retry'?retryList()
+    :id==='boss'?bossList()
     :id.startsWith('k:')?Array(10).fill({gen:t=>genKind(kindById(id.slice(2)),t)})
     :Array(10).fill(u);
   list.forEach((x,i)=>{
@@ -2017,6 +2045,7 @@ function key(k){
   if(scr==='lesson')return lessonKey(k); // 例題教學裡「一起做」的填空
   if(scr==='shop')return shopKey(k); // 小小商店算總價
   if(scr==='vquiz')return vqKey(k); // 口算問答改用按的回答
+  if(scr==='warm')return warmKey(k); // 每日暖身
   const i=G&&G.act;if(i==null||G.done)return;sfx.tap();
   if(G.cell)return vfKey(k); // 直式的小格子
   let s=G.ans[i]||'';
@@ -2082,7 +2111,7 @@ function moreTeach(b,i){ // 「多看一點」:把收起來的句子打開,並�
   b.closest('.teach').querySelector('.more').hidden=false;b.remove();sfx.tap();speak(G.qs[i].moreSay,true);
 }
 // 要不要計時:爸媽專區設定。off 不計時(預設)、mix 只有綜合挑戰和綜合練習、all 每一種練習
-function timerOn(id){return S.timer==='all'||(S.timer==='mix'&&(id==='mix'||id==='mix2'))}
+function timerOn(id){return S.timer==='all'||(S.timer==='mix'&&(id==='mix'||id==='mix2'||id==='boss'))}
 const fmtSecs=s=>(s>=60?`<b>${Math.floor(s/60)}</b> ${Z(T.tMin)} `:'')+`<b>${s%60}</b> ${Z(T.tSec)}`;
 addEventListener('visibilitychange',()=>{ // 切到別的 App 或關螢幕的時間不算進碼錶
   if(document.hidden)hidAt=Date.now();else{if(hidAt&&G&&G.timed&&!G.done)G.tSkip=(G.tSkip||0)+Date.now()-hidAt;hidAt=0}
@@ -2091,7 +2120,9 @@ let hidAt=0;
 function finish(){
   // 一題一題:第一次就答對 10 分,第二次才答對 5 分
   const step=G.mode==='step',sc=step?G.pts.reduce((a,b)=>a+(b||0),0):G.qs.filter((_,i)=>isRight(i)).length*10,full=sc===100,id=G.u.id,wrong=10-sc/10;
-  const n=full?2:sc>=80?1:0; // 80 分以上可以選 1 張貼紙,100 分選 2 張
+  const boss=id==='boss';if(boss)S.bossDay=dayKey(); // 大魔王:做完就算今天用掉,不論幾分
+  const base=full?2:sc>=80?1:0,n=base+(boss&&base?1:0); // 80 分以上可以選 1 張貼紙,100 分選 2 張;大魔王打敗了再多 1 張(原本是加倍,貼紙累積太快,改成多 1 張)
+  if(boss)S.bossFails=sc<80?(S.bossFails||0)+1:0; // 連續幾次沒打敗:下一次的難題會少一點
   // 努力也有獎勵(一回合最多多 1 張,滿分已經有 2 張就不再加):練完錯題、比自己上次進步、連續練習 3 天
   const dk=dayKey(),prev=S.best[id];let why=null;
   S.days=S.days||[];if(!S.days.includes(dk))S.days=[...S.days,dk].slice(-60);
@@ -2119,10 +2150,11 @@ function finish(){
     <div>${mascot(full?'jump':'idle')}</div>
     <div>${esc(S.name)} ${Z(T.youGot)}</div>
     <div class="big">${sc} <span style="font-size:.4em">${Z(T.fen)}</span></div>
-    <h2>${full?'🌟 '+Z(T.perfect):n?'🌟 '+Z(T.near):Z(T.keep)}</h2>
+    <h2>${full?'🌟 '+Z(boss?T.bossPerfect:T.perfect):n?'🌟 '+Z(boss?T.bossNear:T.near):Z(T.keep)}</h2>
     ${why?`<div class="tip">🎁 ${Z(why)}</div>`:''}
     ${n+bonus&&owedBefore?`<div class="tip">📒 ${Z(T.owedOld1)} ${owedBefore} ${Z(T.owedOld2)}</div>`:''}
-    ${n+bonus?'<div id="pickBox"></div>':`<div class="tip">🌟 ${Z(T.need80)}</div>`}
+    ${boss&&!base?`<div class="tip">👹 ${Z(T.bossMiss1)} ${Math.ceil((80-sc)/10)} ${Z(T.bossMiss2)}</div>`:''}
+    ${n+bonus?'<div id="pickBox"></div>':boss?'':`<div class="tip">🌟 ${Z(T.need80)}</div>`}
     ${hearts?`<div class="tip">💗 + ${hearts}　${Z(GW.gotHearts)}</div>`:''}
     ${secs?`<div class="tip">⏱️ ${Z(T.tUsed)} ${fmtSecs(secs)}${newT&&oldT?`　🎉 ${Z(T.tNew)}`:''}${oldT?`<br>🏅 ${Z(T.tBest)} ${fmtSecs(newT?secs:oldT)}`:''}</div>`:''}
     ${full||step?'':`<div class="tip">👇 ${Z(T.review)}</div>`}
@@ -2130,11 +2162,11 @@ function finish(){
   </div>`;
   renderPick();
   $('#sub').innerHTML=`<div class="row center">${again}</div>`;
-  scrollTo({top:0,behavior:'smooth'});talk(full?T.perfect:step?(n?T.near:T.keep):T.lookDown,true);
+  scrollTo({top:0,behavior:'smooth'});talk(full?(boss?T.bossPerfect:T.perfect):step?(n?(boss?T.bossNear:T.near):T.keep):T.lookDown,true);
   // 一題一題的時候每題都已經講解過了,這裡就不用再提醒往下看
   const nm=S.name||'',teach=(why?why[0]:'')+(step?'':`有${wrong}題寫錯了,等一下往下看,${pet().kind[0]}老師教你喔!`);
-  if(full){sfx.win();confetti(220);setTimeout(()=>confetti(120),900);speak(`哇!${nm}好厲害!一百分!可以選兩張貼紙,快選你喜歡的吧!`)}
-  else if(n){sfx.win();confetti(90);speak(`${nm}得到${sc}分,很棒喔!選一張你喜歡的貼紙吧!`+teach)}
+  if(full){sfx.win();confetti(220);setTimeout(()=>confetti(120),900);speak(`哇!${nm}好厲害!一百分!${boss?'打敗大魔王了!可以選三張貼紙':'可以選兩張貼紙'},快選你喜歡的吧!`)}
+  else if(n){sfx.win();confetti(90);speak(`${nm}得到${sc}分,很棒喔!${boss?'打敗大魔王了!可以選兩張貼紙喔!':'選一張你喜歡的貼紙吧!'}`+teach)}
   else{sfx.ok();confetti(20);speak(`${nm}得到${sc}分,沒關係,加油加油!`+teach)}
 }
 
@@ -2395,7 +2427,7 @@ function kidsOf(d){
     const x=Object.assign(blankKid(''),kidOf(k));
     for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
     for(const f of ['best','stat','bestPaid','bestTime'])if(!x[f]||typeof x[f]!=='object')x[f]={};
-    x.grow=growFix(x.grow);
+    x.grow=growFix(x.grow);x.warm=warmFix(x.warm);
     x.name=String(x.name||'');return x;
   });
 }
@@ -2411,6 +2443,7 @@ function mergeKid(a,b){
   k.log=[...a.log,...fresh].sort((x,y)=>y.t-x.t).slice(0,500);
   const stickers=fresh.reduce((n,r)=>n+(r.p||0),0);k.owed=(k.owed||0)+stickers;
   for(const id in b.best)k.best[id]=Math.max(k.best[id]||0,b.best[id]||0);
+  k.warm=copy(warmFix(k.warm));for(const [e,s] of Object.entries(warmFix(b.warm).f))if(!k.warm.f[e]||s.n>k.warm.f[e].n)k.warm.f[e]=copy(s); // 每日暖身:每個算式取做比較多次的那一邊
   k.bestTime=k.bestTime||{};for(const id in b.bestTime||{})if(b.bestTime[id]>0)k.bestTime[id]=k.bestTime[id]>0?Math.min(k.bestTime[id],b.bestTime[id]):b.bestTime[id]; // 最快紀錄取比較快的
   const tries=s=>s?(s.r||0)+(s.w||0):-1;
   for(const id in b.stat){
@@ -2430,6 +2463,7 @@ function mergeKid(a,b){
   k.grow=copy(growFix(gb[0]>ga[0]||(gb[0]===ga[0]&&gb[1]>ga[1])?b.grow:a.grow));
   const dayNum=s=>{const p=String(s).split('-').map(Number);return p[0]*10000+p[1]*100+p[2]};
   k.days=[...new Set([...a.days,...b.days])].sort((p,q)=>dayNum(p)-dayNum(q)).slice(-60);
+  if(b.bossDay&&(!k.bossDay||dayNum(b.bossDay)>dayNum(k.bossDay)))k.bossDay=b.bossDay; // 大魔王:取比較新的那一天
   return {kid:k,logs:fresh.length,stickers,gifts};
 }
 function restoreMerge(){
@@ -2593,6 +2627,15 @@ function guideHtml(){
     '孩子換了獎品以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。換硬幣不用打勾。',
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
+  ${sec('每日暖身',[
+    '首頁的「每日暖身」:一次 10 題,只練要熟到不用想的基本算式——湊 10、10 加幾、一樣的兩個數相加、進位加法、退位減法、加法反過來想;二年級加上整十的加減和九九乘法,三年級再加上除法。',
+    '不計時、不鎖順序、可以跳過,大約 2~3 分鐘。答錯會直接給答案,進位加法和退位減法會用十格板示範一次湊十、破十。',
+    '答錯過或答得比較慢的算式之後會比較常出,也會混一些已經會的,不會一直只出不會的。',
+    '本頁下面的「每日暖身」會列出還不熟的算式和平均花幾秒(可能還在數手指的),孩子的畫面上不會顯示時間。暖身是基本功練習,做完有星星,但不送貼紙。'])}
+  ${sec('今日大魔王',[
+    '首頁的「今日大魔王」:二、三年級才有,<b>一天只能挑戰一次</b>,10 題裡有 6 題是比較難的題型(兩步驟應用題、找錢、有餘數的除法、分裝問題…),4 題是一般題。',
+    '<b>打敗了多送 1 張貼紙</b>:80 分以上 2 張,100 分 3 張。做完就算當天用掉,考不好當天也不能重來;中途離開、沒做完的不算。',
+    '沒打敗(80 分以下)時會顯示「再答對幾題就打敗了」;下一次的難題會少 1 題(最少 4 題),打敗之後恢復成 6 題,避免連續幾天都打不過。'])}
   ${sec('計時(碼錶)',[
     '預設不計時。可以在本頁下面的「計時」打開:只有綜合挑戰和綜合練習,或每一種練習都計時。',
     '是碼錶,不是倒數:時間到不會結束,也不影響分數和貼紙。做題時不顯示跳動的數字,做完才顯示這次花了多久、和她自己的最快紀錄比。',
@@ -2666,12 +2709,16 @@ function parentZone(){
     ${analysisHtml()}
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的弱點分析和錯題本嗎?',()=>{S.stat={};save();parentZone()})">清除弱點分析和錯題本</button></div>
     <div style="color:#8a7a90">換禮物只會扣點數,貼好的貼紙會留在貼紙簿上。除了 80 分以上的貼紙,練完錯題、比上次進步、連續練習 3 天也會多送 1 張(每回合最多多 1 張;「比上次進步」同一個單元一天只送一次)。數字配對每天第一次過關也會送 1 張。</div>
-    ${!GROW_READY?'<h3>養成遊戲(我的小花園、我的寵物)</h3><div style="color:#8a7a90">還在準備中,目前首頁只顯示灰色的按鈕,不能點,也不會累積愛心。</div>':`<h3>養成遊戲(我的小花園、我的寵物)</h3>
+    ${!GROW_READY?'<h3>養成遊戲(我的小花園、我的寵物)</h3><div style="color:#8a7a90">還在準備中,目前首頁不會顯示,也不會累積愛心。</div>':`<h3>養成遊戲(我的小花園、我的寵物)</h3>
     <label><input type="checkbox" ${growOn()?'checked':''} onchange="S.growOff=!this.checked;save();parentZone()"> 在首頁顯示養成遊戲(取消勾選就不顯示,也不再累積愛心)</label>
     <div class="row">💗 愛心 <b>${gw().hearts}</b> 顆;花園開了 ${gw().garden.length} 朵,養大了 ${gw().pets.length} 隻
       <button class="btn ghost" onclick="gw().hearts=Math.max(0,gw().hearts-5);save();parentZone()">−5</button><button class="btn ghost" onclick="gw().hearts+=5;save();parentZone()">+5</button>
       <button class="btn ghost" onclick="ask('確定要把這位小朋友的小花園和寵物全部重新開始嗎?',()=>{S.grow=GROW0();save();parentZone()})">重新開始養成</button></div>
     <div style="color:#8a7a90">小花和寵物要靠做題目才會長大:在養成畫面點「澆水」「餵食」會出一題,答對長大一點;平常練習每答對 1 題也會得到 1 顆愛心(小遊戲過關 3 顆),可以拿來照顧。不會餓、不會生病、也不會枯掉,幾天沒玩不會退步。愛心和貼紙是分開的,不影響獎品。</div>`}
+    <h3>每日暖身(${esc(S.name||'這位小朋友')})</h3>
+    ${warmReport()}
+    <div style="color:#8a7a90">每日暖身一次 10 題,只練基本算式,不計時、可以跳過。每一題花多久只記在這裡,孩子的畫面上看不到;時間包含按數字的時間,所以只是參考。平均超過 ${WARM_SLOW/1000} 秒或答錯過的算式,之後會比較常出。</div>
+    <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的每日暖身紀錄嗎?',()=>{S.warm={f:{},day:''};save();parentZone()})">清除暖身紀錄</button></div>
     <h3>計時(碼錶)</h3>
     <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
     <div style="color:#8a7a90">是碼錶,不是倒數:只記這回合花了多久,時間到不會結束,也不影響分數和貼紙。做題的時候畫面上只有一個 ⏱️ 小圖示,不會有跳動的數字;做完才顯示「這次花了多久」和自己的最快紀錄。最快紀錄只在 80 分以上才會更新,免得為了快而亂猜。切到別的 App 的時間不算。</div>
@@ -3153,10 +3200,10 @@ function gPick(i){
 // 蓋牌要靠記憶,翻錯是正常的,星星的標準放寬:翻錯 3 次以內三顆星、6 次以內兩顆
 function gameEnd(){$('.gcards').remove();playEnd(M.miss,`game('${M.mode}')`,T.gDone,M.hide?3:0,M.hide?6:2)}
 // 小遊戲過關(數字配對、數線跳跳共用):點錯越少星星越多;每天第一次過關送 1 張貼紙,兩個遊戲合起來一天一張
-function playEnd(miss,again,doneT,m3=0,m2=2){ // m3、m2:點錯幾次以內是三顆星、兩顆星
+function playEnd(miss,again,doneT,m3=0,m2=2,noBonus){ // m3、m2:點錯幾次以內是三顆星、兩顆星;noBonus:不送貼紙(每日暖身用)
   const stars=miss<=m3?3:miss<=m2?2:1,dk=dayKey();
   S.days=S.days||[];if(!S.days.includes(dk))S.days=[...S.days,dk].slice(-60); // 玩遊戲也算今天有練習
-  const bonus=S.gamePaid!==dk;if(bonus){S.gamePaid=dk;S.owed++}
+  const bonus=!noBonus&&S.gamePaid!==dk;if(bonus){S.gamePaid=dk;S.owed++}
   const hearts=addHearts(3); // 養成遊戲的愛心:小遊戲過關 3 顆
   save();sfx.win();confetti(stars*60);mascotAnim('jump');
   $('#gres').innerHTML=`<div class="card" style="text-align:center;margin-top:12px">
@@ -3883,6 +3930,87 @@ KINDS.push(
   {id:'wSub4',u:'w3',types:'cf',n:N_SUB,gen:t=>wSub4(t)},
 );
 
+/* ==================== 每日暖身:10 題基本功 ====================
+   只練「要熟到不用想」的基本算式(湊 10、10 加幾、一樣的兩個數、進位加法、退位減法…)。
+   不計時、不鎖順序、可以跳過;還不熟的(答錯過、或答得慢)比較常出,也會混一些已經會的。
+   每一題花多久只記在存檔裡,孩子的畫面上看不到;爸媽專區會列出比較慢的算式 */
+Object.assign(T,{warm:['每日暖身','ㄇㄟˇ ㄖˋ ㄋㄨㄢˇ ㄕㄣ'],wDone:['暖身做完了!','ㄋㄨㄢˇ ㄕㄣ ㄗㄨㄛˋ ㄨㄢˊ ˙ㄌㄜ'],
+  wSkip:['跳過','ㄊㄧㄠˋ ㄍㄨㄛˋ'],wNext:['下一題','ㄒㄧㄚˋ ㄧˋ ㄊㄧˊ'],wHint:['不用急,慢慢想','ㄅㄨˊ ㄩㄥˋ ㄐㄧˊ ㄇㄢˋ ㄇㄢˋ ㄒㄧㄤˇ'],wAns:['答案是','ㄉㄚˊ ㄢˋ ㄕˋ'],wNoStk:['這是暖身,沒有貼紙喔','ㄓㄜˋ ㄕˋ ㄋㄨㄢˇ ㄕㄣ ㄇㄟˊ ㄧㄡˇ ㄊㄧㄝ ㄓˇ ㄛ']});
+const WARM_N=10,WARM_SLOW=6000,WARM_FAST=3500; // 一局幾題;平均超過 6 秒算「還不熟」,3.5 秒以內算「熟了」(含按數字的時間)
+// 每一類基本算式。g:幾年級開始出;w:出現的比重;gen 回傳 {e 算式(? 是要填的地方), a 答案, add/sub 答錯時用十格板示範}
+const WARM_FAM=[
+  {g:1,w:3,gen(){const a=R(1,9);return {e:`${a} + ? = 10`,a:10-a}}},                                   // 湊 10
+  {g:1,w:2,gen(){const b=R(1,9);return {e:`10 + ${b} = ?`,a:10+b}}},                                   // 10 加幾
+  {g:1,w:2,gen(){const a=R(2,9);return {e:`${a} + ${a} = ?`,a:2*a,add:[a,a]}}},                        // 一樣的兩個數
+  {g:1,w:1,gen(){const a=R(1,8),b=R(1,9-a);return {e:`${a} + ${b} = ?`,a:a+b}}},                       // 10 以內的加法
+  {g:1,w:4,gen(){const a=R(2,9),b=R(11-a,9);return {e:`${a} + ${b} = ?`,a:a+b,add:[a,b]}}},            // 進位加法
+  {g:1,w:3,gen(){const a=R(11,18),b=R(a-9,9);return {e:`${a} − ${b} = ?`,a:a-b,sub:[a,b]}}},           // 退位減法
+  {g:1,w:2,gen(){const a=R(2,9),s=R(Math.max(11,a+2),a+9);return {e:`${a} + ? = ${s}`,a:s-a}}},        // 加法反過來想
+  {g:2,w:1,gen(){const a=R(1,8),b=R(1,9-a);return R(0,1)?{e:`${a*10} + ${b*10} = ?`,a:(a+b)*10}:{e:`${(a+b)*10} − ${b*10} = ?`,a:a*10}}}, // 整十的加減
+  {g:2,w:3,gen(){const a=R(2,9),b=R(2,9);return {e:`${a} × ${b} = ?`,a:a*b}}},                         // 九九乘法
+  {g:3,w:2,gen(){const b=R(2,9),q=R(2,9);return {e:`${b*q} ÷ ${b} = ?`,a:q}}},                         // 除法用乘法想
+];
+const warmFix=w=>w&&w.f&&typeof w.f==='object'?w:{f:{},day:''};
+// 這一題還要多練的程度:答錯過的最高,答得慢的其次,沒做過的中等,又快又對的偶爾出一次
+function warmNeed(e){const s=S.warm.f[e];return !s?2:!s.ok?5:s.ms>WARM_SLOW?4:s.ms>WARM_FAST?2:.6}
+function warmPick(){
+  const fams=WARM_FAM.filter(f=>f.g<=S.grade),tot=fams.reduce((a,f)=>a+f.w,0),cand=new Map();
+  for(let n=0;n<80&&cand.size<40;n++){let r=Math.random()*tot,f=fams[0];for(const x of fams){r-=x.w;if(r<=0){f=x;break}}const q=f.gen();if(!cand.has(q.e))cand.set(q.e,q)}
+  const pool=[...cand.values()].map(q=>({q,w:warmNeed(q.e)})),out=[];
+  while(out.length<WARM_N&&pool.length){let r=Math.random()*pool.reduce((a,p)=>a+p.w,0),i=0;for(;i<pool.length-1;i++){r-=pool[i].w;if(r<=0)break}out.push(pool.splice(i,1)[0].q)}
+  return out;
+}
+let WM=null;
+function warm(){
+  S.warm=warmFix(S.warm);WM={qs:warmPick(),i:-1,miss:0,val:'',busy:false};sfx.tap();
+  show('warm',`
+  <div class="row">${homeBtn()}<span class="sp"></span><span class="hearts" id="wprog"></span></div>
+  <div class="row center">${mascot()}<h1>🔥 ${Z(T.warm)}</h1></div>
+  <div class="tip center">🔥 ${Z(T.wNoStk)}<br>${Z(T.wHint)}</div>
+  <div id="gres"></div><div class="card" id="wcard" style="margin-top:12px;text-align:center"></div>`);
+  warmNext();
+}
+function warmNext(){
+  if(scr!=='warm'||!WM)return;
+  if(++WM.i>=WM.qs.length){closePad();$('#wcard').remove();S.warm.day=dayKey();return playEnd(WM.miss,'warm()',T.wDone,1,3,true)} // 暖身不送貼紙,也不佔用小遊戲每天那 1 張
+  const q=WM.qs[WM.i];WM.val='';WM.busy=false;WM.hid=false;WM.t0=Date.now();
+  $('#wprog').textContent=`🔥 ${WM.i+1} / ${WM.qs.length}`;
+  $('#wcard').innerHTML=`<div class="expr wexpr">${q.e.replace('?','<span class="inp act" id="winp">?</span>')}</div><div id="wfb"></div>
+    <div class="row center" id="wbtn" style="margin-top:10px"><button class="btn ghost small" onclick="warmSkip()">⏭️ ${Z(T.wSkip)}</button></div>`;
+  $('#pad').classList.add('on');document.body.classList.add('padon');
+  speak(sayOps(q.e.replace('?','多少')));
+}
+function warmKey(k){
+  if(!WM||WM.busy||scr!=='warm')return;sfx.tap();
+  if(k==='del')WM.val=WM.val.slice(0,-1);else if(k!=='ok'&&WM.val.length<3)WM.val=WM.val==='0'?k:WM.val+k;
+  const e=$('#winp');if(e)e.textContent=WM.val||'?';
+  if(k==='ok'&&WM.val)warmCheck();
+}
+function warmCheck(){
+  const me=WM,q=WM.qs[WM.i],ok=+WM.val===q.a,ms=Math.min(30000,Date.now()-WM.t0),s=S.warm.f[q.e]=S.warm.f[q.e]||{n:0,w:0,ms:0,ok:1},inp=$('#winp');
+  WM.busy=true;s.n++;
+  if(ok){
+    s.ok=1;if(!WM.hid)s.ms=s.ms?Math.round(s.ms*.6+ms*.4):ms; // 切到別的畫面過的那一題不算時間
+    save();sfx.ok();inp.classList.remove('act');inp.classList.add('good');const r=inp.getBoundingClientRect();burst(r.left+r.width/2,r.top,6);
+    return setTimeout(()=>{if(WM===me)warmNext()},650);
+  }
+  s.ok=0;s.w++;WM.miss++;save();sfx.bad();mascotAnim('sad');closePad();
+  inp.textContent=q.a;inp.classList.add('good');
+  // 答錯:直接給答案,進位加法、退位減法再用十格板示範一次
+  $('#wfb').innerHTML=`<div class="tip">${Z(T.wAns)} <b>${q.a}</b></div>${q.add&&q.add[0]+q.add[1]>10?makeTenAnim(q.add[0],q.add[1]):q.sub?breakTenAnim(q.sub[0],q.sub[1]):''}`;
+  $('#wbtn').innerHTML=`<button class="btn" onclick="warmNext()">➡️ ${Z(T.wNext)}</button>`;
+  speak(sayOps(q.e.replace('?',q.a)));
+}
+function warmSkip(){if(!WM||WM.busy)return;sfx.tap();warmNext()} // 跳過的題目不記錄
+addEventListener('visibilitychange',()=>{if(document.hidden&&WM)WM.hid=true});
+// 爸媽專區用:還不熟的算式(答錯過的排前面,再來是答得慢的)
+function warmReport(){
+  const all=Object.entries(warmFix(S.warm).f),weak=all.filter(([,s])=>!s.ok||s.ms>WARM_SLOW).sort((a,b)=>(a[1].ok-b[1].ok)||(b[1].ms-a[1].ms)).slice(0,12),good=all.filter(([,s])=>s.ok&&s.ms>0&&s.ms<=WARM_FAST).length;
+  if(!all.length)return '<div>還沒有做過每日暖身。</div>';
+  return `<div>做過 ${all.length} 種算式,其中 <b>${good}</b> 種又快又對(${WARM_FAST/1000} 秒以內)。</div>`+
+    (weak.length?`<div style="margin-top:4px">還不熟的(可能還在數手指):</div><div class="wrep">${weak.map(([e,s])=>`<span>${esc(e.replace('?','□'))}　${s.ms?`平均 ${(s.ms/1000).toFixed(1)} 秒`:'還沒答對過'}${s.w?`,錯 ${s.w} 次`:''}</span>`).join('')}</div>`:'<div>目前沒有特別慢或常錯的算式。</div>');
+}
+
 /* ==================== 養成遊戲:我的小花園、我的寵物 ====================
    要做題目才會長大:點照顧動作(澆水、餵食…)→ 出一題 → 第一次就答對,長大 1 點;答錯會給答案,再換一題。
    平常練習每答對 1 題也得 1 顆愛心(小遊戲過關 3 顆),1 顆愛心也是 1 點。
@@ -4105,7 +4233,7 @@ function growAdd(target,n,emo){
 /* 實體鍵盤也可以作答 */
 document.addEventListener('keydown',e=>{
   if($('#modalBox').classList.contains('on')){if(e.key==='Enter'){if($('#gateIn'))gateCheck();else if($('#kidIn'))addKid();else if($('#pin1'))pinSave()}return}
-  if((scr==='lesson'&&L&&L.wait)||(scr==='shop'&&P&&P.step===1)||(scr==='vquiz'&&V&&V.pad)){if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')key('ok');return}
+  if((scr==='lesson'&&L&&L.wait)||(scr==='shop'&&P&&P.step===1)||(scr==='vquiz'&&V&&V.pad)||(scr==='warm'&&WM&&!WM.busy)){if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')key('ok');return}
   if(scr!=='play')return;
   if(G.done||G.act==null)return;
   if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key==='Backspace')key('del');else if(e.key==='Enter')key('ok');
