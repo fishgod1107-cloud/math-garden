@@ -80,6 +80,17 @@ h2{font-size:28px;margin:8px 0;color:var(--purple-d)}
 .grade{display:flex;gap:12px;margin:14px 0}
 .grade button{flex:1;min-height:72px;border-radius:22px;background:#fff;box-shadow:0 5px 0 #e6d5ea;font-size:26px}
 .grade button.on{background:var(--purple-d);color:#fff;box-shadow:0 5px 0 #6d4fb0}
+.grade button.logicb:not(.on){background:#fff6d6}
+/* 一年級看圖想一想、資優邏輯的圖 */
+.pkrows{display:flex;flex-direction:column;gap:8px;align-items:center;font-size:26px}.pkrows>div{display:flex;gap:10px;align-items:center}.pkrows b{font-size:22px;color:var(--purple-d)}.pkrows span{letter-spacing:2px}
+.stairs{width:100%;max-width:300px;display:block;margin:0 auto}
+.btree{width:200px;max-width:100%;display:block;margin:0 auto}
+.bldg{display:inline-flex;flex-direction:column;align-items:center;border:3px solid #b9a6c0;border-radius:10px 10px 4px 4px;background:#fff;padding:0 18px;font-size:30px}
+.bldg .roof,.bldg .base{font-size:16px;color:#8a7a90}.bldg .fl{border-top:2px dashed #e6d5ea;width:100%;text-align:center;line-height:1.35}
+.emo.pat{letter-spacing:2px;font-size:28px}
+.subst{line-height:1.6;text-align:left;display:inline-block}
+.dcard{display:inline-block;border:3px solid #6b5b73;border-radius:8px;padding:0 10px;background:#fff;font-weight:700}
+@media (max-width:560px){.pkrows{font-size:20px}.emo.pat{font-size:22px}.grade button.logicb{font-size:15px}}
 .units{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 /* 一排三個;最後一排沒排滿的話放在正中間,左右才對稱 */
 .units .unit{grid-column:span 2}
@@ -473,6 +484,38 @@ html,body{overscroll-behavior-y:contain}
 .gq{font-size:44px;color:#b9a6c0}.gbud{color:#e59a00}
 .gpets .btn.small{min-height:40px;font-size:15px;padding:2px 8px}
 .careq .prompt{text-align:left}
+/* 正面回饋:亮點、徽章 */
+.hlbox{background:linear-gradient(120deg,#fff6d6,#ffe8f1);border-radius:18px;padding:8px 14px;margin:8px auto;max-width:520px;font-size:20px;line-height:1.6}.hlbox b{color:var(--pink-d)}
+.bdgs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.bdgs>div{background:#f3eef5;border-radius:16px;padding:6px 2px;text-align:center;font-size:15px;color:#a99bb0;min-width:0}
+.bdgs>div.on{background:#fff6d6;color:var(--ink);box-shadow:0 3px 0 #f0c94f}.bdgs span{display:block;font-size:34px;line-height:1.2}
+.bdgpop{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;font-size:20px}.bdgpop span{display:block;font-size:72px;line-height:1.1;animation:pop2 1s ease-in-out 2}
+@media (max-width:560px){.bdgs{grid-template-columns:repeat(3,1fr)}.hlbox{font-size:17px}}
+/* 一步一步的算法(步驟卡)、直式除法 */
+.stepcard{display:block;width:100%;box-sizing:border-box;align-self:stretch;margin:6px 0;padding:0 0 0 1.6em;font-size:19px;line-height:1.7;text-align:left}.stepcard li{background:#fff;border-radius:12px;padding:2px 10px;margin:4px 0;box-shadow:0 2px 0 #f3d3e2}
+.stepcard li::marker{color:var(--pink-d);font-weight:700}.stepcard.fill{font-size:20px}
+.ldiv{display:inline-grid;font:700 26px 'Comic Sans MS','Segoe UI',sans-serif;line-height:1.25;margin:6px auto;color:var(--ink)}
+.ldiv span{text-align:center;min-width:1.1em}.ldiv .ldl{padding-right:4px;text-align:right}
+.ldiv .ldq{color:var(--pink-d)}.ldiv .lda:not(.ldl){border-top:3px solid var(--ink)}.ldiv .ldl.lda{border-right:3px solid var(--ink);border-radius:0 0 10px 0}
+.ldiv .ldp.on{border-bottom:2px solid var(--ink)}.ldiv .ldr{color:#8a7a90}
+@media (max-width:560px){.stepcard{font-size:16px}.ldiv{font-size:22px}}
+/* 雙人對戰:上下兩半,上半轉 180 度 */
+.duelwrap{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;background:#fff7fb;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.dhalf{flex:1 1 0;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-evenly;padding:6px 10px;background:#fff0f6;overflow:hidden}
+.dhalf.top{transform:rotate(180deg);background:#eaf4ff}
+.dmid{flex:none;display:flex;align-items:center;justify-content:center;padding:4px 52px;background:#fff;box-shadow:0 0 0 2px #f3d3e2;min-height:52px;position:relative}
+.dx{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:#f3e9f5;font-size:18px;color:var(--ink)}
+.dhead{display:flex;gap:14px;align-items:center;font-size:22px}.dhead b{color:var(--pink-d)}
+.dbody{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.dhalf .bsign{font-size:min(38px,5vh);padding:0 18px;margin:0}
+.blns.dbl{gap:8px 12px;margin:2px 0 10px;width:min(100%,520px)}
+.dbl .bln{width:min(24vw,12.5vh);max-width:none;font-size:min(20px,2.6vh)}.dbl .bln.wrong{font-size:min(14px,1.9vh)}
+.dopts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:min(100%,480px)}.dopts .opt{min-height:min(80px,10vh);font-size:min(34px,4.5vh)}
+.dhalf .expr{font-size:min(48px,6vh);margin:0}
+.dfrz{display:none;position:absolute;inset:0;align-items:center;justify-content:center;font-size:26px;color:#6b5b73;background:#ffffffaa}.dhalf.frz .dfrz{display:flex}
+.dgot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--pink-d);background:#ffffffcc}
+.rope{display:flex;align-items:center;gap:2px;font-size:22px}.rope i{width:min(30px,calc((100vw - 210px) / 11));height:28px;border-bottom:4px solid #b98350;display:flex;align-items:flex-end;justify-content:center;font-style:normal;font-size:20px}
+.dsc{font-size:24px;font-weight:700}
+.dset{display:flex;flex-direction:column;gap:6px;align-items:center;padding:8px 0;border-bottom:2px dashed #f3d3e2}.dsl{font-size:20px}.dgr{margin:4px 0;width:100%}.dgr button{min-height:52px;font-size:18px}
 /* 每日暖身 */
 .wexpr{display:flex;justify-content:center;align-items:center;gap:.25em;flex-wrap:wrap}
 .wexpr .inp{font-size:.9em;min-width:1.9em}
@@ -817,12 +860,12 @@ const BIG=30; // 貼滿這麼多張,可以換一個獎品,或換 1 枚硬幣;貼
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails'];
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails','badges','cnt'];
 // 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
 // 養成遊戲的總開關:false 的時候首頁不顯示這一區,不能進入、也不累積愛心;等內容成熟了改成 true 就開放
 const GROW_READY=false;
 const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0});
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0,badges:{},cnt:{}});
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -1721,6 +1764,7 @@ function genKind(k,t,noM){ // 有操作題(k.man)的題型,十題裡大約四題
   q.kind=k.id;q.traps=autoTraps(q,k.id);rebuildOpts(q);
   const m=q.type==='f'&&VF.test(k.id)&&(q.calc||'').match(/^(\d+) ([+−]) (\d+) = \d+$/);
   if(m)q.vf={a:+m[1],op:m[2],b:+m[3]};
+  stepify(q,k.id); // 加減法、除法:答錯時列出一步一步的算法
   return q;
 }
 function genOf(uid,t){const ks=KINDS.filter(k=>k.u===uid),m=ks.filter(k=>k.types.includes(t));return genKind(pick(m.length?m:ks),t)}
@@ -1851,7 +1895,7 @@ const bestTag=id=>S.best[id]!=null?`<span class="best">⭐${S.best[id]}</span>`:
 
 function home(quiet){
   if(!quiet)newPet();
-  closeModal();setTimeout(()=>{if(scr==='home'&&!quiet)talk(pick(CHAT.home))},300);
+  closeModal();setTimeout(()=>{if(scr==='home'&&!quiet)talk(pick(CHAT.home))},300);setTimeout(greetOnce,700); // 每天第一次回首頁:打招呼、說連續練習幾天
   show('home',`
   <div class="row">${streakBadge()}<span class="sp"></span>${ptsBadge()}</div>
   <div class="row center">${mascot()}<h1><span class="jo">JOJO </span>${Z(T.title)}<span class="ver">v4</span></h1></div>
@@ -1867,11 +1911,12 @@ function home(quiet){
     <span class="ms">${Z(T.has1)} ${dueKinds().length} ${Z(T.dueKinds)}</span></span></button>`:''} ${''/* 「今天推薦你玩」的卡片先不顯示(recHtml 還留著,要恢復時放回這裡) */}
   <h2 style="margin-top:16px">✏️ ${Z(T.practice)}</h2>
   <div class="grade">
-    <button class="${S.grade===1?'on':''}" onclick="setGrade(1)">🌱 ${Z(T.g1)}</button>
-    <button class="${S.grade===2?'on':''}" onclick="setGrade(2)">🌷 ${Z(T.g2)}</button>
-    <button class="${S.grade===3?'on':''}" onclick="setGrade(3)">🌳 ${Z(T.g3)}</button>
+    <button class="${!S.logic&&S.grade===1?'on':''}" onclick="setGrade(1)">🌱 ${Z(T.g1)}</button>
+    <button class="${!S.logic&&S.grade===2?'on':''}" onclick="setGrade(2)">🌷 ${Z(T.g2)}</button>
+    <button class="${!S.logic&&S.grade===3?'on':''}" onclick="setGrade(3)">🌳 ${Z(T.g3)}</button>
+    <button class="logicb ${S.logic?'on':''}" onclick="setLogic()">🧠 ${Z(T.gL)}</button>
   </div>
-  <div class="units">${UNITS[S.grade].map(u=>`
+  <div class="units">${curUnits().map(u=>`
     <button class="unit" onclick="start('${u.id}')">${bestTag(u.id)}
       <span class="ue">${u.e}</span><span>${Z(u.t)}</span></button>`).join('')}</div>
   <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}<br>🪙 ${Z(T.rule3)}</div>
@@ -1953,7 +1998,7 @@ function pasteRestore(){
     <textarea id="txtBox" style="width:100%;height:170px;font:12px monospace;margin:8px 0" placeholder="把之前複製的備份文字貼在這裡"></textarea>
     <div class="row center"><button class="btn" onclick="restoreText($('#txtBox').value)">還原</button><button class="btn ghost" onclick="closeModal()">取消</button></div></div>`);
 }
-function setGrade(g){S.grade=g;save();sfx.tap();home(true)}
+function setGrade(g){S.grade=g;S.logic=false;save();sfx.tap();home(true)} // 選年級就離開「資優邏輯」
 
 /* ===== 作答:10 題排在同一頁,全部寫完再一起對答案 ===== */
 function start(id){
@@ -1968,7 +2013,7 @@ function start(id){
   // 複習用的低一個年級(lw 應用題、lo 其他單元)和現在這個年級(hw、ho)
   const [lw,lo,hw,ho,lu,hu]=g3?[w2,o2,w3,o3,UNITS[2],UNITS[3]]:[w1,o1,w2,o2,UNITS[1],UNITS[2]];
   const list=id==='mix'?(g1?shuffle([w1,w1,w1,w1,...shuffle(o1).slice(0,6)]):[...shuffle([lw,pick(lo),pick(lo)]),...shuffle([hw,hw,hw,hw,...shuffle(ho).slice(0,3)])])
-    :id==='mix2'?(g1?shuffle([...UNITS[1],pick(UNITS[1])]):[...shuffle(lu).slice(0,3),...shuffle(hu).slice(0,7)])
+    :id==='mix2'?(g1?shuffle([...UNITS[1]]).slice(0,10):[...shuffle(lu).slice(0,3),...shuffle(hu).slice(0,7)])
     :id==='retry'?retryList()
     :id==='boss'?bossList()
     :id.startsWith('k:')?Array(10).fill({gen:t=>genKind(kindById(id.slice(2)),t)})
@@ -2088,6 +2133,7 @@ function calcHtml(q,i){ // 答對:列出算式,想看完整解說可以按按鈕
 /* 解說要短:一年級的孩子拼注音還很慢,字一多就不看了。
    所以只放「一句重點 + 一張會動的圖(沒有圖才列算式)+ 答案」,而且會唸出來;其他的句子收在「多看一點」裡 */
 function teachHtml(q,i,right){
+  if(q.full)return stepTeachHtml(q,i,right); // 加減法、除法:一步一步的算法全部列出來
   const ls=q.teach.map(line),open=right?T.teachOpenOk:T.teachOpen,sq=s=>plain(s).replace(/\s/g,'');
   // 解說或圖解裡已經有同一條算式就不重複列
   const calc=q.calc&&q.ex!==q.calc&&!ls.some(l=>sq(l.h).includes(sq(q.calc)))?q.calc:'';
@@ -2135,6 +2181,7 @@ function finish(){
   const owedBefore=S.owed; // 之前得到、但還沒選的貼紙(上一回合沒選完、小遊戲送的…),成績卡上會分開說明
   S.owed+=n+bonus;G.picked=[];pickOpts=null;
   tally();
+  const hl=highlights(step,sc,prev),nb=badgeCheck(step,sc,full,id,prev,base,boss); // 這回合的亮點、新得到的徽章
   S.best[id]=Math.max(S.best[id]||0,sc);
   const hearts=addHearts(step?G.pts.filter(p=>p>0).length:sc/10); // 養成遊戲的愛心:答對幾題就幾顆
   // 碼錶:這回合花了幾秒(切到別的畫面的時間不算)。最快紀錄只在 80 分以上才記,免得為了快而亂猜;兩種作答方式分開記
@@ -2151,6 +2198,7 @@ function finish(){
     <div>${esc(S.name)} ${Z(T.youGot)}</div>
     <div class="big">${sc} <span style="font-size:.4em">${Z(T.fen)}</span></div>
     <h2>${full?'🌟 '+Z(boss?T.bossPerfect:T.perfect):n?'🌟 '+Z(boss?T.bossNear:T.near):Z(T.keep)}</h2>
+    ${hl.length?`<div class="hlbox"><b>✨ ${Z(PV.hl)}</b>${hl.map(h=>`<div>${h.h}</div>`).join('')}</div>`:''}
     ${why?`<div class="tip">🎁 ${Z(why)}</div>`:''}
     ${n+bonus&&owedBefore?`<div class="tip">📒 ${Z(T.owedOld1)} ${owedBefore} ${Z(T.owedOld2)}</div>`:''}
     ${boss&&!base?`<div class="tip">👹 ${Z(T.bossMiss1)} ${Math.ceil((80-sc)/10)} ${Z(T.bossMiss2)}</div>`:''}
@@ -2164,7 +2212,8 @@ function finish(){
   $('#sub').innerHTML=`<div class="row center">${again}</div>`;
   scrollTo({top:0,behavior:'smooth'});talk(full?(boss?T.bossPerfect:T.perfect):step?(n?(boss?T.bossNear:T.near):T.keep):T.lookDown,true);
   // 一題一題的時候每題都已經講解過了,這裡就不用再提醒往下看
-  const nm=S.name||'',teach=(why?why[0]:'')+(step?'':`有${wrong}題寫錯了,等一下往下看,${pet().kind[0]}老師教你喔!`);
+  const nm=S.name||'',teach=(hl[0]?hl[0].say+'。':'')+(why?why[0]:'')+(step?'':`有${wrong}題寫錯了,等一下往下看,${pet().kind[0]}老師教你喔!`);
+  if(nb.length)badgePop(nb,2600);
   if(full){sfx.win();confetti(220);setTimeout(()=>confetti(120),900);speak(`哇!${nm}好厲害!一百分!${boss?'打敗大魔王了!可以選三張貼紙':'可以選兩張貼紙'},快選你喜歡的吧!`)}
   else if(n){sfx.win();confetti(90);speak(`${nm}得到${sc}分,很棒喔!${boss?'打敗大魔王了!可以選兩張貼紙喔!':'選一張你喜歡的貼紙吧!'}`+teach)}
   else{sfx.ok();confetti(20);speak(`${nm}得到${sc}分,沒關係,加油加油!`+teach)}
@@ -2292,13 +2341,14 @@ function lessons(){
   <div class="row">${homeBtn()}<span class="sp"></span></div>
   <div class="row center">${mascot()}<h1>📖 ${Z(T.lessonT)}</h1></div>
   <div class="tip center">${Z(T.lessonHint)}</div>
-  ${[1,2,3].map(g=>`<h2>${['','🌱 '+Z(T.g1),'🌷 '+Z(T.g2),'🌳 '+Z(T.g3)][g]}</h2>
+  ${[1,2,3,'L'].map(g=>`<h2>${{1:'🌱 '+Z(T.g1),2:'🌷 '+Z(T.g2),3:'🌳 '+Z(T.g3),L:'🧠 '+Z(T.gL)}[g]}</h2>
     <div class="kinds">${KINDS.filter(k=>UNITS[g].some(u=>u.id===k.u)).map(k=>`<button class="kindb" onclick="lesson('${k.id}')">${due.has(k.id)?'📕 ':''}${Z(k.n)}</button>`).join('')}</div>`).join('')}`);
   setTimeout(()=>{if(scr==='lessons')talk(T.lessonHint)},300);
 }
 function lesson(id){
   const k=kindById(id);if(!k)return;
-  const q=genKind(k,pick([...k.types]),1),sq=s=>plain(s).replace(/\s/g,'');
+  let q=genKind(k,pick([...k.types]),1);const sq=s=>plain(s).replace(/\s/g,'');
+  for(let n=0;n<40&&!q.full&&STEP_TEN.test(id);n++)q=genKind(k,'f',1); // 20 以內加減的例題:挑要湊十、破十的那種
   // 一步一步的內容:解說的每一句 → 圖解 → 算式 → 答案
   // 「一起做」:句子最後是算式(例如 7 + 5 = 12)的那幾步,先把答案蓋起來讓她自己填,填完才往下
   const steps=q.teach.map(parts=>{
@@ -2426,7 +2476,7 @@ function kidsOf(d){
   return list.map(k=>{
     const x=Object.assign(blankKid(''),kidOf(k));
     for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
-    for(const f of ['best','stat','bestPaid','bestTime'])if(!x[f]||typeof x[f]!=='object')x[f]={};
+    for(const f of ['best','stat','bestPaid','bestTime','badges','cnt'])if(!x[f]||typeof x[f]!=='object')x[f]={};
     x.grow=growFix(x.grow);x.warm=warmFix(x.warm);
     x.name=String(x.name||'');return x;
   });
@@ -2444,6 +2494,7 @@ function mergeKid(a,b){
   const stickers=fresh.reduce((n,r)=>n+(r.p||0),0);k.owed=(k.owed||0)+stickers;
   for(const id in b.best)k.best[id]=Math.max(k.best[id]||0,b.best[id]||0);
   k.warm=copy(warmFix(k.warm));for(const [e,s] of Object.entries(warmFix(b.warm).f))if(!k.warm.f[e]||s.n>k.warm.f[e].n)k.warm.f[e]=copy(s); // 每日暖身:每個算式取做比較多次的那一邊
+  k.badges=Object.assign({},b.badges||{},k.badges||{});k.cnt=k.cnt||{};for(const c in b.cnt||{})k.cnt[c]=Math.max(k.cnt[c]||0,b.cnt[c]||0); // 徽章兩邊都留,計數取大的
   k.bestTime=k.bestTime||{};for(const id in b.bestTime||{})if(b.bestTime[id]>0)k.bestTime[id]=k.bestTime[id]>0?Math.min(k.bestTime[id],b.bestTime[id]):b.bestTime[id]; // 最快紀錄取比較快的
   const tries=s=>s?(s.r||0)+(s.w||0):-1;
   for(const id in b.stat){
@@ -2499,7 +2550,8 @@ function book(quiet){
     </div>
   </div>
   <div class="tip center">🎁 ${Z(T.rule2)}<br>🪙 ${Z(T.rule3)}</div>
-  <div class="row center"><button class="btn" onclick="gifts()">🎁 ${Z(T.giftHouse)}</button></div>`);
+  <div class="row center"><button class="btn" onclick="gifts()">🎁 ${Z(T.giftHouse)}</button></div>
+  ${badgeWall()}`);
 }
 let drag=null;
 const slotAt=(x,y)=>{const t=document.elementFromPoint(x,y);return t&&t.closest('.slot:not(.full)')};
@@ -2627,6 +2679,19 @@ function guideHtml(){
     '孩子換了獎品以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。換硬幣不用打勾。',
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
+  ${sec('鼓勵和徽章',[
+    '<b>這回合的亮點</b>:成績卡上會具體說出她做到了什麼,例如「比上次進步了 10 分」「有 2 題自己改對了,你沒有放棄」「進位加法 3 題全對」,不只說「好棒」。',
+    '<b>成就徽章</b>(在貼紙簿下面,共 12 個):第一步、滿分、連續三天、連續一星期、不放棄、連對十題、錯題清光光、進步之星、打敗大魔王、暖身五天、小小邏輯家、練習五十回。多數是獎勵努力和堅持,不只看分數。得到時會跳出來慶祝。徽章不換貼紙、不影響獎品。',
+    '答錯第一次時,鼓勵的話會換著說(「差一點點!再試試看!」「沒關係,錯了才學得會!」);每天第一次打開會打招呼,並說連續練習了幾天。'])}
+  ${sec('一步一步的算法、填空題',[
+    '<b>答錯時會列出完整算法</b>:加減法用直式,從個位開始一位一位算,寫出「不夠減,向十位借 1」「寫 3,進 1 到十位」;一年級 20 以內用湊十、破十(從 10 裡面借);除法畫出直式除法,一步一步除,最後驗算。',
+    '<b>例題教學</b>:這些步驟會一步一步出現,每一步的答案先蓋起來讓她自己填,最後才出現答案。',
+    '<b>填空題</b>:一年級「湊十破十填空」、二年級「借位填空」「進位填空」、三年級「直式除法填空」,列出算法的前幾步,其中一格是 □ 要她填。',
+    '用語是課本常見的「借 1」「從 10 裡面借」;如果學校或補習班的說法不同(例如「退位」),可以請我改。'])}
+  ${sec('看圖想一想、資優邏輯',[
+    '<b>一年級「看圖想一想」</b>:照學校考卷的題型設計——排隊前後有幾個、「第幾個」和「前面幾個」的差別、從上或從下數樓層、爬樓梯上上下下、一個配一個比多少、分合樹。',
+    '<b>「🧠 資優邏輯」</b>(在年級按鈕旁邊):三年級程度的非例行題,有找規律、植樹和間隔、和差和年齡、雞兔同籠、代換和倒過來想、推理和排列組合。這是參考常見的資優班練習題型自己出的題目,不是官方的鑑定考題。',
+    '資優邏輯的題目比較難,答錯時的解說會把「怎麼想」一步一步寫出來,建議陪她一起看解說,比答對幾題更重要。綜合練習和大魔王不會出這些題目。'])}
   ${sec('每日暖身',[
     '首頁的「每日暖身」:一次 10 題,只練要熟到不用想的基本算式——湊 10、10 加幾、一樣的兩個數相加、進位加法、退位減法、加法反過來想;二年級加上整十的加減和九九乘法,三年級再加上除法。',
     '不計時、不鎖順序、可以跳過,大約 2~3 分鐘。答錯會直接給答案,進位加法和退位減法會用十格板示範一次湊十、破十。',
@@ -2947,7 +3012,7 @@ function stepCheck(){
     $('#fb'+i).innerHTML=calcHtml(q,i);sfx.ok();
     const r=c.getBoundingClientRect();burst(r.right-50,Math.min(Math.max(r.top+30,60),innerHeight-60),9);
     // 連續第一次就答對:3、5、7、10 題時特別慶祝;第二次才答對的,稱讚她沒有放棄
-    G.combo=first?G.combo+1:0;prog();
+    G.combo=first?G.combo+1:0;G.maxCombo=Math.max(G.maxCombo||0,G.combo);prog();
     if([3,5,7,10].includes(G.combo)){confetti(60);talk([`連續答對 ${G.combo} 題!`,'ㄌㄧㄢˊ ㄒㄩˋ ㄉㄚˊ ㄉㄨㄟˋ ㄊㄧˊ'])}
     else talk(pick(first?PRAISE:PRAISE2));
     $('#stepBar').innerHTML=nextBtn;return;
@@ -2956,8 +3021,9 @@ function stepCheck(){
   if(first){ // 再想一想:選錯的選項變灰,答案剛好是常見的算錯方式就先提醒
     G.tries[i]=1;G.combo=0;G.last[i]=String(G.ans[i]);prog();const trap=TRAP[G.trap1[i]];
     if(q.type==='c'){const b=c.querySelectorAll('.opt')[G.ans[i]];b.classList.remove('sel');b.classList.add('bad');G.ans[i]=null}
-    $('#fb'+i).innerHTML=`<div class="teach"><div class="tav">${bunnySvg()}</div><div class="sp"><div class="bubble">${Z(T.again)}</div>${trap?`<div class="bubble trap">💡 ${Z(trap.tip)}</div>`:''}</div></div>`;
-    talk(T.again,true);return speak(T.again[0]+(trap?trap.tip[0]:''));
+    const ag=pick(AGAIN); // 每次說的鼓勵話不一樣
+    $('#fb'+i).innerHTML=`<div class="teach"><div class="tav">${bunnySvg()}</div><div class="sp"><div class="bubble">${Z(ag)}</div>${trap?`<div class="bubble trap">💡 ${Z(trap.tip)}</div>`:''}</div></div>`;
+    talk(ag,true);return speak(ag[0]+(trap?trap.tip[0]:''));
   }
   G.pts[i]=0;c.classList.add('lock','wrong');c.insertAdjacentHTML('afterbegin','<span class="mark">❌</span>');
   if(q.type==='c')c.querySelectorAll('.opt').forEach((b,k)=>{if(q.opts[k].ok)b.classList.add('right');else if(k===G.ans[i])b.classList.add('wrong')});
@@ -3930,6 +3996,638 @@ KINDS.push(
   {id:'wSub4',u:'w3',types:'cf',n:N_SUB,gen:t=>wSub4(t)},
 );
 
+/* ==================== 難度分層:每一種題型都混「基本、標準、挑戰」三種難度,分數才有鑑別度 ====================
+   大約 1/4 基本(讓孩子有把握)、1/2 標準(該年級應該會的)、1/4 挑戰(真的熟練才答得對)。
+   二年級特別調整:進位/借位為主、九九乘法以 3、4、6、7、8、9 為主、比大小的數字很接近、數列會跨過整百或倒著數、
+   寫功課的時間要算到「幾點幾分」。三年級:除法用大一點的數、小數要進位/借位、四位數比大小很接近 */
+const tier=()=>{const r=Math.random();return r<.25?0:r<.75?1:2};
+const setGen=(id,f)=>{const k=kindById(id);if(k)k.gen=f};
+const until=(f,ok,n=80)=>{let q;for(let i=0;i<n;i++){q=f();if(ok(q))return q}return q}; // 重出到符合條件為止(最多 n 次)
+const opsOf=q=>{const m=String(q.calc||'').match(/(\d+(?:\.\d)?) ([+−×÷]) (\d+(?:\.\d)?)/);return m?[+m[1],m[2],+m[3]]:null};
+const DF={eachLess:['每次都少','ㄇㄟˇ ㄘˋ ㄉㄡ ㄕㄠˇ'],dian:['點','ㄉㄧㄢˇ'],fen:['分','ㄈㄣ'],minutes:['分鐘','ㄈㄣ ㄓㄨㄥ'],
+  startAt:['分開始寫功課','ㄈㄣ ㄎㄞ ㄕˇ ㄒㄧㄝˇ ㄍㄨㄥ ㄎㄜˋ'],doneAt:['點幾分寫完?','ㄉㄧㄢˇ ㄐㄧˇ ㄈㄣ ㄒㄧㄝˇ ㄨㄢˊ'],
+  hourTip:['一小時是 60 分鐘,超過 60 分就進到下一點。','ㄧˋ ㄒㄧㄠˇ ㄕˊ ㄕˋ ㄈㄣ ㄓㄨㄥ ㄔㄠ ㄍㄨㄛˋ ㄈㄣ ㄐㄧㄡˋ ㄐㄧㄣˋ ㄉㄠˋ ㄒㄧㄚˋ ㄧˋ ㄉㄧㄢˇ']};
+// 比大小用的數:基本題隨便抽;標準題最高位一樣;挑戰題前兩位一樣,再放一個「後兩位對調」的陷阱(46 和 64)
+function nearNums(lo,hi,k){
+  const tr=tier(),d=String(hi-1).length-1,s=new Set(),a=R(Math.max(lo,10**d),hi-1);s.add(a);
+  if(tr===2){const t=String(a),sw=+(t.slice(0,-2)+t.slice(-1)+t.slice(-2,-1));if(sw!==a&&sw>=lo&&sw<=hi&&String(sw).length===t.length)s.add(sw)}
+  const unit=tr===0?0:10**(tr===2&&d>=2?d-1:d);let g=0;
+  while(s.size<k&&g++<200){const b=unit?Math.floor(a/unit)*unit+R(0,unit-1):R(lo,hi);if(b>=lo&&b<=hi)s.add(b)}
+  while(s.size<k)s.add(R(lo,hi));
+  return shuffle([...s]).slice(0,k);
+}
+function gCompareX(lo,hi,tip){
+  const a=nearNums(lo,hi,3),big=R(0,1),t=big?Math.max(...a):Math.min(...a);
+  return lab(Z(big?T.max:T.min),'',a.map(n=>({h:String(n),ok:n===t})),{say:big?'哪一個數最大':'哪一個數最小',calc:[...a].sort((x,y)=>x-y).join(' &lt; '),teach:[[tip]]});
+}
+function gSignX(lo,hi,tip){
+  const [x,y]=nearNums(lo,hi,2),a=x,b=R(0,9)<2?a:y,sym=a>b?'&gt;':a<b?'&lt;':'=';
+  const q=lab(Z(SG.q),expr(`${a} ○ ${b}`),[['&gt;',SG.big],['&lt;',SG.small],['=',SG.eq]].map(([s,n])=>({h:`${s} ${Z(n)}`,s:n[0],ok:s===sym})),
+    {say:`${a} 和 ${b},圈圈裡面要填大於、小於,還是等於`,calc:`${a} ${sym} ${b}`,teach:a===b?[[SG.same]]:[[SG.tip],[tip]]});
+  q.ansS=q.opts.find(o=>o.ok).s;return q;
+}
+// 數列:基本題整十整百往上數;標準題 5、25、50 一跳,而且會跨過整百(整千);挑戰題有一半倒著數
+function gSeqX(type,max,big){
+  const tr=tier(),down=tr===2&&R(0,1),unit=big?1000:100,st=tr===0?pick(big?[100,1000]:[10,100]):pick(big?[25,50,250]:[5,25,50]);
+  let a,ans;
+  if(down){const r=R(3*st,max);a=r-r%5;if(a-3*st<0)a=3*st;ans=a-3*st}
+  else if(tr===0){a=R(0,Math.floor((max-3*st)/st))*st;ans=a+3*st}
+  else{a=R(1,Math.floor((max-3*st)/unit))*unit-st*R(1,2);if(a<0)a=st;ans=a+3*st}
+  const s=down?[a,a-st,a-2*st]:[a,a+st,a+2*st],e=(ans>=1000||big?exprSm:expr)(`${s.join(', ')}, ?`);
+  return num(Z(T.seq),e,ans,type,{say:`${s.join('、')},接下來是多少`,ds:[st,2*st,1],
+    teach:[[down?DF.eachLess:TT.eachMore,st,'。'],[down?`${s[2]} − ${st} = ${ans}`:`${s[2]} + ${st} = ${ans}`]]});
+}
+function wTimeX(t){ // 標準題以上:幾點幾分開始,寫了幾分鐘,跨過整點
+  if(!tier())return wTime(t);
+  const w=someone(),h=R(1,10),m=pick([20,25,30,35,40,45,50,55]),ds=[];for(let d=10;d<=55;d+=5)if(m+d>60&&m+d<120)ds.push(d);
+  const d=pick(ds),ans=m+d-60;
+  return wp(t,'📚✏️',ans,DF.fen,`${m} + ${d} − 60`,[5,10],DF.hourTip,[w,h,DF.dian,m,DF.startAt,C,W.wrote,d,DF.minutes,C,h+1,DF.doneAt]);
+}
+function gShareX(type){ // 平分:標準題以上數字大一點
+  const tr=tier(),it=pick(ITEMS.filter(x=>x.food)),k=tr?R(3,6):R(2,4),q=tr?R(4,8):R(2,5),n=k*q,p=line([n,it.m,it.n,',',SH.to,k,W.people,',',SH.each,it.m,'?']);
+  return num(p.h,emoRow(it.e,n),q,type,{unit:Z(it.m),say:p.say,ds:[1,2],calc:`${k} × ${q} = ${n}`,teach:[[SH.think,k,SH.times,n,'?'],[`${k} × ${q} = ${n}`]]});
+}
+function gDivEX(type){
+  const tr=tier(),b=tr?R(6,9):R(2,5),q=tr===2?R(6,9):R(2,9),a=b*q;
+  return num(Z(T.calc),expr(`${a} ÷ ${b} = ?`),q,type,{say:`${a} 除以 ${b} 等於多少`,ds:[1,2],calc:`${a} ÷ ${b} = ${q}`,teach:[[SH.think,b,SH.times,a,'?'],[`${b} × ${q} = ${a}`]]});
+}
+function gDivRX(type){
+  const tr=tier(),b=tr?R(4,9):R(2,5),q=tr?R(5,9):R(2,6),r=R(1,b-1),a=b*q+r,askQ=R(0,1);
+  return num(Z(BOXT.q),exprSm(askQ?`${a} ÷ ${b} = □ … ${r}`:`${a} ÷ ${b} = ${q} … □`),askQ?q:r,type,
+    {say:`${a} 除以 ${b},${askQ?'商':'餘數'}是多少`,ds:[1,2],calc:`${a} ÷ ${b} = ${q} … ${r}`,teach:[[G3.remTip],[`${b} × ${q} = ${b*q}`],[`${a} − ${b*q} = ${r}`]]});
+}
+function wDivX(t){ // 挑戰題:二位數除以一位數,商是二位數(72 ÷ 3 = 24)
+  if(tier()<2)return wDiv(t);
+  const it=pick(ITEMS.filter(x=>x.food)),k=R(2,4),q=R(11,Math.floor(99/k)),n=k*q;
+  return wp(t,it.e,q,it.m,`${n} ÷ ${k}`,[1,2,10],G3.wDivTip,[n,it.m,it.n,C,SH.to,k,W.people,C,SH.each,it.m,Q]);
+}
+const carryQ=q=>{const o=opsOf(q);return o&&(o[1]==='+'?o[0]%10+o[2]%10>=10:o[0]%10<o[2]%10)}; // 個位要進位/借位嗎
+const decCross=q=>{const o=opsOf(q);if(!o)return false;const a=Math.round(o[0]*10),b=Math.round(o[2]*10);return o[1]==='+'?a%10+b%10>=10:a%10<b%10};
+// 一年級
+setGen('add20',t=>gAdd(t,11,20,1,tier()?1:undefined));
+setGen('sub20',t=>gAdd(t,11,20,0,tier()?1:undefined));
+setGen('cmp100',()=>gCompareX(1,100,TT.cmp2));
+setGen('sign1',()=>gSignX(1,100,TT.cmp2));
+// 二年級
+setGen('add2',t=>gAdd2(t,1,tier()?1:undefined));
+setGen('sub2',t=>until(()=>gAdd2(t,0,tier()?1:undefined),q=>q.ans>=8));
+setGen('mul',t=>gMul(t,tier()?1:0));
+setGen('add3',t=>tier()?until(()=>gAdd3(t,1),q=>q.teach.some(l=>l[0]===TT.carry)):gAdd3(t,1));
+setGen('sub3',t=>tier()?until(()=>gAdd3(t,0),q=>q.teach.some(l=>l[0]===TT.borrow||l[0]===A3.borrow2)):gAdd3(t,0));
+setGen('cmp1000',()=>gCompareX(100,999,TT.cmp3));
+setGen('sign2',()=>gSignX(100,999,TT.cmp3));
+setGen('seq2',t=>gSeqX(t,1000,0));
+setGen('wAdd2',t=>tier()?until(()=>wAdd(t,1),carryQ):wAdd(t,1));
+setGen('wSub2',t=>tier()?until(()=>wSub(t,1),carryQ):wSub(t,1));
+setGen('wCmp2',t=>tier()?until(()=>wCmp(t,1),carryQ):wCmp(t,1));
+setGen('wTime',t=>wTimeX(t));
+setGen('share',t=>gShareX(t));
+// 三年級
+setGen('cmp4',()=>gCompareX(1000,9999,G3.cmp4));
+setGen('sign3',()=>gSignX(1000,9999,G3.cmp4));
+setGen('seq3',t=>gSeqX(t,9999,1));
+setGen('divE',t=>gDivEX(t));
+setGen('divR',t=>gDivRX(t));
+setGen('wDiv',t=>wDivX(t));
+setGen('decAdd',()=>tier()?until(()=>gDecAdd(),decCross):gDecAdd());
+
+/* ==================== 正面回饋:具體的稱讚、成就徽章、每天打招呼、多樣的鼓勵話 ====================
+   稱讚「做了什麼」(進步了、沒放棄、連對、某一種題目全對),不只說「好棒」;徽章獎勵努力和堅持,不只獎勵分數 */
+const AGAIN=[T.again,
+  ['差一點點!再試試看!','ㄔㄚ ㄧˋ ㄉㄧㄢˇ ㄉㄧㄢˇ ㄗㄞˋ ㄕˋ ㄕˋ ㄎㄢˋ'],
+  ['沒關係,錯了才學得會!','ㄇㄟˊ ㄍㄨㄢ ˙ㄒㄧ ㄘㄨㄛˋ ˙ㄌㄜ ㄘㄞˊ ㄒㄩㄝˊ ˙ㄉㄜ ㄏㄨㄟˋ'],
+  ['深呼吸,慢慢再想一次!','ㄕㄣ ㄏㄨ ㄒㄧ ㄇㄢˋ ㄇㄢˋ ㄗㄞˋ ㄒㄧㄤˇ ㄧˊ ㄘˋ']];
+const PV={hl:['這回合的亮點','ㄓㄜˋ ㄏㄨㄟˊ ㄏㄜˊ ˙ㄉㄜ ㄌㄧㄤˋ ㄉㄧㄢˇ'],up1:['比上次進步了','ㄅㄧˇ ㄕㄤˋ ㄘˋ ㄐㄧㄣˋ ㄅㄨˋ ˙ㄌㄜ'],up2:['分!','ㄈㄣ'],
+  fix1:['有','ㄧㄡˇ'],fix2:['題自己改對了,你沒有放棄!','ㄊㄧˊ ㄗˋ ㄐㄧˇ ㄍㄞˇ ㄉㄨㄟˋ ˙ㄌㄜ ㄋㄧˇ ㄇㄟˊ ㄧㄡˇ ㄈㄤˋ ㄑㄧˋ'],
+  all2:['題全對!','ㄊㄧˊ ㄑㄩㄢˊ ㄉㄨㄟˋ'],combo1:['最多連續答對','ㄗㄨㄟˋ ㄉㄨㄛ ㄌㄧㄢˊ ㄒㄩˋ ㄉㄚˊ ㄉㄨㄟˋ'],combo2:['題!','ㄊㄧˊ'],
+  done10:['你把 10 題都做完了,很努力!','ㄋㄧˇ ㄅㄚˇ ㄊㄧˊ ㄉㄡ ㄗㄨㄛˋ ㄨㄢˊ ˙ㄌㄜ ㄏㄣˇ ㄋㄨˇ ㄌㄧˋ'],
+  newBadge:['得到新徽章!','ㄉㄜˊ ㄉㄠˋ ㄒㄧㄣ ㄏㄨㄟ ㄓㄤ'],myBadges:['我的徽章','ㄨㄛˇ ˙ㄉㄜ ㄏㄨㄟ ㄓㄤ'],
+  morning:['早安','ㄗㄠˇ ㄢ'],noon:['午安','ㄨˇ ㄢ'],evening:['晚上好','ㄨㄢˇ ˙ㄕㄤ ㄏㄠˇ'],
+  st1:['你已經連續練習','ㄋㄧˇ ㄧˇ ㄐㄧㄥ ㄌㄧㄢˊ ㄒㄩˋ ㄌㄧㄢˋ ㄒㄧˊ'],st2:['天了!','ㄊㄧㄢ ˙ㄌㄜ'],
+  hello:['今天也一起加油吧!','ㄐㄧㄣ ㄊㄧㄢ ㄧㄝˇ ㄧˋ ㄑㄧˇ ㄐㄧㄚ ㄧㄡˊ ˙ㄅㄚ']};
+const BADGES=[
+  {id:'first',e:'🌱',n:['第一步','ㄉㄧˋ ㄧ ㄅㄨˋ']},          // 做完第一回合
+  {id:'perfect',e:'💯',n:['滿分','ㄇㄢˇ ㄈㄣ']},             // 第一次 100 分
+  {id:'streak3',e:'🔥',n:['連續三天','ㄌㄧㄢˊ ㄒㄩˋ ㄙㄢ ㄊㄧㄢ']}, // 連續練習 3 天
+  {id:'streak7',e:'🌈',n:['連續一星期','ㄌㄧㄢˊ ㄒㄩˋ ㄧˋ ㄒㄧㄥ ㄑㄧ']},
+  {id:'brave',e:'💪',n:['不放棄','ㄅㄨˊ ㄈㄤˋ ㄑㄧˋ']},          // 第二次機會自己改對,累積 10 題
+  {id:'combo',e:'🎯',n:['連對十題','ㄌㄧㄢˊ ㄉㄨㄟˋ ㄕˊ ㄊㄧˊ']},  // 一題一題時,一回合 10 題都第一次就答對
+  {id:'clean',e:'📕',n:['錯題清光光','ㄘㄨㄛˋ ㄊㄧˊ ㄑㄧㄥ ㄍㄨㄤ ㄍㄨㄤ']}, // 練完錯題,錯題本空了
+  {id:'improve',e:'📈',n:['進步之星','ㄐㄧㄣˋ ㄅㄨˋ ㄓ ㄒㄧㄥ']},   // 比自己上次進步,累積 3 次
+  {id:'boss',e:'👹',n:['打敗大魔王','ㄉㄚˇ ㄅㄞˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ']},
+  {id:'warm5',e:'☀️',n:['暖身五天','ㄋㄨㄢˇ ㄕㄣ ㄨˇ ㄊㄧㄢ']},     // 每日暖身做了 5 天
+  {id:'logic',e:'🧠',n:['小小邏輯家','ㄒㄧㄠˇ ㄒㄧㄠˇ ㄌㄨㄛˊ ㄐㄧˊ ㄐㄧㄚ']}, // 資優邏輯 80 分以上
+  {id:'rounds50',e:'🏅',n:['練習五十回','ㄌㄧㄢˋ ㄒㄧˊ ㄨˇ ㄕˊ ㄏㄨㄟˊ']}, // 一共練了 50 回合
+];
+function award(id){S.badges=S.badges||{};if(S.badges[id])return null;S.badges[id]=dayKey();save();return BADGES.find(b=>b.id===id)} // 新得到的才回傳
+function badgePop(list,delay){ // 新徽章:慢一點跳出來,不要蓋住成績
+  if(!list.length)return;const at=scr;
+  setTimeout(()=>{if(scr!==at||$('#modalBox').classList.contains('on'))return;sfx.win();confetti(120);
+    modal(`<div class="bdgpop">${list.map(b=>`<div><span>${b.e}</span>${Z(b.n)}</div>`).join('')}</div><h2>🎉 ${Z(PV.newBadge)}</h2>
+      <div class="row center"><button class="btn mint" onclick="closeModal()">${Z(T.yes)}</button><button class="btn ghost" onclick="closeModal();book()">📒 ${Z(T.book)}</button></div>`);
+    speak('哇!得到新徽章:'+list.map(b=>b.n[0]).join('、')+'!')},delay||1500);
+}
+function badgeCheck(step,sc,full,id,prev,base,boss){ // 做完一回合:看看有沒有新徽章
+  const c=S.cnt=S.cnt||{},got=[];c.rounds=(c.rounds||0)+1;
+  const fixed=step?G.pts.filter(p=>p===5).length:0;c.brave=(c.brave||0)+fixed;
+  if(prev!=null&&sc>prev)c.improve=(c.improve||0)+1;
+  const add=x=>{const b=award(x);if(b)got.push(b)};
+  add('first');if(full)add('perfect');if(streak()>=3)add('streak3');if(streak()>=7)add('streak7');
+  if(c.brave>=10)add('brave');if(step&&(G.maxCombo||0)>=10)add('combo');if(id==='retry'&&!dueKinds().length)add('clean');
+  if(c.improve>=3)add('improve');if(boss&&base)add('boss');if(UNITS.L.some(u=>u.id===id)&&sc>=80)add('logic');if(c.rounds>=50)add('rounds50');
+  return got;
+}
+function highlights(step,sc,prev){ // 這回合的亮點:具體說出她做到了什麼(最多兩句)
+  const out=[],ok=i=>step?!!G.first[i]:isRight(i),L=p=>line(p);
+  if(prev!=null&&sc>prev)out.push(L([PV.up1,sc-prev,PV.up2]));
+  const fixed=step?G.pts.filter(p=>p===5).length:0;if(fixed)out.push(L([PV.fix1,fixed,PV.fix2]));
+  const by={};G.qs.forEach((q,i)=>{(by[q.kind]=by[q.kind]||[]).push(ok(i))});
+  const best=Object.entries(by).filter(([,a])=>a.length>=2&&a.every(Boolean)).sort((x,y)=>y[1].length-x[1].length)[0];
+  if(best){const k=kindById(best[0]);if(k)out.push(L([k.n,' ',best[1].length,PV.all2]))}
+  if(step&&(G.maxCombo||0)>=5)out.push(L([PV.combo1,G.maxCombo,PV.combo2]));
+  if(!out.length)out.push(L([PV.done10]));
+  return out.slice(0,2);
+}
+function greetOnce(){ // 每天第一次回到首頁:打招呼,說說連續練習了幾天
+  if(scr!=='home'||S.greetDay===dayKey())return;S.greetDay=dayKey();save();
+  const h=new Date().getHours(),hi=h<11?PV.morning:h<17?PV.noon:PV.evening,nm=S.name&&!HAN.test(S.name)?[','+S.name+'!','']:['!',''],n=streak();
+  talk(J(hi,nm,...(n>=2?[PV.st1,[String(n),''],PV.st2]:[PV.hello])));mascotAnim('jump');
+}
+function badgeWall(){ // 貼紙簿下面:我的徽章(還沒得到的是灰色問號,看得到名字,知道可以往哪裡努力)
+  const have=S.badges||{},n=BADGES.filter(b=>have[b.id]).length;
+  return `<h2 style="margin-top:16px">🏅 ${Z(PV.myBadges)}　${n} / ${BADGES.length}</h2><div class="bdgs">${BADGES.map(b=>`<div class="${have[b.id]?'on':''}"><span>${have[b.id]?b.e:'❔'}</span>${Z(b.n)}</div>`).join('')}</div>`;
+}
+
+/* ==================== 一步一步的算法(答錯時全部列出來;例題教學每一步都讓她自己填) ====================
+   加減法用直式:從個位開始,一位一位算,寫出「不夠減,向十位借 1」「寫 3,進 1 到十位」。
+   一年級 20 以內:湊十、破十(借十)。除法:直式除法(長除法),一位一位除,最後驗算 */
+const PL=[['個位','ㄍㄜˋ ㄨㄟˋ'],['十位','ㄕˊ ㄨㄟˋ'],['百位','ㄅㄞˇ ㄨㄟˋ'],['千位','ㄑㄧㄢ ㄨㄟˋ'],['萬位','ㄨㄢˋ ㄨㄟˋ']];
+const AS={notEnough:['不夠減','ㄅㄨˊ ㄍㄡˋ ㄐㄧㄢˇ'],toward:['向','ㄒㄧㄤˋ'],borrow1:['借 1,','ㄐㄧㄝˋ'],become:['變成','ㄅㄧㄢˋ ㄔㄥˊ'],lent:['被借走 1,剩下','ㄅㄟˋ ㄐㄧㄝˋ ㄗㄡˇ ㄕㄥˋ ㄒㄧㄚˋ'],
+  lentNeed:['被借走 1,還是不夠減','ㄅㄟˋ ㄐㄧㄝˋ ㄗㄡˇ ㄏㄞˊ ㄕˋ ㄅㄨˊ ㄍㄡˋ ㄐㄧㄢˇ'],direct:['直接寫下','ㄓˊ ㄐㄧㄝ ㄒㄧㄝˇ ㄒㄧㄚˋ'],
+  write:['寫','ㄒㄧㄝˇ'],carry1:['進 1 到','ㄐㄧㄣˋ ㄉㄠˋ'],ans:['答案:','ㄉㄚˊ ㄢˋ'],
+  need:['還差','ㄏㄞˊ ㄔㄚ'],make10:['個就是 10,','˙ㄍㄜ ㄐㄧㄡˋ ㄕˋ'],split:['把','ㄅㄚˇ'],into:['分成','ㄈㄣ ㄔㄥˊ'],and:['和','ㄏㄢˋ'],
+  from10:['從 10 裡面借:','ㄘㄨㄥˊ ㄌㄧˇ ˙ㄇㄧㄢ ㄐㄧㄝˋ'],join:['剩下的和','ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ ㄏㄢˋ'],joinB:['合起來:','ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ'],
+  first10:['先湊成 10:','ㄒㄧㄢ ㄘㄡˋ ㄔㄥˊ'],then:['再加剩下的:','ㄗㄞˋ ㄐㄧㄚ ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ']};
+const LD={lt:['比','ㄅㄧˇ'],small:['小,不夠除,要看','ㄒㄧㄠˇ ㄅㄨˊ ㄍㄡˋ ㄔㄨˊ ㄧㄠˋ ㄎㄢˋ'],h1:['裡面最多有幾個','ㄌㄧˇ ˙ㄇㄧㄢ ㄗㄨㄟˋ ㄉㄨㄛ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ'],
+  sub:['減掉:','ㄐㄧㄢˇ ㄉㄧㄠˋ'],down1:['把下一位的','ㄅㄚˇ ㄒㄧㄚˋ ㄧˊ ㄨㄟˋ ˙ㄉㄜ'],down2:['搬下來,變成','ㄅㄢ ㄒㄧㄚˋ ㄌㄞˊ ㄅㄧㄢˋ ㄔㄥˊ'],
+  quot:['商是','ㄕㄤ ㄕˋ'],rem:[',餘數是','ㄩˊ ㄕㄨˋ ㄕˋ'],check:['驗算:','ㄧㄢˋ ㄙㄨㄢˋ'],think:['想:','ㄒㄧㄤˇ']};
+const D10=(x,k)=>Math.floor(x/10**k)%10;
+function addSubSteps(a,op,b){ // 直式加減:回傳 teach 的每一行
+  const r=op==='+'?a+b:a-b,n=Math.max(String(a).length,String(b).length),L=[];let c=0;
+  for(let k=0;k<n;k++){
+    const da=D10(a,k),hasB=b>=10**k||k===0,db=hasB?D10(b,k):0,P=PL[k],Pn=PL[k+1]||PL[k];
+    if(op==='+'){
+      const hasA=a>=10**k||k===0,s=(hasA?da:0)+db+c;
+      if(!hasB&&!c){L.push([P,':',AS.direct,da]);continue}
+      L.push([P,':',hasB?`${hasA?da:0} + ${db}${c?' + 1':''} = ${s}`:`${da} + 1 = ${s}`]);
+      c=s>=10?1:0;if(c)L.push([AS.write,s%10,',',AS.carry1,Pn]);
+    }else{
+      const top=da-c,need=top<db?1:0;
+      if(c&&need)L.push([P,':',da,AS.lentNeed,',',AS.toward,Pn,AS.borrow1,P,AS.become,`${da} − 1 + 10 = ${da+9}`]);
+      else if(c)L.push([P,':',da,AS.lent,`${da} − 1 = ${da-1}`]);
+      else if(need)L.push([P,':',da,AS.notEnough,db,',',AS.toward,Pn,AS.borrow1,P,AS.become,`${da} + 10 = ${da+10}`]);
+      const t=top+need*10;
+      if(hasB)L.push([P,':',`${t} − ${db} = ${t-db}`]);else if(!c)L.push([P,':',AS.direct,da]);
+      c=need;
+    }
+  }
+  L.push([AS.ans,`${a} ${op} ${b} = ${r}`]);
+  return L;
+}
+function tenSteps(a,op,b){ // 一年級:湊十(9 + 5)、破十(13 − 8);不適用就回傳 null
+  if(op==='+'&&a<10&&b<10&&a+b>10){const x=Math.max(a,b),y=Math.min(a,b),n=10-x,m=y-n;
+    return [[x,AS.need,n,AS.make10,AS.split,y,AS.into,n,AS.and,m],[AS.first10,`${x} + ${n} = 10`],[AS.then,`10 + ${m} = ${a+b}`]]}
+  if(op==='−'&&a>10&&a<20&&b<10&&a%10<b){const o=a-10;
+    return [[AS.split,a,AS.into,10,AS.and,o],[AS.from10,`10 − ${b} = ${10-b}`],[AS.join,o,AS.joinB,`${10-b} + ${o} = ${a-b}`]]}
+  return null;
+}
+function longDiv(a,b){ // 直式除法的每一步(從最高位一位一位除)
+  const ds=String(a).split('').map(Number),st=[];let cur=0,qs='';
+  ds.forEach((d,i)=>{cur=cur*10+d;if(!st.length&&cur<b&&i<ds.length-1)return;const qd=Math.floor(cur/b),p=qd*b;st.push({i,cur,qd,p,r:cur-p});qs+=qd;cur-=p});
+  return {ds,steps:st,q:+qs,r:cur};
+}
+function divSteps(a,b){
+  const D=longDiv(a,b),L=[];
+  D.steps.forEach((s,k)=>{
+    if(k===0&&s.i>0)L.push([+String(a).slice(0,s.i),LD.lt,b,LD.small,s.cur,'。']);
+    L.push([s.cur,LD.h1,b,'? ',LD.think,`${b} × ${s.qd} = ${s.p}`]);
+    L.push([LD.sub,`${s.cur} − ${s.p} = ${s.r}`]);
+    const nx=D.steps[k+1];if(nx)L.push([LD.down1,D.ds[nx.i],LD.down2,nx.cur,'。']);
+  });
+  L.push(D.r?[LD.quot,D.q,LD.rem,D.r]:[LD.quot,D.q]);
+  L.push([LD.check,D.r?`${b} × ${D.q} + ${D.r} = ${a}`:`${b} × ${D.q} = ${a}`]);
+  return L;
+}
+function longDivHtml(a,b){ // 直式除法的圖:商在上面,除數在左邊,下面一層一層是乘出來的數和剩下的數
+  const D=longDiv(a,b),W=D.ds.length,blank=()=>Array(W).fill(''),put=(row,v,end)=>{const s=String(v);for(let k=0;k<s.length;k++)row[end-s.length+1+k]=s[k]};
+  const rows=[],q=blank();D.steps.forEach(s=>{q[s.i]=String(s.qd)});rows.push(['',q,'ldq']);rows.push([String(b),D.ds.map(String),'lda']);
+  D.steps.forEach((s,k)=>{const p=blank();put(p,s.p,s.i);rows.push(['',p,'ldp']);const r=blank(),nx=D.steps[k+1];put(r,nx?nx.cur:s.r,nx?nx.i:s.i);rows.push(['',r,'ldr'])});
+  return `<div class="ldiv" style="grid-template-columns:auto repeat(${W},1.1em)">${rows.map(([lead,cells,cls])=>`<span class="ldl ${cls}">${lead}</span>`+cells.map(c=>`<span class="${cls}${c?' on':''}">${c}</span>`).join('')).join('')}</div>`;
+}
+const STEP_AS=/^(add2|sub2|add3|sub3|add4|sub4|wAdd2|wSub2|wCmp2|wAdd4|wSub4|chainX)$/,STEP_TEN=/^(add20|sub20|wAdd1|wSub1)$/,STEP_DIV=/^(divE|divR|wDiv|wDivPack)$/;
+function stepify(q,id){ // 出完題目後,把解說換成一步一步的算法
+  if(q.full||q.type==='m')return;
+  const m=String(q.calc||'').replace(/\s/g,'').match(/^(\d+)([+−÷])(\d+)=(\d+)(?:…(\d+))?$/);if(!m)return;
+  const a=+m[1],op=m[2],b=+m[3],keep=/^w/.test(id)&&q.teach[0]?[q.teach[0]]:[]; // 應用題保留第一句提示(例如「合起來要用加的」)
+  let L=null;
+  if(STEP_DIV.test(id)&&op==='÷'){L=divSteps(a,b);q.ex=longDivHtml(a,b)}
+  else if(STEP_TEN.test(id)&&op!=='÷')L=tenSteps(a,op,b);
+  else if(STEP_AS.test(id)&&op!=='÷'&&Math.max(a,b)>=10)L=addSubSteps(a,op,b);
+  if(!L)return;
+  q.teach=[...keep,...L];q.full=true;
+}
+function stepTeachHtml(q,i,right){ // 步驟卡:每一步都列出來,不收起來
+  const ls=q.teach.map(line),open=right?T.teachOpenOk:T.teachOpen,trap=right?null:TRAP[(q.traps||{})[givenVal(i)]];
+  const an=animHtml(q),pic=an||(q.ex?`<div class="explain">${q.ex}</div>`:'');
+  q.teachSay=[open[0],trap&&trap.tip[0],...ls.map(l=>l.say),T.so[0]+(q.ansS||plain(q.ansH))].filter(Boolean).join('。').replace(/([。!?!?])。/g,'$1');
+  q.moreSay='';
+  return `<div class="teach"><div class="tav">${bunnySvg()}</div><div class="sp">
+    ${trap?`<div class="bubble trap">💡 ${Z(trap.tip)}</div>`:''}${pic}
+    <ol class="stepcard">${ls.map(l=>`<li>${l.h}</li>`).join('')}</ol>
+    <div class="bubble so">${Z(T.so)}<span class="ans">${q.ansH}</span></div>
+    <div class="row"><button class="btn purple small" onclick="speak(G.qs[${i}].teachSay,true)">🔊 ${Z(T.hearTeach)}</button></div></div></div>`;
+}
+// 填空題:列出算法的前幾步,其中一步的答案變成 □ 要她填
+const FB={q:['照著算法,□ 裡要填多少?','ㄓㄠˋ ˙ㄓㄜ ㄙㄨㄢˋ ㄈㄚˇ ㄌㄧˇ ㄧㄠˋ ㄊㄧㄢˊ ㄉㄨㄛ ㄕㄠˇ']};
+function stepFill(head,L,pickable){ // L:步驟;pickable:可以挖空的那幾行(最後是「= 數字」)
+  const idx=L.map((l,k)=>k).filter(k=>pickable(L[k])),k=pick(idx),last=L[k][L[k].length-1],mm=last.match(/^(.*= )(\d+)$/),ans=+mm[2];
+  const shown=[...L.slice(0,k),[...L[k].slice(0,-1),mm[1]+'□']];
+  return {ans,eq:last,v:`${head}<ol class="stepcard fill">${shown.map(l=>`<li>${line(l).h}</li>`).join('')}</ol>`};
+}
+const eqEnd=l=>{const x=l[l.length-1];return typeof x==='string'&&/= \d+$/.test(x)};
+function gTenFill(){ // 一年級:湊十、破十的步驟填空
+  let a,b,op,L;do{op=R(0,1)?'+':'−';if(op==='+'){a=R(2,9);b=R(11-a,9)}else{a=R(11,18);b=R(a-9,9)}L=tenSteps(a,op,b)}while(!L);
+  const f=stepFill(expr(`${a} ${op} ${b} = ?`),L,eqEnd);
+  return num(Z(FB.q),f.v,f.ans,'f',{say:`${a} ${op==='+'?'加':'減'} ${b},照著算法,框框裡要填多少`,ds:[1,2],teach:L,calc:f.eq}); // 答對時列出她填的那一步
+}
+function gColFill(op){ // 二年級:進位、借位的步驟填空(大多是兩位數,偶爾三位數)
+  const big=R(0,3)===0;let a,b;
+  do{if(op==='+'){a=big?R(100,799):R(11,79);b=big?R(100,999-a):R(11,99-a)}else{a=big?R(200,999):R(22,99);b=big?R(100,a-1):R(11,a-1)}}while(op==='+'?a%10+b%10<10:a%10>=b%10);
+  const L=addSubSteps(a,op,b),f=stepFill(`<div class="expr">${a} ${op} ${b} = ?</div>`,L.slice(0,-1),eqEnd);
+  return num(Z(FB.q),f.v,f.ans,'f',{say:`${a} ${op==='+'?'加':'減'} ${b},照著算法,框框裡要填多少`,ds:[1,10],teach:L,calc:f.eq});
+}
+function gDivFill(){ // 三年級:直式除法的步驟填空
+  const b=R(3,9),q=R(4,9),r=R(0,b-1),a=b*q+r,L=divSteps(a,b),f=stepFill(`<div class="expr">${a} ÷ ${b}</div>`,L.slice(0,-1),eqEnd);
+  return num(Z(FB.q),f.v,f.ans,'f',{say:`${a} 除以 ${b},照著算法,框框裡要填多少`,ds:[1,2,b],teach:L,calc:f.eq,ex:longDivHtml(a,b)});
+}
+KINDS.push(
+  {id:'tenFill',u:'a20',types:'f',n:['湊十破十填空','ㄘㄡˋ ㄕˊ ㄆㄛˋ ㄕˊ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gTenFill();q.full=true;return q}},
+  {id:'carryFill',u:'add2',types:'f',n:['進位填空','ㄐㄧㄣˋ ㄨㄟˋ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gColFill('+');q.full=true;return q}},
+  {id:'borrowFill',u:'add2',types:'f',n:['借位填空','ㄐㄧㄝˋ ㄨㄟˋ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gColFill('−');q.full=true;return q}},
+  {id:'divFill',u:'div3',types:'f',n:['直式除法填空','ㄓˊ ㄕˋ ㄔㄨˊ ㄈㄚˇ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gDivFill();q.full=true;return q}},
+);
+
+/* ==================== 一年級「看圖想一想」:照學校考卷的題型,多看圖、多想一步 ====================
+   前後有幾個、「第幾個」和「前面幾個」的差別、上下數樓層、爬樓梯、一個配一個比多少、分合樹 */
+const PB={
+  front:['前','ㄑㄧㄢˊ'],back:['後','ㄏㄡˋ'],de:['的','˙ㄉㄜ'],frontOf:['前面','ㄑㄧㄢˊ ˙ㄇㄧㄢ'],backOf:['後面','ㄏㄡˋ ˙ㄇㄧㄢ'],
+  howMany:['有幾隻動物?','ㄧㄡˇ ㄐㄧˇ ㄓ ㄉㄨㄥˋ ㄨˋ'],total:['一共有幾隻動物在排隊?','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ㄓ ㄉㄨㄥˋ ㄨˋ ㄗㄞˋ ㄆㄞˊ ㄉㄨㄟˋ'],
+  flagTip:['🚩 這邊是前面,一隻一隻數。','ㄓㄜˋ ㄅㄧㄢ ㄕˋ ㄑㄧㄢˊ ˙ㄇㄧㄢ ㄧˋ ㄓ ㄧˋ ㄓ ㄕㄨˇ'],
+  notSelf:['自己不算進去喔!','ㄗˋ ㄐㄧˇ ㄅㄨˊ ㄙㄨㄢˋ ㄐㄧㄣˋ ㄑㄩˋ ㄛ'],
+  fromLeft:['從左邊數,','ㄘㄨㄥˊ ㄗㄨㄛˇ ㄅㄧㄢ ㄕㄨˇ'],whichRow:['哪一排塗的是','ㄋㄚˇ ㄧˋ ㄆㄞˊ ㄊㄨˊ ˙ㄉㄜ ㄕˋ'],
+  nth1:['「第','ㄉㄧˋ'],nth2:['個」?','˙ㄍㄜ'],first1:['「前面','ㄑㄧㄢˊ ˙ㄇㄧㄢ'],
+  nthTip:['「第幾個」只塗一個,「前面幾個」要從第一個一直塗到那裡。','ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ ㄓˇ ㄊㄨˊ ㄧˊ ˙ㄍㄜ ㄑㄧㄢˊ ˙ㄇㄧㄢ ㄐㄧˇ ˙ㄍㄜ ㄧㄠˋ ㄘㄨㄥˊ ㄉㄧˋ ㄧ ˙ㄍㄜ ㄧˋ ㄓˊ ㄊㄨˊ ㄉㄠˋ ㄋㄚˋ ㄌㄧˇ'],
+  each:['每','ㄇㄟˇ'],want:['要','ㄧㄠˋ'],enoughQ:['夠不夠?','ㄍㄡˋ ㄅㄨˊ ㄍㄡˋ'],enough:['夠','ㄍㄡˋ'],notEnough:['不夠','ㄅㄨˊ ㄍㄡˋ'],
+  bi:['比','ㄅㄧˇ'],more:['多幾','ㄉㄨㄛ ㄐㄧˇ'],less:['少幾','ㄕㄠˇ ㄐㄧˇ'],
+  pairTip:['一個配一個,連連看,看誰有剩下。','ㄧˊ ˙ㄍㄜ ㄆㄟˋ ㄧˊ ˙ㄍㄜ ㄌㄧㄢˊ ㄌㄧㄢˊ ㄎㄢˋ ㄎㄢˋ ㄕㄟˊ ㄧㄡˇ ㄕㄥˋ ㄒㄧㄚˋ'],
+  stand:['站在第','ㄓㄢˋ ㄗㄞˋ ㄉㄧˋ'],step1:['階,往上爬','ㄐㄧㄝ ㄨㄤˇ ㄕㄤˋ ㄆㄚˊ'],step2:['階,再往下走','ㄐㄧㄝ ㄗㄞˋ ㄨㄤˇ ㄒㄧㄚˋ ㄗㄡˇ'],
+  stepQ:['階,現在在第幾階?','ㄐㄧㄝ ㄒㄧㄢˋ ㄗㄞˋ ㄗㄞˋ ㄉㄧˋ ㄐㄧˇ ㄐㄧㄝ'],
+  upDown:['往上爬用加的,往下走用減的。','ㄨㄤˇ ㄕㄤˋ ㄆㄚˊ ㄩㄥˋ ㄐㄧㄚ ˙ㄉㄜ ㄨㄤˇ ㄒㄧㄚˋ ㄗㄡˇ ㄩㄥˋ ㄐㄧㄢˇ ˙ㄉㄜ'],
+  top:['從上往下數,','ㄘㄨㄥˊ ㄕㄤˋ ㄨㄤˇ ㄒㄧㄚˋ ㄕㄨˇ'],bottom:['從下往上數,','ㄘㄨㄥˊ ㄒㄧㄚˋ ㄨㄤˇ ㄕㄤˋ ㄕㄨˇ'],live:['住在第幾層?','ㄓㄨˋ ㄗㄞˋ ㄉㄧˋ ㄐㄧˇ ㄘㄥˊ'],
+  topTip:['從上面開始,一層一層數。','ㄘㄨㄥˊ ㄕㄤˋ ˙ㄇㄧㄢ ㄎㄞ ㄕˇ ㄧˋ ㄘㄥˊ ㄧˋ ㄘㄥˊ ㄕㄨˇ'],botTip:['從下面開始,一層一層數。','ㄘㄨㄥˊ ㄒㄧㄚˋ ˙ㄇㄧㄢ ㄎㄞ ㄕˇ ㄧˋ ㄘㄥˊ ㄧˋ ㄘㄥˊ ㄕㄨˇ'],
+  up:['上','ㄕㄤˋ'],down:['下','ㄒㄧㄚˋ'],
+  boxQ:['□ 裡要填多少?','ㄌㄧˇ ㄧㄠˋ ㄊㄧㄢˊ ㄉㄨㄛ ㄕㄠˇ'],
+  splitTip:['上面的數可以分成下面兩個數。','ㄕㄤˋ ˙ㄇㄧㄢ ˙ㄉㄜ ㄕㄨˋ ㄎㄜˇ ㄧˇ ㄈㄣ ㄔㄥˊ ㄒㄧㄚˋ ˙ㄇㄧㄢ ㄌㄧㄤˇ ˙ㄍㄜ ㄕㄨˋ'],
+  mergeTip:['上面兩個數合起來,就是下面的數。','ㄕㄤˋ ˙ㄇㄧㄢ ㄌㄧㄤˇ ˙ㄍㄜ ㄕㄨˋ ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄐㄧㄡˋ ㄕˋ ㄒㄧㄚˋ ˙ㄇㄧㄢ ˙ㄉㄜ ㄕㄨˋ'],
+};
+const PB_ANI=['🐶','🐱','🐰','🐻','🐼','🐥','🐸','🐷','🐨','🦊'];
+// 一個配一個:誰配誰(b.one 是「一朵、一個、一根、一條」的「一」要怎麼念)
+const PB_PAIRS=[
+  [{e:'🐝',n:['蜜蜂','ㄇㄧˋ ㄈㄥ'],m:['隻','ㄓ']},{e:'🌸',n:['花','ㄏㄨㄚ'],m:['朵','ㄉㄨㄛˇ'],one:['一','ㄧˋ']}],
+  [{e:'🧒',n:['小朋友','ㄒㄧㄠˇ ㄆㄥˊ ˙ㄧㄡ'],m:['個','˙ㄍㄜ']},{e:'🎈',n:['氣球','ㄑㄧˋ ㄑㄧㄡˊ'],m:['個','˙ㄍㄜ'],one:['一','ㄧˊ']}],
+  [{e:'🐰',n:['兔子','ㄊㄨˋ ˙ㄗ'],m:['隻','ㄓ']},{e:'🥕',n:['紅蘿蔔','ㄏㄨㄥˊ ㄌㄨㄛˊ ˙ㄅㄛ'],m:['根','ㄍㄣ'],one:['一','ㄧˋ']}],
+  [{e:'🐱',n:['貓咪','ㄇㄠ ㄇㄧ'],m:['隻','ㄓ']},{e:'🐟',n:['魚','ㄩˊ'],m:['條','ㄊㄧㄠˊ'],one:['一','ㄧˋ']}],
+];
+function pFrontBack(type){ // 排隊:某一隻的前面、後面有幾隻,或一共有幾隻
+  const n=R(5,8),an=shuffle(PB_ANI).slice(0,n),i=R(1,n-2),k=type==='c'?R(0,1):R(0,2);
+  const v=`<div class="emo ord"><span>${Z(PB.front)}🚩</span><span>${an.join(' ')}</span><span>${Z(PB.back)}</span></div>`;
+  if(k===2){const p=line([PB.total]);return num(p.h,v,n,type,{say:p.say,ds:[1,2],teach:[[PB.flagTip]]})}
+  const fr=k===0,ans=fr?i:n-i-1,p=line([an[i],PB.de,fr?PB.frontOf:PB.backOf,PB.howMany]);
+  return num(p.h,v,ans,type,{say:p.say,ds:[1,2],wrong:[ans+1],teach:[[PB.flagTip],[PB.notSelf],...(fr?[]:[[`${n} − ${i+1} = ${ans}`]])]});
+}
+function pNthFirst(){ // 塗塗看:「第 4 個」和「前面 4 個」哪裡不一樣
+  const n=R(7,9),k=R(2,n-2),nth=R(0,1),aNth=R(0,1);
+  const rowN=Array.from({length:n},(_,i)=>i===k-1?'🔴':'⚪').join(''),rowF=Array.from({length:n},(_,i)=>i<k?'🔴':'⚪').join('');
+  const [ra,rb]=aNth?[rowN,rowF]:[rowF,rowN],p=line([PB.fromLeft,PB.whichRow,...(nth?[PB.nth1,k,PB.nth2]:[PB.first1,k,PB.nth2])]);
+  const v=`<div class="pkrows"><div><b>A</b><span>${ra}</span></div><div><b>B</b><span>${rb}</span></div></div>`;
+  const opts=[{h:'A',ok:nth===aNth},{h:'B',ok:nth!==aNth}],q=lab(p.h,v,opts,{say:p.say,teach:[[PB.nthTip]]});q.opts=opts;return q; // A、B 固定照順序排
+}
+function pEnough(type){ // 一個配一個:夠不夠、多幾個
+  const [a,b]=pick(PB_PAIRS),na=R(4,9);let nb=R(Math.max(3,na-3),na+3);if(type==='f'&&nb===na)nb=na+1;
+  const v=`${emoRow(a.e,na)}${emoRow(b.e,nb)}`;
+  if(type==='c'){
+    const p=line([PB.each,a.m,a.n,PB.want,b.one,b.m,b.n,',',b.n,PB.enoughQ]);
+    const opts=[{h:Z(PB.enough),ok:nb>=na},{h:Z(PB.notEnough),ok:nb<na}],q=lab(p.h,v,opts,{say:p.say,teach:[[PB.pairTip]]});q.opts=opts;return q; // 「夠」固定在前面
+  }
+  const more=nb>na,d=Math.abs(nb-na),p=line([b.n,PB.bi,a.n,more?PB.more:PB.less,b.m,'?']);
+  return num(p.h,v,d,'f',{say:p.say,ds:[1,2],teach:[[PB.pairTip]],calc:more?`${nb} − ${na} = ${d}`:`${na} − ${nb} = ${d}`});
+}
+function stairsSvg(at){
+  let s='';for(let i=1;i<=10;i++){const y=140-i*12;s+=`<rect x="${(i-1)*24}" y="${y}" width="24" height="${i*12}" fill="${i===at?'#ffe08a':'#f3e9f5'}" stroke="#b9a6c0"/><text x="${(i-1)*24+12}" y="${y+11}" text-anchor="middle" font-size="10" fill="#6b5b73">${i}</text>`}
+  const y=140-at*12;return `<svg class="stairs" viewBox="0 -14 240 156" aria-hidden="true">${s}<text x="${(at-1)*24+12}" y="${y-3}" text-anchor="middle" font-size="20">🧒</text></svg>`;
+}
+function pStairs(type){ // 爬樓梯:往上幾階、再往下幾階
+  const a=R(2,7),b=R(1,10-a),c=R(1,a+b-1),ans=a+b-c,w=someone(),p=line([w,PB.stand,a,PB.step1,b,PB.step2,c,PB.stepQ]);
+  return num(p.h,stairsSvg(a),ans,type,{say:p.say,ds:[1,2],wrong:[a+b,a+c],teach:[[PB.upDown],[`${a} + ${b} = ${a+b}`],[`${a+b} − ${c} = ${ans}`]]});
+}
+function pFloors(type){ // 樓層:從上往下數、從下往上數
+  const n=R(4,6),an=shuffle(PB_ANI).slice(0,n),i=R(0,n-1),top=R(0,1),ans=top?i+1:n-i,other=top?n-i:i+1;
+  const v=`<div class="bldg"><div class="roof">${Z(PB.up)}</div>${an.map(e=>`<div class="fl">${e}</div>`).join('')}<div class="base">${Z(PB.down)}</div></div>`;
+  const p=line([top?PB.top:PB.bottom,an[i],PB.live]);
+  return num(p.h,v,ans,type,{say:p.say,ds:[1,2],wrong:other!==ans?[other]:[],teach:[[top?PB.topTip:PB.botTip]]});
+}
+function bondSvg(top,bot){ // 分合樹:上面 1 格分成下面 2 格,或上面 2 格合成下面 1 格
+  const box=(x,y,v)=>`<rect x="${x}" y="${y}" width="48" height="40" rx="6" fill="#fff" stroke="#6b5b73" stroke-width="2.5"/><text x="${x+24}" y="${y+29}" text-anchor="middle" font-size="24" font-weight="700" fill="${v==='?'?'#f06292':'#4a4350'}">${v}</text>`;
+  const ln=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#6b5b73" stroke-width="2.5"/>`;
+  const body=top.length===1?ln(100,44,50,86)+ln(100,44,150,86)+box(76,4,top[0])+box(26,86,bot[0])+box(126,86,bot[1])
+    :ln(50,44,100,86)+ln(150,44,100,86)+box(26,4,top[0])+box(126,4,top[1])+box(76,86,bot[0]);
+  return `<svg class="btree" viewBox="0 0 200 130" aria-hidden="true">${body}</svg>`;
+}
+function pBondTree(type){
+  const t=R(4,10),a=R(1,t-1),b=t-a,split=R(0,1),p=line([PB.boxQ]);
+  if(split){const left=R(0,1);return num(p.h,bondSvg([t],left?['?',b]:[a,'?']),left?a:b,type,{say:`${t} 可以分成幾和幾,框框裡要填多少`,ds:[1,2],teach:[[PB.splitTip]],calc:left?`${t} − ${b} = ${a}`:`${t} − ${a} = ${b}`})}
+  return num(p.h,bondSvg([a,b],['?']),t,type,{say:`${a} 和 ${b} 合起來,框框裡要填多少`,ds:[1,2],teach:[[PB.mergeTip]],calc:`${a} + ${b} = ${t}`});
+}
+UNITS[1].push({id:'pic1',e:'🔍',t:['看圖想一想','ㄎㄢˋ ㄊㄨˊ ㄒㄧㄤˇ ˙ㄧ ㄒㄧㄤˇ']});
+KINDS.push(
+  {id:'pFront',u:'pic1',types:'cf',n:['排隊前後','ㄆㄞˊ ㄉㄨㄟˋ ㄑㄧㄢˊ ㄏㄡˋ'],gen:t=>pFrontBack(t)},
+  {id:'pNth',u:'pic1',types:'c',n:['第幾個和前面幾個','ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ ㄏㄢˋ ㄑㄧㄢˊ ˙ㄇㄧㄢ ㄐㄧˇ ˙ㄍㄜ'],gen:()=>pNthFirst()},
+  {id:'pEnough',u:'pic1',types:'cf',n:['一個配一個','ㄧˊ ˙ㄍㄜ ㄆㄟˋ ㄧˊ ˙ㄍㄜ'],gen:t=>pEnough(t)},
+  {id:'pStairs',u:'pic1',types:'cf',n:['爬樓梯','ㄆㄚˊ ㄌㄡˊ ㄊㄧ'],gen:t=>pStairs(t)},
+  {id:'pFloors',u:'pic1',types:'cf',n:['上下數樓層','ㄕㄤˋ ㄒㄧㄚˋ ㄕㄨˇ ㄌㄡˊ ㄘㄥˊ'],gen:t=>pFloors(t)},
+  {id:'pTree',u:'pic1',types:'cf',n:['分合樹','ㄈㄣ ㄏㄜˊ ㄕㄨˋ'],gen:t=>pBondTree(t)},
+);
+for(const u of UNITS[1])u.gen=t=>genOf(u.id,t);
+
+/* ==================== 資優邏輯(三年級程度):首頁年級旁邊的「🧠 資優邏輯」 ====================
+   常見的非例行題型:找規律、植樹和間隔、和差和年齡、雞兔同籠、代換和逆推、推理和排列組合。
+   答錯時的解說會把「怎麼想」一步一步寫出來 */
+const LG={
+  pat:['找出規律,? 是多少?','ㄓㄠˇ ㄔㄨ ㄍㄨㄟ ㄌㄩˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
+  inc:['每次多加的數,都比上一次多 1。','ㄇㄟˇ ㄘˋ ㄉㄨㄛ ㄐㄧㄚ ˙ㄉㄜ ㄕㄨˋ ㄉㄡ ㄅㄧˇ ㄕㄤˋ ㄧˊ ㄘˋ ㄉㄨㄛ'],
+  alt:['一次加、一次減,輪流來。','ㄧˊ ㄘˋ ㄐㄧㄚ ㄧˊ ㄘˋ ㄐㄧㄢˇ ㄌㄨㄣˊ ㄌㄧㄡˊ ㄌㄞˊ'],
+  dbl:['每一個數都是前一個的 2 倍。','ㄇㄟˇ ㄧˊ ˙ㄍㄜ ㄕㄨˋ ㄉㄡ ㄕˋ ㄑㄧㄢˊ ㄧˊ ˙ㄍㄜ ˙ㄉㄜ ㄅㄟˋ'],
+  fib:['前面兩個數加起來,就是下一個數。','ㄑㄧㄢˊ ˙ㄇㄧㄢ ㄌㄧㄤˇ ˙ㄍㄜ ㄕㄨˋ ㄐㄧㄚ ㄑㄧˇ ㄌㄞˊ ㄐㄧㄡˋ ㄕˋ ㄒㄧㄚˋ ㄧˊ ˙ㄍㄜ ㄕㄨˋ'],
+  rep:['這樣一直重複下去,','ㄓㄜˋ ㄧㄤˋ ㄧˋ ㄓˊ ㄔㄨㄥˊ ㄈㄨˋ ㄒㄧㄚˋ ㄑㄩˋ'],nthQ1:['第','ㄉㄧˋ'],nthQ2:['個是什麼?','˙ㄍㄜ ㄕˋ ㄕㄣˊ ˙ㄇㄜ'],
+  cntQ1:['前','ㄑㄧㄢˊ'],cntQ2:['個裡面有幾個','˙ㄍㄜ ㄌㄧˇ ˙ㄇㄧㄢ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ'],
+  grp1:['每','ㄇㄟˇ'],grp2:['個一組重複。','˙ㄍㄜ ㄧˋ ㄗㄨˇ ㄔㄨㄥˊ ㄈㄨˋ'],
+  remTip:['餘數是幾,就看一組裡的第幾個;沒有餘數就是最後一個。','ㄩˊ ㄕㄨˋ ㄕˋ ㄐㄧˇ ㄐㄧㄡˋ ㄎㄢˋ ㄧˋ ㄗㄨˇ ㄌㄧˇ ˙ㄉㄜ ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ ㄇㄟˊ ㄧㄡˇ ㄩˊ ㄕㄨˋ ㄐㄧㄡˋ ㄕˋ ㄗㄨㄟˋ ㄏㄡˋ ㄧˊ ˙ㄍㄜ'],
+  road:['一條路長','ㄧˋ ㄊㄧㄠˊ ㄌㄨˋ ㄔㄤˊ'],every:['公尺,每隔','ㄍㄨㄥ ㄔˇ ㄇㄟˇ ㄍㄜˊ'],plant:['公尺種一棵樹','ㄍㄨㄥ ㄔˇ ㄓㄨㄥˋ ㄧˋ ㄎㄜ ㄕㄨˋ'],
+  both:['(兩頭都種)','ㄌㄧㄤˇ ㄊㄡˊ ㄉㄡ ㄓㄨㄥˋ'],one:['(只有一頭種)','ㄓˇ ㄧㄡˇ ㄧˋ ㄊㄡˊ ㄓㄨㄥˋ'],none:['(兩頭都不種)','ㄌㄧㄤˇ ㄊㄡˊ ㄉㄡ ㄅㄨˊ ㄓㄨㄥˋ'],
+  treeQ:[',一共要種幾棵?','ㄧˊ ㄍㄨㄥˋ ㄧㄠˋ ㄓㄨㄥˋ ㄐㄧˇ ㄎㄜ'],ke:['棵','ㄎㄜ'],
+  gapTip:['先算有幾個間隔。','ㄒㄧㄢ ㄙㄨㄢˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄐㄧㄢ ㄍㄜˊ'],
+  bothR:['兩頭都種:棵數 = 間隔數 + 1','ㄌㄧㄤˇ ㄊㄡˊ ㄉㄡ ㄓㄨㄥˋ ㄎㄜ ㄕㄨˋ ㄐㄧㄢ ㄍㄜˊ ㄕㄨˋ'],oneR:['只種一頭:棵數 = 間隔數','ㄓˇ ㄓㄨㄥˋ ㄧˋ ㄊㄡˊ ㄎㄜ ㄕㄨˋ ㄐㄧㄢ ㄍㄜˊ ㄕㄨˋ'],
+  noneR:['兩頭都不種:棵數 = 間隔數 − 1','ㄌㄧㄤˇ ㄊㄡˊ ㄉㄡ ㄅㄨˊ ㄓㄨㄥˋ ㄎㄜ ㄕㄨˋ ㄐㄧㄢ ㄍㄜˊ ㄕㄨˋ'],
+  saw1:['把一根木頭鋸成','ㄅㄚˇ ㄧˋ ㄍㄣ ㄇㄨˋ ˙ㄊㄡ ㄐㄩˋ ㄔㄥˊ'],saw2:['段,','ㄉㄨㄢˋ'],saw3:['鋸一次要','ㄐㄩˋ ㄧˊ ㄘˋ ㄧㄠˋ'],
+  saw4:['分鐘,一共要幾分鐘?','ㄈㄣ ㄓㄨㄥ ㄧˊ ㄍㄨㄥˋ ㄧㄠˋ ㄐㄧˇ ㄈㄣ ㄓㄨㄥ'],min:['分鐘','ㄈㄣ ㄓㄨㄥ'],
+  sawT1:['鋸成','ㄐㄩˋ ㄔㄥˊ'],sawT2:['段,只要鋸','ㄉㄨㄢˋ ㄓˇ ㄧㄠˋ ㄐㄩˋ'],sawT3:['次。','ㄘˋ'],
+  fl1:['從 1 樓走到','ㄘㄨㄥˊ ㄌㄡˊ ㄗㄡˇ ㄉㄠˋ'],fl2:['樓要','ㄌㄡˊ ㄧㄠˋ'],fl3:['秒,用同樣的速度走到','ㄇㄧㄠˇ ㄩㄥˋ ㄊㄨㄥˊ ㄧㄤˋ ˙ㄉㄜ ㄙㄨˋ ㄉㄨˋ ㄗㄡˇ ㄉㄠˋ'],
+  fl4:['樓要幾秒?','ㄌㄡˊ ㄧㄠˋ ㄐㄧˇ ㄇㄧㄠˇ'],sec:['秒','ㄇㄧㄠˇ'],
+  flT1:['從 1 樓到','ㄘㄨㄥˊ ㄌㄡˊ ㄉㄠˋ'],flT2:['樓,只要爬','ㄌㄡˊ ㄓˇ ㄧㄠˋ ㄆㄚˊ'],flT3:['層樓梯。','ㄘㄥˊ ㄌㄡˊ ㄊㄧ'],
+  and:['和','ㄏㄢˋ'],total:['一共有','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ'],bi:['比','ㄅㄧˇ'],more:['多','ㄉㄨㄛ'],hasQ:['有幾','ㄧㄡˇ ㄐㄧˇ'],
+  sdTip:['先把多的拿走,兩個人就一樣多,再平分。','ㄒㄧㄢ ㄅㄚˇ ㄉㄨㄛ ˙ㄉㄜ ㄋㄚˊ ㄗㄡˇ ㄌㄧㄤˇ ˙ㄍㄜ ㄖㄣˊ ㄐㄧㄡˋ ㄧˊ ㄧㄤˋ ㄉㄨㄛ ㄗㄞˋ ㄆㄧㄥˊ ㄈㄣ'],
+  yr:['今年','ㄐㄧㄣ ㄋㄧㄢˊ'],mom:['歲,媽媽','ㄙㄨㄟˋ ㄇㄚ ˙ㄇㄚ'],wait:['歲。等到','ㄙㄨㄟˋ ㄉㄥˇ ㄉㄠˋ'],when:['歲的時候,媽媽幾歲?','ㄙㄨㄟˋ ˙ㄉㄜ ㄕˊ ˙ㄏㄡ ㄇㄚ ˙ㄇㄚ ㄐㄧˇ ㄙㄨㄟˋ'],
+  sui:['歲','ㄙㄨㄟˋ'],ageTip:['不管過幾年,兩個人差的歲數都一樣。','ㄅㄨˋ ㄍㄨㄢˇ ㄍㄨㄛˋ ㄐㄧˇ ㄋㄧㄢˊ ㄌㄧㄤˇ ˙ㄍㄜ ㄖㄣˊ ㄔㄚ ˙ㄉㄜ ㄙㄨㄟˋ ㄕㄨˋ ㄉㄡ ㄧˊ ㄧㄤˋ'],
+  cage1:['籠子裡有雞和兔子,一共','ㄌㄨㄥˊ ˙ㄗ ㄌㄧˇ ㄧㄡˇ ㄐㄧ ㄏㄢˋ ㄊㄨˋ ˙ㄗ ㄧˊ ㄍㄨㄥˋ'],head:['個頭、','˙ㄍㄜ ㄊㄡˊ'],feet:['隻腳。','ㄓ ㄐㄧㄠˇ'],
+  rabbitQ:['兔子有幾隻?','ㄊㄨˋ ˙ㄗ ㄧㄡˇ ㄐㄧˇ ㄓ'],chickQ:['雞有幾隻?','ㄐㄧ ㄧㄡˇ ㄐㄧˇ ㄓ'],zhi:['隻','ㄓ'],
+  allChick:['假設全部都是雞:','ㄐㄧㄚˇ ㄕㄜˋ ㄑㄩㄢˊ ㄅㄨˋ ㄉㄡ ㄕˋ ㄐㄧ'],
+  extra:['多出來的腳,是兔子多的,每隻兔子多 2 隻腳。','ㄉㄨㄛ ㄔㄨ ㄌㄞˊ ˙ㄉㄜ ㄐㄧㄠˇ ㄕˋ ㄊㄨˋ ˙ㄗ ㄉㄨㄛ ˙ㄉㄜ ㄇㄟˇ ㄓ ㄊㄨˋ ˙ㄗ ㄉㄨㄛ ㄓ ㄐㄧㄠˇ'],
+  bike1:['腳踏車和三輪車一共','ㄐㄧㄠˇ ㄊㄚˋ ㄔㄜ ㄏㄢˋ ㄙㄢ ㄌㄨㄣˊ ㄔㄜ ㄧˊ ㄍㄨㄥˋ'],bike2:['輛,輪子一共','ㄌㄧㄤˋ ㄌㄨㄣˊ ˙ㄗ ㄧˊ ㄍㄨㄥˋ'],
+  bike3:['個,三輪車有幾輛?','˙ㄍㄜ ㄙㄢ ㄌㄨㄣˊ ㄔㄜ ㄧㄡˇ ㄐㄧˇ ㄌㄧㄤˋ'],liang:['輛','ㄌㄧㄤˋ'],
+  allBike:['假設全部都是腳踏車:','ㄐㄧㄚˇ ㄕㄜˋ ㄑㄩㄢˊ ㄅㄨˋ ㄉㄡ ㄕˋ ㄐㄧㄠˇ ㄊㄚˋ ㄔㄜ'],tri:['每輛三輪車多 1 個輪子。','ㄇㄟˇ ㄌㄧㄤˋ ㄙㄢ ㄌㄨㄣˊ ㄔㄜ ㄉㄨㄛ ˙ㄍㄜ ㄌㄨㄣˊ ˙ㄗ'],
+  fruit:['每一種水果代表一個數,? 是多少?','ㄇㄟˇ ㄧˋ ㄓㄨㄥˇ ㄕㄨㄟˇ ㄍㄨㄛˇ ㄉㄞˋ ㄅㄧㄠˇ ㄧˊ ˙ㄍㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],swap:['把它換掉:','ㄅㄚˇ ㄊㄚ ㄏㄨㄢˋ ㄉㄧㄠˋ'],
+  think1:['我想了一個數,','ㄨㄛˇ ㄒㄧㄤˇ ˙ㄌㄜ ㄧˊ ˙ㄍㄜ ㄕㄨˋ'],plus:['先加上','ㄒㄧㄢ ㄐㄧㄚ ㄕㄤˋ'],minus:['先減掉','ㄒㄧㄢ ㄐㄧㄢˇ ㄉㄧㄠˋ'],
+  times:[',再乘以','ㄗㄞˋ ㄔㄥˊ ㄧˇ'],got:[',得到','ㄉㄜˊ ㄉㄠˋ'],whatQ:[',這個數是多少?','ㄓㄜˋ ˙ㄍㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
+  backA:['倒過來算:乘的改成除,加的改成減。','ㄉㄠˋ ˙ㄍㄨㄛ ㄌㄞˊ ㄙㄨㄢˋ ㄔㄥˊ ˙ㄉㄜ ㄍㄞˇ ㄔㄥˊ ㄔㄨˊ ㄐㄧㄚ ˙ㄉㄜ ㄍㄞˇ ㄔㄥˊ ㄐㄧㄢˇ'],
+  backS:['倒過來算:乘的改成除,減的改成加。','ㄉㄠˋ ˙ㄍㄨㄛ ㄌㄞˊ ㄙㄨㄢˋ ㄔㄥˊ ˙ㄉㄜ ㄍㄞˇ ㄔㄥˊ ㄔㄨˊ ㄐㄧㄢˇ ˙ㄉㄜ ㄍㄞˇ ㄔㄥˊ ㄐㄧㄚ'],
+  sort:['排排看:','ㄆㄞˊ ㄆㄞˊ ㄎㄢˋ'],
+  hs:['個小朋友,每兩個人都要握一次手,一共要握幾次?','˙ㄍㄜ ㄒㄧㄠˇ ㄆㄥˊ ˙ㄧㄡ ㄇㄟˇ ㄌㄧㄤˇ ˙ㄍㄜ ㄖㄣˊ ㄉㄡ ㄧㄠˋ ㄨㄛˋ ㄧˊ ㄘˋ ㄕㄡˇ ㄧˊ ㄍㄨㄥˋ ㄧㄠˋ ㄨㄛˋ ㄐㄧˇ ㄘˋ'],ci:['次','ㄘˋ'],
+  hsT1:['第 1 個人要和其他人握','ㄉㄧˋ ˙ㄍㄜ ㄖㄣˊ ㄧㄠˋ ㄏㄢˋ ㄑㄧˊ ㄊㄚ ㄖㄣˊ ㄨㄛˋ'],hsT2:['次,第 2 個人再握','ㄘˋ ㄉㄧˋ ˙ㄍㄜ ㄖㄣˊ ㄗㄞˋ ㄨㄛˋ'],hsT3:['次……','ㄘˋ'],
+  top:['件上衣、','ㄐㄧㄢˋ ㄕㄤˋ ㄧ'],skirt:['件裙子,一件上衣配一件裙子,有幾種穿法?','ㄐㄧㄢˋ ㄑㄩㄣˊ ˙ㄗ ㄧˊ ㄐㄧㄢˋ ㄕㄤˋ ㄧ ㄆㄟˋ ㄧˊ ㄐㄧㄢˋ ㄑㄩㄣˊ ˙ㄗ ㄧㄡˇ ㄐㄧˇ ㄓㄨㄥˇ ㄔㄨㄢ ㄈㄚˇ'],
+  kind:['種','ㄓㄨㄥˇ'],outT1:['每一件上衣都可以配','ㄇㄟˇ ㄧˊ ㄐㄧㄢˋ ㄕㄤˋ ㄧ ㄉㄡ ㄎㄜˇ ㄧˇ ㄆㄟˋ'],outT2:['件裙子。','ㄐㄧㄢˋ ㄑㄩㄣˊ ˙ㄗ'],
+  use:['用','ㄩㄥˋ'],these:['這','ㄓㄜˋ'],cards:['張數字卡,排成','ㄓㄤ ㄕㄨˋ ㄗˋ ㄎㄚˇ ㄆㄞˊ ㄔㄥˊ'],
+  digQ:['位數(每張只能用一次),可以排出幾個?','ㄨㄟˋ ㄕㄨˋ ㄇㄟˇ ㄓㄤ ㄓˇ ㄋㄥˊ ㄩㄥˋ ㄧˊ ㄘˋ ㄎㄜˇ ㄧˇ ㄆㄞˊ ㄔㄨ ㄐㄧˇ ˙ㄍㄜ'],ge:['個','˙ㄍㄜ'],
+  digT1:['第一位有','ㄉㄧˋ ㄧ ㄨㄟˋ ㄧㄡˇ'],digT2:['種選法,下一位剩下','ㄓㄨㄥˇ ㄒㄩㄢˇ ㄈㄚˇ ㄒㄧㄚˋ ㄧˊ ㄨㄟˋ ㄕㄥˋ ㄒㄧㄚˋ'],digT3:['種……','ㄓㄨㄥˇ'],
+};
+function lgPatNum(type){ // 數列規律
+  const k=R(0,3);let s=[],tip,last;
+  if(k===0){let a=R(1,9),d=R(1,3);s=[a];for(let i=0;i<5;i++){a+=d;d++;s.push(a)}tip=LG.inc}
+  else if(k===1){const u=R(3,6),dn=R(1,u-1);let a=R(2,9);s=[a];for(let i=0;i<5;i++){a+=i%2?-dn:u;s.push(a)}tip=LG.alt}
+  else if(k===2){let a=R(1,3);s=[a];for(let i=0;i<4;i++){a*=2;s.push(a)}tip=LG.dbl}
+  else{let a=R(1,3),b=R(a,a+3);s=[a,b];for(let i=0;i<4;i++){const c=s[s.length-1]+s[s.length-2];s.push(c)}tip=LG.fib}
+  const ans=s.pop(),p=line([LG.pat]),prev=s[s.length-1],calc=k===2?`${prev} × 2 = ${ans}`:k===3?`${s[s.length-2]} + ${prev} = ${ans}`:ans>=prev?`${prev} + ${ans-prev} = ${ans}`:`${prev} − ${prev-ans} = ${ans}`;
+  return num(p.h,exprSm(`${s.join(', ')}, ?`),ans,type,{say:`${s.join('、')},接下來是多少`,ds:[1,2,3],teach:[[tip],[calc]]});
+}
+const LG_SETS=[['🔴','🟡','🔵'],['🔺','⭐','⭐'],['🍎','🍌','🍌','🍇'],['🐶','🐱','🐰','🐱'],['🌸','🌸','🍀']];
+function lgPatShape(type){ // 圖形一直重複:第幾個是什麼、前面有幾個某一種
+  const g=pick(LG_SETS),L=g.length,N=R(13,40),q=Math.floor(N/L),r=N%L,show=Array.from({length:L*2+2},(_,i)=>g[i%L]).join(' ')+' ……';
+  const v=`<div class="emo pat">${show}</div>`,t1=[LG.grp1,L,LG.grp2];
+  if(type==='c'){
+    const p=line([LG.rep,LG.nthQ1,N,LG.nthQ2]),ans=g[(N-1)%L];
+    return lab(p.h,v,[...new Set(g)].map(e=>({h:e,ok:e===ans})),{say:p.say,teach:[t1,[`${N} ÷ ${L} = ${q} … ${r}`],[LG.remTip]]});
+  }
+  const x=pick([...new Set(g)]),c=g.filter(e=>e===x).length,ex=g.slice(0,r).filter(e=>e===x).length,ans=q*c+ex,p=line([LG.rep,LG.cntQ1,N,LG.cntQ2,x,'?']);
+  return num(p.h,v,ans,'f',{say:p.say,ds:[1,2,c],teach:[t1,[`${N} ÷ ${L} = ${q} … ${r}`],[`${q} × ${c} = ${q*c}`],[`${q*c} + ${ex} = ${ans}`]]});
+}
+function lgTrees(type){ // 植樹:兩頭都種、只種一頭、兩頭都不種
+  const g=pick([2,3,4,5,10]),k=R(3,10),L=g*k,e=R(0,2),ans=[k+1,k,k-1][e];
+  const p=line([LG.road,L,LG.every,g,LG.plant,[LG.both,LG.one,LG.none][e],LG.treeQ]);
+  const v=`<div class="emo">🌳 ←${g}→ 🌳 ←${g}→ 🌳 …… 🌳</div>`;
+  return num(p.h,v,ans,type,{unit:Z(LG.ke),say:p.say,ds:[1,2],wrong:[k,k+1,k-1].filter(x=>x!==ans),teach:[[LG.gapTip],[`${L} ÷ ${g} = ${k}`],[[LG.bothR,LG.oneR,LG.noneR][e]],[e===0?`${k} + 1 = ${ans}`:e===2?`${k} − 1 = ${ans}`:`${k} = ${ans}`]]});
+}
+function lgSaw(type){ // 鋸木頭、爬樓梯:都是「間隔」比「點」少一個
+  if(R(0,1)){
+    const n=R(3,8),m=R(2,6),ans=(n-1)*m,p=line([LG.saw1,n,LG.saw2,LG.saw3,m,LG.saw4]);
+    return num(p.h,'<div class="emo">🪵🪚</div>',ans,type,{unit:Z(LG.min),say:p.say,ds:[m,1],wrong:[n*m],teach:[[LG.sawT1,n,LG.sawT2,n-1,LG.sawT3],[`${n-1} × ${m} = ${ans}`]]});
+  }
+  const a=R(2,4),per=R(3,9),t=per*(a-1),b=R(a+1,8),ans=per*(b-1),p=line([LG.fl1,a,LG.fl2,t,LG.fl3,b,LG.fl4]);
+  return num(p.h,'<div class="emo">🏢🚶</div>',ans,type,{unit:Z(LG.sec),say:p.say,ds:[per,1],wrong:[t/a*b|0].filter(x=>x>0&&x!==ans),teach:[[LG.flT1,a,LG.flT2,a-1,LG.flT3],[`${t} ÷ ${a-1} = ${per}`],[`${per} × ${b-1} = ${ans}`]]});
+}
+function lgSumDiff(type){ // 和差問題
+  const [w1,w2]=twoPeople(),it=pick(ITEMS),small=R(5,30),d=R(2,15),big=small+d,S=small+big,askBig=R(0,1);
+  const p=line([w1,LG.and,w2,LG.total,S,it.m,it.n,C,w1,LG.bi,w2,LG.more,d,it.m,C,askBig?w1:w2,LG.hasQ,it.m,Q]);
+  return num(p.h,`<div class="story">${w1.e||''}${w2.e||''}${it.e}</div>`,askBig?big:small,type,{unit:Z(it.m),say:p.say,ds:[1,2,d],wrong:[S/2|0,askBig?small:big],
+    teach:[[LG.sdTip],[`${S} − ${d} = ${S-d}`],[`${S-d} ÷ 2 = ${small}`],...(askBig?[[`${small} + ${d} = ${big}`]]:[])]});
+}
+function lgAge(type){ // 年齡:不管過幾年,相差的歲數都一樣
+  const w=someone(),a=R(6,10),diff=R(24,34),c=a+pick([-4,-3,-2,2,3,5,7,10]),ans=c+diff,p=line([LG.yr,w,a,LG.mom,a+diff,LG.wait,w,c,LG.when]);
+  return num(p.h,`<div class="story">${w.e||''}👩</div>`,ans,type,{unit:Z(LG.sui),say:p.say,ds:[1,2,10],wrong:[a+diff],teach:[[LG.ageTip],[`${a+diff} − ${a} = ${diff}`],[`${c} + ${diff} = ${ans}`]]});
+}
+function lgCage(type){ // 雞兔同籠(數字小一點,用「假設全部都是雞」的方法)
+  const H=R(3,10),r=R(1,H-1),c=H-r,F=2*c+4*r,askR=R(0,1),p=line([LG.cage1,H,LG.head,F,LG.feet,askR?LG.rabbitQ:LG.chickQ]);
+  return num(p.h,'<div class="emo">🐔🐰</div>',askR?r:c,type,{unit:Z(LG.zhi),say:p.say,ds:[1,2],wrong:[askR?c:r],
+    teach:[[LG.allChick],[`${H} × 2 = ${2*H}`],[LG.extra],[`${F} − ${2*H} = ${F-2*H}`],[`${F-2*H} ÷ 2 = ${r}`],...(askR?[]:[[`${H} − ${r} = ${c}`]])]});
+}
+function lgWheels(type){ // 腳踏車和三輪車(每輛只差 1 個輪子)
+  const H=R(4,12),t=R(1,H-1),F=2*H+t,p=line([LG.bike1,H,LG.bike2,F,LG.bike3]);
+  return num(p.h,'<div class="emo">🚲🛺</div>',t,type,{unit:Z(LG.liang),say:p.say,ds:[1,2],wrong:[H-t],teach:[[LG.allBike],[`${H} × 2 = ${2*H}`],[LG.tri],[`${F} − ${2*H} = ${t}`]]});
+}
+function lgSubst(type){ // 等量代換:水果代表數字
+  const [A,B]=shuffle(['🍎','🍌','🍇','🍓','🍊']).slice(0,2),k=R(0,2),p=line([LG.fruit]);let v,ans,teach;
+  if(k===0){const x=R(2,12),S=3*x;v=`${A} + ${A} = ${B}<br>${B} + ${A} = ${S}<br>${A} = ?`;ans=x;teach=[[LG.swap],[`${A} + ${A} + ${A} = ${S}`],[`${S} ÷ 3 = ${x}`]]}
+  else if(k===1){const b=R(2,15),d=R(1,9),a=b+d,S=a+b;v=`${A} + ${B} = ${S}<br>${A} = ${B} + ${d}<br>${B} = ?`;ans=b;teach=[[LG.sdTip],[`${S} − ${d} = ${S-d}`],[`${S-d} ÷ 2 = ${b}`]]}
+  else{const m=R(2,6),b=3*m,a=2*m;v=`${A} + ${A} + ${A} = ${B} + ${B}<br>${B} = ${b}<br>${A} = ?`;ans=a;teach=[[`${b} + ${b} = ${2*b}`],[`${2*b} ÷ 3 = ${a}`]]}
+  return num(p.h,`<div class="expr sm subst">${v}</div>`,ans,type,{say:'每一種水果代表一個數,問號是多少',ds:[1,2,3],teach});
+}
+function lgGuess(type){ // 逆推:想一個數,加(減)幾再乘幾,得到多少
+  const x=R(2,15),a=R(1,9),add=R(0,1)||x<=a,m=R(2,5),y=add?x+a:x-a,res=y*m,p=line([LG.think1,add?LG.plus:LG.minus,a,LG.times,m,LG.got,res,LG.whatQ]);
+  return num(p.h,'<div class="emo">🤔💭</div>',x,type,{say:p.say,ds:[1,2,a],wrong:[res/m+(add?a:-a)].filter(z=>z>0),teach:[[add?LG.backA:LG.backS],[`${res} ÷ ${m} = ${y}`],[add?`${y} − ${a} = ${x}`:`${y} + ${a} = ${x}`]]});
+}
+const LG_ANI=[{e:'🐶',n:['小狗','ㄒㄧㄠˇ ㄍㄡˇ']},{e:'🐱',n:['小貓','ㄒㄧㄠˇ ㄇㄠ']},{e:'🐰',n:['小兔','ㄒㄧㄠˇ ㄊㄨˋ']},{e:'🐻',n:['小熊','ㄒㄧㄠˇ ㄒㄩㄥˊ']}];
+const LG_CMP=[ // [比較的說法, 問最前面的, 問最後面的]
+  [['高','ㄍㄠ'],['誰最高?','ㄕㄟˊ ㄗㄨㄟˋ ㄍㄠ'],['誰最矮?','ㄕㄟˊ ㄗㄨㄟˋ ㄞˇ']],
+  [['重','ㄓㄨㄥˋ'],['誰最重?','ㄕㄟˊ ㄗㄨㄟˋ ㄓㄨㄥˋ'],['誰最輕?','ㄕㄟˊ ㄗㄨㄟˋ ㄑㄧㄥ']],
+  [['跑得快','ㄆㄠˇ ˙ㄉㄜ ㄎㄨㄞˋ'],['誰跑得最快?','ㄕㄟˊ ㄆㄠˇ ˙ㄉㄜ ㄗㄨㄟˋ ㄎㄨㄞˋ'],['誰跑得最慢?','ㄕㄟˊ ㄆㄠˇ ˙ㄉㄜ ㄗㄨㄟˋ ㄇㄢˋ']],
+];
+function lgOrder(){ // 推理:A 比 B 高,B 比 C 高,誰最矮?
+  const o=shuffle(LG_ANI).slice(0,3),[adj,qTop,qLow]=pick(LG_CMP),low=R(0,1),swap=R(0,1);
+  const s1=[o[0].n,LG.bi,o[1].n,adj],s2=[o[1].n,LG.bi,o[2].n,adj],p=line([...(swap?s2:s1),C,...(swap?s1:s2),'。',low?qLow:qTop]);
+  const ans=low?o[2]:o[0];
+  return lab(p.h,`<div class="emo">${shuffle(o).map(a=>a.e).join(' ')}</div>`,o.map(a=>({h:`${a.e} ${Z(a.n)}`,ok:a===ans})),
+    {say:p.say,teach:[[LG.sort,`${o[0].e} → ${o[1].e} → ${o[2].e}`]]});
+}
+function lgCombo(type){ // 排列組合:握手、穿搭、數字卡
+  const k=R(0,2);
+  if(k===0){const n=R(3,6),ans=n*(n-1)/2,p=line([n,LG.hs]),sum=Array.from({length:n-1},(_,i)=>n-1-i).join(' + ');
+    return num(p.h,`<div class="emo">${'🧒'.repeat(n)}🤝</div>`,ans,type,{unit:Z(LG.ci),say:p.say,ds:[1,2,n],wrong:[n*(n-1)],teach:[[LG.hsT1,n-1,LG.hsT2,n-2,LG.hsT3],[`${sum} = ${ans}`]]})}
+  if(k===1){const a=R(2,5),b=R(2,4),p=line([a,LG.top,b,LG.skirt]);
+    return num(p.h,`<div class="emo">${'👚'.repeat(a)} ${'👗'.repeat(b)}</div>`,a*b,type,{unit:Z(LG.kind),say:p.say,ds:[1,2,a],wrong:[a+b],teach:[[LG.outT1,b,LG.outT2],[`${a} × ${b} = ${a*b}`]]})}
+  const c=R(3,4),d=c===3?R(2,3):R(2,3),digs=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,c).sort(),f=Array.from({length:d},(_,i)=>c-i),ans=f.reduce((x,y)=>x*y,1);
+  const p=line([LG.use,digs.join('、'),LG.these,c,LG.cards,d,LG.digQ]);
+  return num(p.h,`<div class="emo">${digs.map(x=>`<span class="dcard">${x}</span>`).join(' ')}</div>`,ans,type,{unit:Z(LG.ge),say:p.say,ds:[1,2,c],wrong:[c*d],teach:[[LG.digT1,c,LG.digT2,c-1,LG.digT3],[`${f.join(' × ')} = ${ans}`]]});
+}
+UNITS.L=[
+  {id:'lgPat',e:'🔁',t:['找規律','ㄓㄠˇ ㄍㄨㄟ ㄌㄩˋ']},
+  {id:'lgGap',e:'🌳',t:['植樹和間隔','ㄓˊ ㄕㄨˋ ㄏㄢˋ ㄐㄧㄢ ㄍㄜˊ']},
+  {id:'lgSum',e:'⚖️',t:['和差和年齡','ㄏㄜˊ ㄔㄚ ㄏㄢˋ ㄋㄧㄢˊ ㄌㄧㄥˊ']},
+  {id:'lgCage',e:'🐔',t:['雞兔同籠','ㄐㄧ ㄊㄨˋ ㄊㄨㄥˊ ㄌㄨㄥˊ']},
+  {id:'lgSub',e:'🍎',t:['代換和猜數','ㄉㄞˋ ㄏㄨㄢˋ ㄏㄢˋ ㄘㄞ ㄕㄨˋ']},
+  {id:'lgWhy',e:'🧩',t:['推理和組合','ㄊㄨㄟ ㄌㄧˇ ㄏㄢˋ ㄗㄨˇ ㄏㄜˊ']},
+];
+KINDS.push(
+  {id:'lgPatNum',u:'lgPat',types:'cf',n:['數字規律','ㄕㄨˋ ㄗˋ ㄍㄨㄟ ㄌㄩˋ'],gen:t=>lgPatNum(t)},
+  {id:'lgPatShape',u:'lgPat',types:'cf',n:['圖形規律','ㄊㄨˊ ㄒㄧㄥˊ ㄍㄨㄟ ㄌㄩˋ'],gen:t=>lgPatShape(t)},
+  {id:'lgTrees',u:'lgGap',types:'cf',n:['植樹問題','ㄓˊ ㄕㄨˋ ㄨㄣˋ ㄊㄧˊ'],gen:t=>lgTrees(t)},
+  {id:'lgSaw',u:'lgGap',types:'cf',n:['鋸木頭和爬樓梯','ㄐㄩˋ ㄇㄨˋ ˙ㄊㄡ ㄏㄢˋ ㄆㄚˊ ㄌㄡˊ ㄊㄧ'],gen:t=>lgSaw(t)},
+  {id:'lgSumDiff',u:'lgSum',types:'cf',n:['和差問題','ㄏㄜˊ ㄔㄚ ㄨㄣˋ ㄊㄧˊ'],gen:t=>lgSumDiff(t)},
+  {id:'lgAge',u:'lgSum',types:'cf',n:['年齡問題','ㄋㄧㄢˊ ㄌㄧㄥˊ ㄨㄣˋ ㄊㄧˊ'],gen:t=>lgAge(t)},
+  {id:'lgCageA',u:'lgCage',types:'cf',n:['雞兔同籠','ㄐㄧ ㄊㄨˋ ㄊㄨㄥˊ ㄌㄨㄥˊ'],gen:t=>lgCage(t)},
+  {id:'lgWheels',u:'lgCage',types:'cf',n:['數輪子','ㄕㄨˇ ㄌㄨㄣˊ ˙ㄗ'],gen:t=>lgWheels(t)},
+  {id:'lgSubst',u:'lgSub',types:'cf',n:['水果代換','ㄕㄨㄟˇ ㄍㄨㄛˇ ㄉㄞˋ ㄏㄨㄢˋ'],gen:t=>lgSubst(t)},
+  {id:'lgGuess',u:'lgSub',types:'cf',n:['倒過來想','ㄉㄠˋ ˙ㄍㄨㄛ ㄌㄞˊ ㄒㄧㄤˇ'],gen:t=>lgGuess(t)},
+  {id:'lgOrder',u:'lgWhy',types:'c',n:['比一比推理','ㄅㄧˇ ㄧˋ ㄅㄧˇ ㄊㄨㄟ ㄌㄧˇ'],gen:()=>lgOrder()},
+  {id:'lgCombo',u:'lgWhy',types:'cf',n:['排列組合','ㄆㄞˊ ㄌㄧㄝˋ ㄗㄨˇ ㄏㄜˊ'],gen:t=>lgCombo(t)},
+);
+for(const u of UNITS.L)u.gen=t=>genOf(u.id,t);
+Object.assign(T,{gL:['資優邏輯','ㄗ ㄧㄡ ㄌㄨㄛˊ ㄐㄧˊ']});
+const curUnits=()=>S.logic?UNITS.L:UNITS[S.grade]; // 首頁「單元練習」現在顯示哪一組
+function setLogic(){S.logic=true;save();sfx.tap();home(true)}
+
+/* ==================== 雙人對戰:一台平板、兩個人面對面(下半是孩子,上半轉 180 度給爸爸) ====================
+   (2026-10-18 使用者要求先從首頁拿掉;程式留著,要恢復時把首頁「小遊戲」的兩顆按鈕 duelSetup('bln')、duelSetup('tug') 加回去即可)
+   各選各的程度,題目難度不同,比賽才公平。按錯暫停 1.5 秒,避免亂按搶快。
+   觸控用 pointerdown(手指一碰到就算),兩個人同時按也都會算 */
+const DT={bln:['氣球對戰','ㄑㄧˋ ㄑㄧㄡˊ ㄉㄨㄟˋ ㄓㄢˋ'],tug:['數學拔河','ㄕㄨˋ ㄒㄩㄝˊ ㄅㄚˊ ㄏㄜˊ'],
+  top:['上面(坐對面的人)','ㄕㄤˋ ˙ㄇㄧㄢ ㄗㄨㄛˋ ㄉㄨㄟˋ ˙ㄇㄧㄢ ˙ㄉㄜ ㄖㄣˊ'],bot:['下面','ㄒㄧㄚˋ ˙ㄇㄧㄢ'],
+  how:['兩個人面對面,各玩一半的畫面!','ㄌㄧㄤˇ ˙ㄍㄜ ㄖㄣˊ ㄇㄧㄢˋ ㄉㄨㄟˋ ㄇㄧㄢˋ ㄍㄜˋ ㄨㄢˊ ㄧˊ ㄅㄢˋ ˙ㄉㄜ ㄏㄨㄚˋ ㄇㄧㄢˋ'],
+  howBln:['先把自己這邊對的氣球全部戳破,就得 1 分,先得 5 分的人贏!','ㄒㄧㄢ ㄅㄚˇ ㄗˋ ㄐㄧˇ ㄓㄜˋ ㄅㄧㄢ ㄉㄨㄟˋ ˙ㄉㄜ ㄑㄧˋ ㄑㄧㄡˊ ㄑㄩㄢˊ ㄅㄨˋ ㄔㄨㄛ ㄆㄛˋ ㄐㄧㄡˋ ㄉㄜˊ ㄈㄣ ㄒㄧㄢ ㄉㄜˊ ㄈㄣ ˙ㄉㄜ ㄖㄣˊ ㄧㄥˊ'],
+  howTug:['答對一題,旗子就往自己這邊拉一格,先拉到底的人贏!','ㄉㄚˊ ㄉㄨㄟˋ ㄧˋ ㄊㄧˊ ㄑㄧˊ ˙ㄗ ㄐㄧㄡˋ ㄨㄤˇ ㄗˋ ㄐㄧˇ ㄓㄜˋ ㄅㄧㄢ ㄌㄚ ㄧˋ ㄍㄜˊ ㄒㄧㄢ ㄌㄚ ㄉㄠˋ ㄉㄧˇ ˙ㄉㄜ ㄖㄣˊ ㄧㄥˊ'],
+  fair:['程度可以選不一樣,比賽才公平。','ㄔㄥˊ ㄉㄨˋ ㄎㄜˇ ㄧˇ ㄒㄩㄢˇ ㄅㄨˋ ㄧˊ ㄧㄤˋ ㄅㄧˇ ㄙㄞˋ ㄘㄞˊ ㄍㄨㄥ ㄆㄧㄥˊ'],
+  go:['開始!','ㄎㄞ ㄕˇ'],wrong:['按錯了,等一下!','ㄢˋ ㄘㄨㄛˋ ˙ㄌㄜ ㄉㄥˇ ㄧˊ ㄒㄧㄚˋ'],win:['贏了!','ㄧㄥˊ ˙ㄌㄜ'],got:['得分!','ㄉㄜˊ ㄈㄣ']};
+const DUEL_WIN=5,DUEL_FREEZE=1500;
+let DU=null,duelTimer=0;
+const duelCfg=()=>{const c=S.duelCfg||{};return {n:[c.n&&c.n[0]||S.name||'JOJO',c.n&&c.n[1]||'爸爸'],lv:[c.lv&&c.lv[0]||Math.min(S.grade,3),c.lv&&c.lv[1]||3]}};
+function duelSetup(game){
+  const c=duelCfg();S.duelCfg=c;sfx.tap();
+  const side=i=>`<div class="dset"><div class="dsl">${i?'⬆️ '+Z(DT.top):'⬇️ '+Z(DT.bot)}</div>
+    <input class="name" maxlength="8" value="${esc(c.n[i])}" oninput="S.duelCfg.n[${i}]=this.value;save()">
+    <div class="grade dgr">${[1,2,3].map(g=>`<button class="${c.lv[i]===g?'on':''}" onclick="S.duelCfg.lv[${i}]=${g};save();duelSetup('${game}')">${Z(T['g'+g])}</button>`).join('')}</div></div>`;
+  show('duelset',`
+  <div class="row">${homeBtn()}</div>
+  <div class="row center">${mascot()}<h1>${game==='bln'?'⚔️ '+Z(DT.bln):'🪢 '+Z(DT.tug)}</h1></div>
+  <div class="tip center">${Z(DT.how)}<br>${Z(game==='bln'?DT.howBln:DT.howTug)}</div>
+  <div class="card">${side(1)}${side(0)}<div class="gnum" style="margin-top:8px">💡 ${Z(DT.fair)}</div></div>
+  <div class="row center" style="margin-top:12px"><button class="btn" style="font-size:28px" onclick="duelStart('${game}')">▶️ ${Z(DT.go)}</button></div>`);
+}
+// 每一邊的題目
+function duelQ(lv){ // 數學拔河:一題算式 + 三個答案
+  const v=lv===1?R(5,18):lv===2?(R(0,1)?R(2,9)*R(2,9):R(11,60)):(R(0,2)?R(2,9)*R(2,9):R(2,9));
+  let e=null;for(let n=0;n<30&&!e;n++)e=blnExpr(v,lv);
+  return {e:e||`${v-1} + 1`,a:v,opts:shuffle([v,...numOpts(v,[1,2,10])])};
+}
+function duelStart(game){
+  const c=duelCfg();clearTimeout(duelTimer);
+  DU={game,p:c.n.map((n,i)=>({name:n,lv:c.lv[i],score:0,frz:0})),pos:0,busy:false,over:false};
+  show('duel',`<div class="duelwrap dg-${game}"><div class="dhalf top" id="dh1"></div>
+    <div class="dmid"><button class="dx" onpointerdown="event.preventDefault();duelQuit()">✖</button><div id="dmid"></div></div>
+    <div class="dhalf" id="dh0"></div></div>`);
+  duelNext();speak('開始!');
+}
+function duelQuit(){clearTimeout(duelTimer);DU=null;home()}
+function duelNext(){ // 兩邊同時換題
+  if(scr!=='duel'||!DU)return;DU.busy=false;
+  DU.p.forEach((p,i)=>{
+    if(DU.game==='bln'){p.r=blnRound(p.lv);p.left=p.r.items.filter(x=>x.v===p.r.t).length}else p.q=duelQ(p.lv);
+    duelDraw(i);
+  });
+  duelMid();
+}
+function duelHead(i){const p=DU.p[i],o=DU.p[1-i];return `<div class="dhead"><b>${esc(p.name)}</b><span>${DU.game==='bln'?`⭐ ${p.score} : ${o.score}`:`🚩 ${Math.max(0,DUEL_WIN-Math.abs(DU.pos-(i?-DUEL_WIN:DUEL_WIN)))} / ${DUEL_WIN}`}</span></div>`}
+function duelDraw(i){
+  const p=DU.p[i],box=$('#dh'+i);if(!box)return;
+  if(DU.game==='bln'){
+    box.innerHTML=duelHead(i)+`<div class="dbody"><div class="bsign">${p.r.t}</div><div class="blns dbl">${p.r.items.map((x,j)=>`<button class="bln${x.done?(x.v===p.r.t?' popped':' wrong'):''}" style="--c:${BLN_COLORS[j%BLN_COLORS.length]};animation-delay:${-(j*.37).toFixed(2)}s" onpointerdown="duelTap(event,${i},${j})"><span>${x.done&&x.v!==p.r.t?`${x.e} = ${x.v}`:x.e}</span></button>`).join('')}</div></div><div class="dfrz">${Z(DT.wrong)}</div>`;
+  }else{
+    box.innerHTML=duelHead(i)+`<div class="dbody"><div class="expr">${p.q.e} = ?</div><div class="dopts">${p.q.opts.map((v,j)=>`<button class="opt" onpointerdown="duelTap(event,${i},${j})">${v}</button>`).join('')}</div></div><div class="dfrz">${Z(DT.wrong)}</div>`;
+  }
+  box.classList.toggle('frz',Date.now()<p.frz);
+}
+function duelMid(){ // 中間:拔河的繩子;氣球對戰只放分數
+  const m=$('#dmid');if(!m)return;
+  if(DU.game==='tug'){const cells=Array.from({length:DUEL_WIN*2+1},(_,k)=>`<i class="${k===DU.pos+DUEL_WIN?'on':''}">${k===DU.pos+DUEL_WIN?'🚩':''}</i>`).join('');m.innerHTML=`<div class="rope"><span>🐻</span>${cells}<span>🐰</span></div>`}
+  else m.innerHTML=`<div class="dsc">🐻 ${DU.p[1].score} : ${DU.p[0].score} 🐰</div>`;
+}
+function duelTap(e,i,j){
+  if(e)e.preventDefault();
+  const p=DU&&DU.p[i];if(!p||DU.busy||DU.over||Date.now()<p.frz)return;
+  const freeze=()=>{p.frz=Date.now()+DUEL_FREEZE;sfx.bad();duelDraw(i);setTimeout(()=>{if(DU&&DU.p[i]===p)duelDraw(i)},DUEL_FREEZE+30)};
+  if(DU.game==='bln'){
+    const x=p.r.items[j];if(!x||x.done)return;x.done=true;
+    if(x.v!==p.r.t){duelDraw(i);return freeze()}
+    p.left--;sfx.ok();const b=$('#dh'+i).querySelectorAll('.bln')[j];if(b){b.classList.add('popped');const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,8)}
+    if(p.left>0)return;
+    p.score++;DU.busy=true;sfx.win();duelMid();DU.p.forEach((_,k)=>{const h=$('#dh'+k);if(h)h.querySelector('.dhead span').textContent=`⭐ ${DU.p[k].score} : ${DU.p[1-k].score}`});
+    if(p.score>=DUEL_WIN)return duelEnd(i);
+    $('#dh'+i).insertAdjacentHTML('beforeend',`<div class="dgot">🎉 ${Z(DT.got)}</div>`);
+    duelTimer=setTimeout(duelNext,1100);return;
+  }
+  if(p.q.opts[j]!==p.q.a)return freeze();
+  sfx.ok();DU.pos+=i?-1:1;duelMid();
+  if(Math.abs(DU.pos)>=DUEL_WIN)return duelEnd(DU.pos>0?0:1);
+  p.q=duelQ(p.lv);duelDraw(i);DU.p.forEach((_,k)=>{const h=$('#dh'+k);if(h&&k!==i)h.querySelector('.dhead').outerHTML=duelHead(k)});
+}
+function duelEnd(w){
+  DU.over=true;clearTimeout(duelTimer);
+  const dk=dayKey();S.days=S.days||[];if(!S.days.includes(dk))S.days=[...S.days,dk].slice(-60); // 對戰也算今天有玩
+  const bonus=S.gamePaid!==dk;if(bonus){S.gamePaid=dk;S.owed++}save(); // 和其他小遊戲共用每天 1 張
+  const p=DU.p[w],o=DU.p[1-w],g=DU.game;sfx.win();confetti(200);speak(`${p.name}贏了!`);
+  modal(`<div style="font-size:64px">🏆</div><h2>${esc(p.name)} ${Z(DT.win)}</h2>
+    ${g==='bln'?`<div style="font-size:30px">${p.score} : ${o.score}</div>`:''}
+    ${bonus?`<div class="tip">🎁 ${Z(T.gBonus)}</div>`:''}
+    <div class="row center" style="margin-top:10px"><button class="btn" onclick="closeModal();duelStart('${g}')">🔁 ${Z(T.replay)}</button>
+    <button class="btn ghost" onclick="closeModal();duelSetup('${g}')">⚙️</button>${homeBtn()}</div>`);
+}
+
 /* ==================== 每日暖身:10 題基本功 ====================
    只練「要熟到不用想」的基本算式(湊 10、10 加幾、一樣的兩個數、進位加法、退位減法…)。
    不計時、不鎖順序、可以跳過;還不熟的(答錯過、或答得慢)比較常出,也會混一些已經會的。
@@ -3972,7 +4670,7 @@ function warm(){
 }
 function warmNext(){
   if(scr!=='warm'||!WM)return;
-  if(++WM.i>=WM.qs.length){closePad();$('#wcard').remove();S.warm.day=dayKey();return playEnd(WM.miss,'warm()',T.wDone,1,3,true)} // 暖身不送貼紙,也不佔用小遊戲每天那 1 張
+  if(++WM.i>=WM.qs.length){closePad();$('#wcard').remove();if(S.warm.day!==dayKey()){S.cnt=S.cnt||{};S.cnt.warm=(S.cnt.warm||0)+1;if(S.cnt.warm>=5)badgePop([award('warm5')].filter(Boolean),1600)}S.warm.day=dayKey();return playEnd(WM.miss,'warm()',T.wDone,1,3,true)} // 暖身不送貼紙,也不佔用小遊戲每天那 1 張
   const q=WM.qs[WM.i];WM.val='';WM.busy=false;WM.hid=false;WM.t0=Date.now();
   $('#wprog').textContent=`🔥 ${WM.i+1} / ${WM.qs.length}`;
   $('#wcard').innerHTML=`<div class="expr wexpr">${q.e.replace('?','<span class="inp act" id="winp">?</span>')}</div><div id="wfb"></div>
