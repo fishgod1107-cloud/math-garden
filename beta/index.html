@@ -105,6 +105,7 @@ h2{font-size:28px;margin:8px 0;color:var(--purple-d)}
   background:linear-gradient(120deg,#ffd1e3,#fff3b8,#c9f3e2,#d9c8fb);box-shadow:0 7px 0 #e9a9c6;border:4px solid #fff;text-align:left;line-height:1.5}
 .mix:active{transform:translateY(4px);box-shadow:0 3px 0 #e9a9c6}
 .mix.boss{background:linear-gradient(120deg,#e9dcff,#ffd9e6)}
+.mixes .mix.exam{grid-column:1/-1;background:linear-gradient(120deg,#dff3ff,#e8ffe9)} /* 一上段考:大魔王下面,佔滿一整排 */
 /* 首頁最上面四張卡片:矮一點,每張只有兩排字(名稱一排、說明一排) */
 .mixes .mix{min-height:84px;margin-top:0;padding:8px 14px;gap:12px}
 .mixes .mix .ue{font-size:40px}.mixes .mix .mt{font-size:24px;white-space:nowrap}.mixes .mix .ms{font-size:15px;white-space:nowrap}
@@ -1769,7 +1770,7 @@ function genKind(k,t,noM){ // 有操作題(k.man)的題型,十題裡大約四題
   return q;
 }
 function genOf(uid,t){const ks=KINDS.filter(k=>k.u===uid),m=ks.filter(k=>k.types.includes(t));return genKind(pick(m.length?m:ks),t)}
-const gradeIcon=k=>UNITS[1].some(u=>u.id===k.u)?'🌱':UNITS[2].some(u=>u.id===k.u)?'🌷':'🌳';
+const gradeIcon=k=>UNITS[1].some(u=>u.id===k.u)||k.u==='exam1'?'🌱':UNITS[2].some(u=>u.id===k.u)?'🌷':'🌳';
 
 /* 錯題本:答錯的題型要再答對兩次才算學會(due 是還要練幾次,最多 3) */
 function tally(){
@@ -1860,7 +1861,8 @@ const UNITS={
 const findUnit=id=>Object.values(UNITS).flat().find(u=>u.id===id); // 三個年級的單元都找
 // 每個單元都從自己的小題型裡抽題,這樣每一題都帶著題型代號
 for(const u of [...UNITS[1],...UNITS[2]])u.gen=t=>genOf(u.id,t); // 三年級的單元在後面「v4:三年級」那一段加進來,那裡會做同樣的事
-const SPECIAL={retry:{id:'retry',e:'📕',t:['錯題再練','ㄘㄨㄛˋ ㄊㄧˊ ㄗㄞˋ ㄌㄧㄢˋ']},boss:{id:'boss',e:'👹',t:['今日大魔王','ㄐㄧㄣ ㄖˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ']}};
+const SPECIAL={retry:{id:'retry',e:'📕',t:['錯題再練','ㄘㄨㄛˋ ㄊㄧˊ ㄗㄞˋ ㄌㄧㄢˋ']},boss:{id:'boss',e:'👹',t:['今日大魔王','ㄐㄧㄣ ㄖˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ']},
+  exam1:{id:'exam1',e:'📝',t:['一上段考','ㄧ ㄕㄤˋ ㄉㄨㄢˋ ㄎㄠˇ'],s:['是非、選擇、填空 20 題','ㄕˋ ㄈㄟ ㄒㄩㄢˇ ㄗㄜˊ ㄊㄧㄢˊ ㄎㄨㄥˋ ㄊㄧˊ'],gen:t=>genOf('exam1',t)}}; // 一上段考:首頁大魔王下面那一張卡片
 /* 今日大魔王:二、三年級才有,一天一次,10 題裡 6 題難題 + 4 題一般題,貼紙加倍 */
 const BOSS_HARD={ // 每個年級比較難的題型
   2:['wTwo','wChange','wOrig','wCmpR2','wTime','add3','sub3','chain','box2','share','pickF2'],
@@ -1907,7 +1909,8 @@ function home(quiet){
     <input class="name" maxlength="8" value="${esc(S.name)}" oninput="S.name=this.value;save();document.querySelector('.kid.on span').textContent=this.value||'？'" placeholder="✏️"></div>
   <div class="mixes"><button class="mix" onclick="warm()"><span class="ue">🔥</span><span><span class="mt">${Z(T.warm)}</span><br><span class="ms">${warmFix(S.warm).day===dayKey()?'✅ ':''}${Z(T.warmSub)}</span></span></button>${Object.values(MIXES).map(m=>`
     <button class="mix" onclick="start('${m.id}')">${bestTag(m.id)}
-      <span class="ue">${m.e}</span><span><span class="mt">${Z(m.t)}</span><br><span class="ms">${Z(m.s)}</span></span></button>`).join('')}${bossCard()}</div>
+      <span class="ue">${m.e}</span><span><span class="mt">${Z(m.t)}</span><br><span class="ms">${Z(m.s)}</span></span></button>`).join('')}${bossCard()}
+    <button class="mix exam" onclick="start('exam1')">${bestTag('exam1')}<span class="ue">📝</span><span><span class="mt">${Z(SPECIAL.exam1.t)}</span><br><span class="ms">${Z(SPECIAL.exam1.s)}</span></span></button></div>
   ${dueKinds().length?`<button class="mix retry" onclick="start('retry')"><span class="ue">📕</span><span><span class="mt">${Z(SPECIAL.retry.t)}</span><br>
     <span class="ms">${Z(T.has1)} ${dueKinds().length} ${Z(T.dueKinds)}</span></span></button>`:''} ${''/* 「今天推薦你玩」的卡片先不顯示(recHtml 還留著,要恢復時放回這裡) */}
   <h2 style="margin-top:16px">✏️ ${Z(T.practice)}</h2>
@@ -2684,7 +2687,7 @@ function guideHtml(){
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
   ${sec('一上段考練習',[
-    '一年級單元裡的「📝 一上段考」:範圍是一年級上學期第一次段考常見的單元——10 以內的數(數數、順序、比大小)、第幾個、排隊、比多少、分與合、比長短。',
+    '首頁「今日大魔王」下面的「📝 一上段考」:範圍是一年級上學期第一次段考常見的單元——10 以內的數(數數、順序、比大小)、第幾個、排隊、比多少、分與合、比長短。',
     '約 7 成是難題,例如「從左邊數第 3 個,從右邊數是第幾個」「比 3 大、比 8 小的數有幾個」「7 可以分成兩個數,有幾種分法」「排第 4 個,後面還有 3 個人,一共幾人」。',
     '<b>像真的考試</b>:一次 20 題,分成「一、是非題 5 題」「二、選擇題 5 題」「三、填空題 10 題」,每題 5 分。不管平常選的是「一題一題」還是「考試模式」,這裡都是全部寫完、按交卷後才一起對答案、算分數。其他單元維持原本的作答方式。',
     '題目是依各校課程計畫的範圍和學校考卷的題型自己出的,不是抄網路上的考卷;每次出題都不一樣,可以一直練。各校範圍可能略有不同,請以學校公告為準。'])}
@@ -4465,7 +4468,7 @@ function e1TF(){ // 是非題:一句話,判斷對還是錯(錯的那一句常常
   return q;
 }
 const E1_HARD=.8; // 難題的比例:8 種題型裡「比長短」沒有分難易,其他 7 種各 8 成出難的,整體大約 7 成是難題
-UNITS[1].push({id:'exam1',e:'📝',t:['一上段考','ㄧ ㄕㄤˋ ㄉㄨㄢˋ ㄎㄠˇ']});
+// 一上段考不放在一年級的單元裡,而是首頁大魔王下面的卡片(SPECIAL.exam1)
 KINDS.push(
   {id:'e1Count',u:'exam1',types:'cf',n:['數數看','ㄕㄨˇ ㄕㄨˇ ㄎㄢˋ'],gen:t=>e1Count(t,Math.random()<E1_HARD)},
   {id:'e1Seq',u:'exam1',types:'cf',n:['數的順序','ㄕㄨˋ ˙ㄉㄜ ㄕㄨㄣˋ ㄒㄩˋ'],gen:t=>e1Seq(t,Math.random()<E1_HARD)},
