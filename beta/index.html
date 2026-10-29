@@ -484,6 +484,7 @@ html,body{overscroll-behavior-y:contain}
 .gq{font-size:44px;color:#b9a6c0}.gbud{color:#e59a00}
 .gpets .btn.small{min-height:40px;font-size:15px;padding:2px 8px}
 .careq .prompt{text-align:left}
+.exhead{margin:18px 4px 6px;font-size:22px;color:var(--purple-d)}.exhead small{font-size:.75em;color:#8a7a90}
 /* 正面回饋:亮點、徽章 */
 .hlbox{background:linear-gradient(120deg,#fff6d6,#ffe8f1);border-radius:18px;padding:8px 14px;margin:8px auto;max-width:520px;font-size:20px;line-height:1.6}.hlbox b{color:var(--pink-d)}
 .bdgs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.bdgs>div{background:#f3eef5;border-radius:16px;padding:6px 2px;text-align:center;font-size:15px;color:#a99bb0;min-width:0}
@@ -2008,7 +2009,8 @@ function start(id){
   const u=unitOf(id),types=shuffle([...'cccccfffff']),qs=[],seen=new Set();
   const w1=findUnit('w1'),w2=findUnit('w2'),o1=UNITS[1].filter(x=>x!==w1),o2=UNITS[2].filter(x=>x!==w2);
   // 綜合題跟著年級:一年級全部出一年級的題目;二年級是一年級 3 題在前、二年級 7 題在後;三年級是二年級 3 題在前、三年級 7 題在後
-  const g1=S.grade===1,g3=S.grade===3,step=S.mode!=='test';
+  const exam=id==='exam1'; // 一上段考:像真的考試,是非、選擇、填空全部寫完才對答案
+  const g1=S.grade===1,g3=S.grade===3,step=S.mode!=='test'&&!exam;
   const w3=findUnit('w3'),o3=UNITS[3].filter(x=>x!==w3);
   // 複習用的低一個年級(lw 應用題、lo 其他單元)和現在這個年級(hw、ho)
   const [lw,lo,hw,ho,lu,hu]=g3?[w2,o2,w3,o3,UNITS[2],UNITS[3]]:[w1,o1,w2,o2,UNITS[1],UNITS[2]];
@@ -2018,9 +2020,10 @@ function start(id){
     :id==='boss'?bossList()
     :id.startsWith('k:')?Array(10).fill({gen:t=>genKind(kindById(id.slice(2)),t)})
     :Array(10).fill(u);
-  list.forEach((x,i)=>{
+  const plan=exam?EXAM_PLAN.flatMap(([n,t])=>Array(n).fill(t)):null; // 段考:5 題是非、5 題選擇、10 題填空
+  (exam?plan:list).forEach((x,i)=>{
     let q,k,n=0;
-    do{q=x.gen(types[i]);k=q.p+'|'+q.v+'|'+q.ansH}while(seen.has(k)&&++n<20);
+    do{q=exam?(x==='t'?genKind(kindById('e1TF'),'t'):u.gen(x)):x.gen(types[i]);k=q.p+'|'+q.v+'|'+q.ansH}while(seen.has(k)&&++n<20);
     seen.add(k);qs.push(q);
   });
   // mode:step 一題一題(馬上對答案,答錯可以再試一次)、test 整頁寫完再一起對答案
@@ -2034,10 +2037,11 @@ function start(id){
     <div class="ptalk" id="playTalk"></div>
   </div>
   <div id="res"></div>
-  ${qs.map(qCard).join('')}
+  ${qs.map((q,i)=>(exam?examHead(i):'')+qCard(q,i)).join('')}
   <div id="sub" style="text-align:center;margin-top:8px"><div class="hint" id="subMsg"></div>
     ${step?'<div id="stepBar"></div>':`<button class="btn mint bigbtn" onclick="submit()">✅ ${Z(T.submit)}</button>`}</div>`);
-  if(step){app.classList.add('stepmode');stepShow(0,true);talk(T.introStep,true);speak(T.introStep[0]+qSay(qs[0]))} // 開場白說完,接著唸第一題else{prog();talk(T.intro)}
+  if(step){app.classList.add('stepmode');stepShow(0,true);talk(T.introStep,true);speak(T.introStep[0]+qSay(qs[0]))} // 開場白說完,接著唸第一題
+  else{prog();talk(exam?EXAM_T.intro:T.intro)}
 }
 function qCard(q,i){
   const body=q.type==='c'
@@ -2165,7 +2169,7 @@ addEventListener('visibilitychange',()=>{ // 切到別的 App 或關螢幕的時
 let hidAt=0;
 function finish(){
   // 一題一題:第一次就答對 10 分,第二次才答對 5 分
-  const step=G.mode==='step',sc=step?G.pts.reduce((a,b)=>a+(b||0),0):G.qs.filter((_,i)=>isRight(i)).length*10,full=sc===100,id=G.u.id,wrong=10-sc/10;
+  const step=G.mode==='step',nRight=G.qs.filter((_,i)=>isRight(i)).length,sc=step?G.pts.reduce((a,b)=>a+(b||0),0):Math.round(nRight*100/G.qs.length),full=sc===100,id=G.u.id,wrong=G.qs.length-nRight; // 段考 20 題,每題 5 分
   const boss=id==='boss';if(boss)S.bossDay=dayKey(); // 大魔王:做完就算今天用掉,不論幾分
   const base=full?2:sc>=80?1:0,n=base+(boss&&base?1:0); // 80 分以上可以選 1 張貼紙,100 分選 2 張;大魔王打敗了再多 1 張(原本是加倍,貼紙累積太快,改成多 1 張)
   if(boss)S.bossFails=sc<80?(S.bossFails||0)+1:0; // 連續幾次沒打敗:下一次的難題會少一點
@@ -2679,6 +2683,11 @@ function guideHtml(){
     '孩子換了獎品以後,請到本頁下面的「已兌換的禮物」打勾,表示已經把禮物交給她。換硬幣不用打勾。',
     '「禮物清單」可以改成你們家自己的獎品,每一項可以選要幾張貼紙或幾枚硬幣;不一定要花錢,例如「多聽一個故事」。金額只是參考,孩子的畫面上不會出現。',
     '「貼紙點數」和硬幣的 +1、−1 可以手動加減;「神秘禮物拉霸」(5 張拉一次,大多是不用花錢的體驗券)可以調整要幾張,或整個關掉。'])}
+  ${sec('一上段考練習',[
+    '一年級單元裡的「📝 一上段考」:範圍是一年級上學期第一次段考常見的單元——10 以內的數(數數、順序、比大小)、第幾個、排隊、比多少、分與合、比長短。',
+    '約 7 成是難題,例如「從左邊數第 3 個,從右邊數是第幾個」「比 3 大、比 8 小的數有幾個」「7 可以分成兩個數,有幾種分法」「排第 4 個,後面還有 3 個人,一共幾人」。',
+    '<b>像真的考試</b>:一次 20 題,分成「一、是非題 5 題」「二、選擇題 5 題」「三、填空題 10 題」,每題 5 分。不管平常選的是「一題一題」還是「考試模式」,這裡都是全部寫完、按交卷後才一起對答案、算分數。其他單元維持原本的作答方式。',
+    '題目是依各校課程計畫的範圍和學校考卷的題型自己出的,不是抄網路上的考卷;每次出題都不一樣,可以一直練。各校範圍可能略有不同,請以學校公告為準。'])}
   ${sec('鼓勵和徽章',[
     '<b>這回合的亮點</b>:成績卡上會具體說出她做到了什麼,例如「比上次進步了 10 分」「有 2 題自己改對了,你沒有放棄」「進位加法 3 題全對」,不只說「好棒」。',
     '<b>成就徽章</b>(在貼紙簿下面,共 12 個):第一步、滿分、連續三天、連續一星期、不放棄、連對十題、錯題清光光、進步之星、打敗大魔王、暖身五天、小小邏輯家、練習五十回。多數是獎勵努力和堅持,不只看分數。得到時會跳出來慶祝。徽章不換貼紙、不影響獎品。',
@@ -4366,6 +4375,107 @@ KINDS.push(
   {id:'pStairs',u:'pic1',types:'cf',n:['爬樓梯','ㄆㄚˊ ㄌㄡˊ ㄊㄧ'],gen:t=>pStairs(t)},
   {id:'pFloors',u:'pic1',types:'cf',n:['上下數樓層','ㄕㄤˋ ㄒㄧㄚˋ ㄕㄨˇ ㄌㄡˊ ㄘㄥˊ'],gen:t=>pFloors(t)},
   {id:'pTree',u:'pic1',types:'cf',n:['分合樹','ㄈㄣ ㄏㄜˊ ㄕㄨˋ'],gen:t=>pBondTree(t)},
+);
+for(const u of UNITS[1])u.gen=t=>genOf(u.id,t);
+
+/* ==================== 一上段考練習(一年級第一次段考範圍) ====================
+   範圍參考各校一年級上學期的課程計畫:10 以內的數、比長短、排順序與比多少、分與合;題型參考學校考卷的出法。
+   題目都是程式自己出的(不抄網路上的考卷,避免版權問題),每一種題型有「一般」和「難」兩種,約 7 成出難的 */
+const E1={cnt:['數數看,有幾個?','ㄕㄨˇ ㄕㄨˇ ㄎㄢˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ'],cntOf:['數數看,有幾隻','ㄕㄨˇ ㄕㄨˇ ㄎㄢˋ ㄧㄡˇ ㄐㄧˇ ㄓ'],
+  more1:['多 1 的數是多少?','ㄉㄨㄛ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],less1:['少 1 的數是多少?','ㄕㄠˇ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],bi:['比','ㄅㄧˇ'],and:['和','ㄏㄢˋ'],
+  mid:['中間是哪一個數?','ㄓㄨㄥ ㄐㄧㄢ ㄕˋ ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄕㄨˋ'],big:['大、比','ㄉㄚˋ ㄅㄧˇ'],smallQ:['小的數有幾個?','ㄒㄧㄠˇ ˙ㄉㄜ ㄕㄨˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ'],
+  which:['哪一個數比','ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄕㄨˋ ㄅㄧˇ'],small:['小?','ㄒㄧㄠˇ'],
+  all:['一共有','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ'],row:['隻動物排成一排,','ㄓ ㄉㄨㄥˋ ㄨˋ ㄆㄞˊ ㄔㄥˊ ㄧˋ ㄆㄞˊ'],left:['從左邊數,','ㄘㄨㄥˊ ㄗㄨㄛˇ ㄅㄧㄢ ㄕㄨˇ'],
+  rank:['排第','ㄆㄞˊ ㄉㄧˋ'],toRight:['個;從右邊數,它排第幾個?','˙ㄍㄜ ㄘㄨㄥˊ ㄧㄡˋ ㄅㄧㄢ ㄕㄨˇ ㄊㄚ ㄆㄞˊ ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ'],
+  rTip:['它的右邊還有幾隻,再加上它自己。','ㄊㄚ ˙ㄉㄜ ㄧㄡˋ ㄅㄧㄢ ㄏㄞˊ ㄧㄡˇ ㄐㄧˇ ㄓ ㄗㄞˋ ㄐㄧㄚ ㄕㄤˋ ㄊㄚ ㄗˋ ㄐㄧˇ'],
+  back:['個,後面還有','˙ㄍㄜ ㄏㄡˋ ˙ㄇㄧㄢ ㄏㄞˊ ㄧㄡˇ'],allQ:['個人,一共有幾個人?','˙ㄍㄜ ㄖㄣˊ ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄖㄣˊ'],
+  qTip:['排第幾個,就表示連自己一共有幾個人。','ㄆㄞˊ ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ ㄐㄧㄡˋ ㄅㄧㄠˇ ㄕˋ ㄌㄧㄢˊ ㄗˋ ㄐㄧˇ ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄖㄣˊ'],
+  ways:['可以分成兩個數(不能是 0),一共有幾種分法?','ㄎㄜˇ ㄧˇ ㄈㄣ ㄔㄥˊ ㄌㄧㄤˇ ˙ㄍㄜ ㄕㄨˋ ㄅㄨˋ ㄋㄥˊ ㄕˋ ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ㄓㄨㄥˇ ㄈㄣ ㄈㄚˇ'],
+  to10:['合起來,比 10 少多少?','ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄅㄧˇ ㄕㄠˇ ㄉㄨㄛ ㄕㄠˇ'],zhong:['種','ㄓㄨㄥˇ']};
+function e1Count(type,h){ // 數數:難題是很多種東西混在一起,只數其中一種
+  if(!h){const n=R(1,10),e=pick(['🍎','⭐','🌸','🐟','🎈']);return num(Z(E1.cnt),emoRow(e,n),n,type,{say:'數數看,有幾個',ds:[1,2],teach:[[TT.five]]})}
+  const an=shuffle(['🐶','🐱','🐰','🐻']).slice(0,3),x=an[0],n=R(2,7),list=shuffle([...Array(n).fill(x),...Array.from({length:R(4,8)},()=>pick(an.slice(1)))]);
+  const p=line([E1.cntOf,x,'?']);
+  return num(p.h,`<div class="emo">${list.join('')}</div>`,n,type,{say:p.say,ds:[1,2],teach:[[TT.five]]});
+}
+function e1Seq(type,h){ // 數的順序:難題有倒著數、兩個兩個數、比幾多 1/少 1、兩個數中間
+  if(!h){const a=R(0,6);return num(Z(T.seq),expr(`${a}, ${a+1}, ${a+2}, ?`),a+3,type,{say:`${a}、${a+1}、${a+2},接下來是多少`,ds:[1,2],teach:[[TT.eachMore,1,'。']]})}
+  const k=R(0,4);
+  if(k===0){const a=R(4,10);return num(Z(T.seq),expr(`${a}, ${a-1}, ${a-2}, ?`),a-3,type,{say:`${a}、${a-1}、${a-2},接下來是多少`,ds:[1,2],teach:[[DF.eachLess,1,'。'],[`${a-2} − 1 = ${a-3}`]]})}
+  if(k===1){const a=pick([0,1,2,3,4]);return num(Z(T.seq),expr(`${a}, ${a+2}, ${a+4}, ?`),a+6,type,{say:`${a}、${a+2}、${a+4},接下來是多少`,ds:[1,2],teach:[[TT.eachMore,2,'。'],[`${a+4} + 2 = ${a+6}`]]})}
+  if(k===2){const n=R(1,9),p=line([E1.bi,n,E1.more1]);return num(p.h,'',n+1,type,{say:p.say,ds:[1,2],wrong:[n-1],teach:[[`${n} + 1 = ${n+1}`]]})}
+  if(k===3){const n=R(1,10),p=line([E1.bi,n,E1.less1]);return num(p.h,'',n-1,type,{say:p.say,ds:[1,2],wrong:[n+1],teach:[[`${n} − 1 = ${n-1}`]]})}
+  const a=R(0,8),p=line([a,E1.and,a+2,E1.mid]);return num(p.h,expr(`${a}, ?, ${a+2}`),a+1,type,{say:p.say,ds:[1,2],teach:[[`${a} + 1 = ${a+1}`]]});
+}
+function e1Cmp(type,h){ // 比大小:難題是「比幾大、比幾小」
+  if(!h)return type==='c'?gCompare(0,10):gSign(0,10);
+  const a=R(0,6),b=R(a+2,Math.min(10,a+5));
+  if(type==='c'){const ins=R(a+1,b-1),outs=shuffle([...Array(11).keys()].filter(x=>x<=a||x>=b)).slice(0,2),p=line([E1.which,a,E1.big,b,E1.small]);
+    return lab(p.h,'',[ins,...outs].map(x=>({h:String(x),ok:x===ins})),{say:p.say,teach:[[`${a} < ${ins} < ${b}`]]})}
+  const mids=[];for(let x=a+1;x<b;x++)mids.push(x);const p=line([E1.bi,a,E1.big,b,E1.smallQ]);
+  return num(p.h,'',mids.length,type,{say:p.say,ds:[1,2],wrong:[mids.length+1],teach:[[mids.join('、')]]});
+}
+function e1Ordinal(type,h){ // 第幾個:難題是換邊數、分清楚「第幾個」和「前面幾個」
+  if(!h)return gOrdinal(type);
+  if(type==='c')return pNthFirst();
+  const n=R(6,10),k=R(2,n-1),an=pick(['🐶','🐱','🐰','🐻','🐼']),ans=n-k+1,p=line([E1.all,n,E1.row,E1.left,an,E1.rank,k,E1.toRight]);
+  return num(p.h,'',ans,type,{say:p.say,ds:[1,2],wrong:[k,n-k],teach:[[E1.rTip],[`${n} − ${k} = ${n-k}`],[`${n-k} + 1 = ${ans}`]]});
+}
+function e1Queue(type,h){ // 排隊:難題是「排第幾個,後面還有幾個人」
+  if(!h)return pFrontBack(type);
+  const w=someone();
+  if(R(0,1)){const k=R(2,6),b=R(1,9-k);return wp(type,'🧍‍♀️🧍🧍‍♀️🧍',k+b,W.ren,`${k} + ${b}`,[1,2],E1.qTip,[w,E1.rank,k,E1.back,b,E1.allQ])}
+  const a=R(1,4),b=R(1,4);return wp(type,'🧍‍♀️🧍🧍‍♀️🧍',a+b+1,W.ren,`${a} + 1 + ${b}`,[1,2],TT.wQueue,[W.queue,C,w,W.front,a,W.people,C,W.back,b,W.people,C,W.howMany,Q]);
+}
+function e1More(type,h){ // 比多少:難題是「比…多幾個/少幾個」反過來問
+  if(!h)return pEnough(type);
+  const [w1,w2]=twoPeople(),it=pick(ITEMS),more=R(0,1),a=more?R(2,7):R(4,9),d=more?R(1,10-a):R(1,a-1);
+  return more?wp(type,it.e,a+d,it.m,`${a} + ${d}`,[1,2],CR.more,[w2,W.bi,w1,CR.many,d,it.m,it.n,C,w1,W.has,a,it.m,C,w2,CR.hasQ,it.m,Q])
+    :wp(type,it.e,a-d,it.m,`${a} − ${d}`,[1,2],CR.less,[w2,W.bi,w1,CR.few,d,it.m,it.n,C,w1,W.has,a,it.m,C,w2,CR.hasQ,it.m,Q]);
+}
+function e1Bond(type,h){ // 分與合:難題是「有幾種分法」「合起來比 10 少多少」
+  if(!h)return R(0,1)?gBond(type):pBondTree(type);
+  if(R(0,1)){const n=R(4,10),p=line([n,E1.ways]),list=Array.from({length:n-1},(_,i)=>`${i+1}+${n-1-i}`).join('、');
+    return num(p.h,'',n-1,type,{unit:Z(E1.zhong),say:p.say,ds:[1,2],wrong:[Math.floor(n/2)],teach:[[list]]})}
+  const a=R(1,6),b=R(1,9-a),s=a+b,p=line([a,E1.and,b,E1.to10]);
+  return num(p.h,'',10-s,type,{say:p.say,ds:[1,2],wrong:[s],teach:[[`${a} + ${b} = ${s}`],[`10 − ${s} = ${10-s}`]]});
+}
+// ----- 模擬考試:一、是非題 5 題,二、選擇題 5 題,三、填空題 10 題,每題 5 分,全部寫完才交卷 -----
+const EXAM_PLAN=[[5,'t'],[5,'c'],[10,'f']];
+const EXAM_T={
+  s1:['一、是非題:對的選 ○,錯的選 ✕','ㄧ ㄕˋ ㄈㄟ ㄊㄧˊ ㄉㄨㄟˋ ˙ㄉㄜ ㄒㄩㄢˇ ㄘㄨㄛˋ ˙ㄉㄜ ㄒㄩㄢˇ'],
+  s2:['二、選擇題:選出正確的答案','ㄦˋ ㄒㄩㄢˇ ㄗㄜˊ ㄊㄧˊ ㄒㄩㄢˇ ㄔㄨ ㄓㄥˋ ㄑㄩㄝˋ ˙ㄉㄜ ㄉㄚˊ ㄢˋ'],
+  s3:['三、填空題:把答案填在框框裡','ㄙㄢ ㄊㄧㄢˊ ㄎㄨㄥˋ ㄊㄧˊ ㄅㄚˇ ㄉㄚˊ ㄢˋ ㄊㄧㄢˊ ㄗㄞˋ ㄎㄨㄤ ㄎㄨㄤ ㄌㄧˇ'],
+  pts:['(每題 5 分)','ㄇㄟˇ ㄊㄧˊ ㄈㄣ'],
+  intro:['一共有 20 題,全部寫完再交卷!','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄊㄧˊ ㄑㄩㄢˊ ㄅㄨˋ ㄒㄧㄝˇ ㄨㄢˊ ㄗㄞˋ ㄐㄧㄠ ㄐㄩㄢˋ'],
+  yes:['對','ㄉㄨㄟˋ'],no:['錯','ㄘㄨㄛˋ'],
+  big:['大','ㄉㄚˋ'],small:['小','ㄒㄧㄠˇ'],next:['的下一個數是','˙ㄉㄜ ㄒㄧㄚˋ ㄧˊ ˙ㄍㄜ ㄕㄨˋ ㄕˋ'],join:['合起來是','ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄕˋ'],
+  split:['可以分成','ㄎㄜˇ ㄧˇ ㄈㄣ ㄔㄥˊ'],ge:['個','˙ㄍㄜ'],total:['一共有','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ']};
+const examHead=i=>{let at=0;for(const [k,[n]] of EXAM_PLAN.entries()){if(i===at)return `<h2 class="exhead">${Z([EXAM_T.s1,EXAM_T.s2,EXAM_T.s3][k])} <small>${Z(EXAM_T.pts)}</small></h2>`;at+=n}return ''};
+function e1TF(){ // 是非題:一句話,判斷對還是錯(錯的那一句常常只差 1,或是左右數反了)
+  const truth=R(0,1)===1,hard=Math.random()<E1_HARD,k=R(0,5),off=()=>hard?pick([-1,1]):pick([-3,-2,2,3]);let parts,v='',teach;
+  if(k===0){let a=R(0,10),b;do{b=hard?a+pick([-1,1]):R(0,10)}while(b===a||b<0||b>10);const big=truth===(a>b);parts=[a,E1.bi,b,big?EXAM_T.big:EXAM_T.small];teach=[[a>b?`${a} > ${b}`:`${a} < ${b}`]]}
+  else if(k===1){const n=R(0,9);let m=n+1;if(!truth){do{m=n+1+off()}while(m===n+1||m<0)}parts=[n,EXAM_T.next,m];teach=[[`${n} + 1 = ${n+1}`]]}
+  else if(k===2){const a=R(1,8),b=R(1,10-a),s=a+b;let m=s;if(!truth){do{m=s+off()}while(m===s||m<0)}parts=[a,E1.and,b,EXAM_T.join,m];teach=[[`${a} + ${b} = ${s}`]]}
+  else if(k===3){const s=R(3,10),a=R(1,s-1);let b=s-a;if(!truth){do{b=s-a+off()}while(b===s-a||b<1)}parts=[s,EXAM_T.split,a,E1.and,b];teach=[[`${s} − ${a} = ${s-a}`]]}
+  else if(k===4){const an=shuffle(PB_ANI).slice(0,R(5,8)),i=R(0,an.length-1),right=i+1;let m=right;if(!truth){m=hard&&an.length-i!==right?an.length-i:right+pick([-1,1]);if(m<1||m===right)m=right+1}
+    parts=[E1.left,an[i],E1.rank,m,EXAM_T.ge];v=`<div class="emo ord"><span>${Z(ORD.l1)}👈</span><span>${an.join(' ')}</span><span>👉${Z(ORD.r1)}</span></div>`;teach=[[ORD.from,ORD.left,ORD.count]]}
+  else{const n=R(3,10),e=pick(['🍎','⭐','🌸','🐟']);let m=n;if(!truth){do{m=n+(hard?pick([-1,1]):pick([-2,2]))}while(m===n||m<1)}parts=[EXAM_T.total,m,EXAM_T.ge];v=emoRow(e,n);teach=[[TT.five]]}
+  const p=line(parts),opts=[{h:'○ '+Z(EXAM_T.yes),ok:truth},{h:'✕ '+Z(EXAM_T.no),ok:!truth}],q=lab(p.h+'。',v,opts,{say:p.say+',對還是錯',teach});q.opts=opts;
+  return q;
+}
+const E1_HARD=.8; // 難題的比例:8 種題型裡「比長短」沒有分難易,其他 7 種各 8 成出難的,整體大約 7 成是難題
+UNITS[1].push({id:'exam1',e:'📝',t:['一上段考','ㄧ ㄕㄤˋ ㄉㄨㄢˋ ㄎㄠˇ']});
+KINDS.push(
+  {id:'e1Count',u:'exam1',types:'cf',n:['數數看','ㄕㄨˇ ㄕㄨˇ ㄎㄢˋ'],gen:t=>e1Count(t,Math.random()<E1_HARD)},
+  {id:'e1Seq',u:'exam1',types:'cf',n:['數的順序','ㄕㄨˋ ˙ㄉㄜ ㄕㄨㄣˋ ㄒㄩˋ'],gen:t=>e1Seq(t,Math.random()<E1_HARD)},
+  {id:'e1Cmp',u:'exam1',types:'cf',n:['比大小','ㄅㄧˇ ㄉㄚˋ ㄒㄧㄠˇ'],gen:t=>e1Cmp(t,Math.random()<E1_HARD)},
+  {id:'e1Ord',u:'exam1',types:'cf',n:['第幾個','ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ'],gen:t=>e1Ordinal(t,Math.random()<E1_HARD)},
+  {id:'e1Queue',u:'exam1',types:'cf',n:['排隊','ㄆㄞˊ ㄉㄨㄟˋ'],gen:t=>e1Queue(t,Math.random()<E1_HARD)},
+  {id:'e1More',u:'exam1',types:'cf',n:['比多少','ㄅㄧˇ ㄉㄨㄛ ㄕㄠˇ'],gen:t=>e1More(t,Math.random()<E1_HARD)},
+  {id:'e1Bond',u:'exam1',types:'cf',n:['分與合','ㄈㄣ ㄩˇ ㄏㄜˊ'],gen:t=>e1Bond(t,Math.random()<E1_HARD)},
+  {id:'e1Len',u:'exam1',types:'cf',n:['比長短','ㄅㄧˇ ㄔㄤˊ ㄉㄨㄢˇ'],gen:t=>gLenCmp(t)},
+  {id:'e1TF',u:'exam1',types:'t',n:['是非題','ㄕˋ ㄈㄟ ㄊㄧˊ'],gen:()=>e1TF()}, // 只在模擬考的是非題出現(單元練習只出選擇和填空)
 );
 for(const u of UNITS[1])u.gen=t=>genOf(u.id,t);
 
