@@ -106,6 +106,7 @@ h2{font-size:28px;margin:8px 0;color:var(--purple-d)}
 .mix:active{transform:translateY(4px);box-shadow:0 3px 0 #e9a9c6}
 .mix.boss{background:linear-gradient(120deg,#e9dcff,#ffd9e6)}
 .mixes .mix.exam{grid-column:1/-1;background:linear-gradient(120deg,#dff3ff,#e8ffe9)} /* 段考測驗:大魔王下面,佔滿一整排 */
+.extips{background:#fff8e1;border:2px dashed #f3c969;border-radius:14px;padding:10px 14px;margin:8px 0;font-size:18px;line-height:1.9}.extips ol{margin:4px 0 0;padding-left:26px} /* 段考卷上的考前小提醒 */
 .mixes.exams{grid-template-columns:minmax(0,1fr);margin-top:6px}.mixes.exams .mix .ms{white-space:normal} /* 段考選單:一行一個,說明太長就換行 */
 /* 首頁最上面四張卡片:矮一點,每張只有兩排字(名稱一排、說明一排) */
 .mixes .mix{min-height:84px;margin-top:0;padding:8px 14px;gap:12px}
@@ -1800,7 +1801,7 @@ function analysisHtml(){
     .map(x=>({...x,n:x.s.r+x.s.w,p:Math.round(x.s.r*100/(x.s.r+x.s.w))})).sort((a,b)=>a.p-b.p||b.n-a.n);
   if(!rows.length)return '<div>還沒有作答紀錄,做完一回合就會出現。</div>';
   return `<div style="overflow-x:auto"><table class="ana"><tr><th>題型</th><th>答對 / 作答</th><th>正確率</th><th>狀態</th><th>常犯的錯</th></tr>${rows.map(x=>`<tr>
-    <td>${gradeIcon(x.k)} ${esc(x.k.n[0])}</td><td>${x.s.r} / ${x.n}</td>
+    <td>${gradeIcon(x.k)} ${/^exam/.test(x.k.u)?'📝'+(x.k.u==='exam1'?'一段 ':'二段 '):''}${esc(x.k.n[0])}</td><td>${x.s.r} / ${x.n}</td>
     <td><span class="bar"><i style="width:${x.p}%;background:${x.p<60?'#f06292':x.p<85?'#f0c94f':'#4fc3a1'}"></i></span> ${x.p}%</td>
     <td>${x.p<60&&x.n>=3?'⚠️ 需要加強':x.s.due>0?'📕 錯題再練中':x.p>=85&&x.n>=3?'👍 很熟練':''}${LEVELED.includes(x.k.id)&&lvl(x.k.id)?' ⬆️ 進階題':''}</td>
     <td>${Object.entries(x.s.t||{}).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`${TRAP[k]?TRAP[k].n:k} ×${n}`).join('、')}</td></tr>`).join('')}</table></div>
@@ -1898,6 +1899,7 @@ function show(name,html){hush();closePad();$('#talkBox').classList.remove('on');
 const ptsBadge=()=>`<span class="hearts">🌟 × ${pts()}</span>`;
 const homeBtn=()=>`<button class="btn ghost small" onclick="goHome()">🏠 ${Z(T.home)}</button>`;
 function goHome(){ // 寫到一半要離開先問一下,免得不小心按到
+  if(scr==='play'&&G&&G.done&&!G.fin)return finish(); // 交卷了、還在批改:先算分數給貼紙,不然這回合的成績會不見
   if(scr==='play'&&G&&!G.done&&G.ans.some(a=>a!=null)){
     sfx.tap();
     return modal(`<div style="font-size:64px;display:inline-block">${bunnySvg()}</div><h2>${Z(T.leave)}</h2>
@@ -2050,7 +2052,7 @@ function start(id){
     <div class="row" style="flex-wrap:nowrap"><button class="btn ghost small" onclick="goHome()">🏠</button><span class="sp ttl">${u.e} ${Z(u.t)}</span>${G.timed?'<span style="font-size:22px">⏱️</span>':''}<span class="hearts" id="progBox"></span></div>
     <div class="ptalk" id="playTalk"></div>
   </div>
-  <div id="res"></div>
+  <div id="res"></div>${exam?examTips():''}
   ${qs.map((q,i)=>(exam?examHead(i):'')+qCard(q,i)).join('')}
   <div id="sub" style="text-align:center;margin-top:8px"><div class="hint" id="subMsg"></div>
     ${step?'<div id="stepBar"></div>':`<button class="btn mint bigbtn" onclick="submit()">✅ ${Z(T.submit)}</button>`}</div>`);
@@ -2128,7 +2130,7 @@ function submit(){
     $('#subMsg').innerHTML=`🤔 ${Z(T.miss1)} ${miss.length} ${Z(T.miss2)}`;sfx.bad();speak(`還有${miss.length}題沒寫喔!`);
     $('#q'+miss[0]).scrollIntoView({block:'center',behavior:'smooth'});return;
   }
-  const g=G,STEP=450;g.done=true;closePad();hush();$('#sub').innerHTML='';app.classList.add('graded');
+  const g=G,STEP=g.qs.length>10?250:450;g.done=true;closePad();hush();$('#sub').innerHTML='';app.classList.add('graded'); /* 段考 20 題批改快一點,不要等 9 秒才看到分數 */
   // 一題一題批改:答對蓋章、噴星星,答錯顯示正確答案和圖解
   g.qs.forEach((q,i)=>setTimeout(()=>{
     if(G!==g||scr!=='play')return;
@@ -2174,14 +2176,15 @@ function teachHtml(q,i,right){
 function moreTeach(b,i){ // 「多看一點」:把收起來的句子打開,並且唸出來
   b.closest('.teach').querySelector('.more').hidden=false;b.remove();sfx.tap();speak(G.qs[i].moreSay,true);
 }
-// 要不要計時:爸媽專區設定。off 不計時(預設)、mix 只有綜合挑戰和綜合練習、all 每一種練習
-function timerOn(id){return S.timer==='all'||(S.timer==='mix'&&(id==='mix'||id==='mix2'||id==='boss'))}
+// 要不要計時:爸媽專區設定。off 不計時(預設)、mix 只有綜合挑戰、綜合練習、大魔王和段考、all 每一種練習
+function timerOn(id){return S.timer==='all'||(S.timer==='mix'&&(id==='mix'||id==='mix2'||id==='boss'||EXAMS.includes(id)))} // 段考也計時,像真的考試
 const fmtSecs=s=>(s>=60?`<b>${Math.floor(s/60)}</b> ${Z(T.tMin)} `:'')+`<b>${s%60}</b> ${Z(T.tSec)}`;
 addEventListener('visibilitychange',()=>{ // 切到別的 App 或關螢幕的時間不算進碼錶
   if(document.hidden)hidAt=Date.now();else{if(hidAt&&G&&G.timed&&!G.done)G.tSkip=(G.tSkip||0)+Date.now()-hidAt;hidAt=0}
 });
 let hidAt=0;
 function finish(){
+  if(G.fin)return;G.fin=true; // 只算一次分數(批改動畫還沒跑完就按 🏠 時,會先在這裡算好)
   // 一題一題:第一次就答對 10 分,第二次才答對 5 分
   const step=G.mode==='step',nRight=G.qs.filter((_,i)=>isRight(i)).length,sc=step?G.pts.reduce((a,b)=>a+(b||0),0):Math.round(nRight*100/G.qs.length),full=sc===100,id=G.u.id,wrong=G.qs.length-nRight; // 段考 20 題,每題 5 分
   const boss=id==='boss';if(boss)S.bossDay=dayKey(); // 大魔王:做完就算今天用掉,不論幾分
@@ -2701,7 +2704,8 @@ function guideHtml(){
     '首頁「今日大魔王」下面的「📝 段考測驗」,點進去選「一上第一次段考」或「一上第二次段考」。',
     '<b>第一次段考</b>:10 以內的數(數數、順序、比大小)、第幾個、排隊、比多少、分與合、比長短。難題例如「從左邊數第 3 個,從右邊數是第幾個」「比 3 大、比 8 小的數有幾個」「7 可以分成兩個數,有幾種分法」。',
     '<b>第二次段考</b>:10 以內的加法和減法、加減應用題、30 以內的數(十位和個位、倒著數、2 個 2 個數)、認識形狀、整點和半點。難題例如「3 + 2 + 4」「7 − □ = 3」「送給同學 2 個,媽媽又給了 3 個」「長針指著 6,短針在 4 和 5 中間,是幾點」。',
-    '兩次段考都約 7 成是難題。',
+    '兩次段考都約 8 成是難題,並參考老師段考常出的「活用題」:選出正確的算式、送出去以後剩幾個求原來有幾個、「比…多」卻要用減的反過來比較、題目裡有用不到的數字(年紀)、有 0 的陷阱算式、找規律、哪一個形狀沒有角、1 個小時以前是幾點。',
+    '考卷最上面有「💡 考前小提醒」:圈出題目問什麼、分清楚「第幾個」和「有幾個」、「比…多」先想誰比較多、有些數字用不到、寫完要檢查。',
     '<b>像真的考試</b>:一次 20 題,分成「一、是非題 5 題」「二、選擇題 5 題」「三、填空題 10 題」,每題 5 分。不管平常選的是「一題一題」還是「考試模式」,這裡都是全部寫完、按交卷後才一起對答案、算分數。其他單元維持原本的作答方式。',
     '題目是依各校課程計畫的範圍和學校考卷的題型自己出的,不是抄網路上的考卷;每次出題都不一樣,可以一直練。各校範圍可能略有不同,請以學校公告為準。'])}
   ${sec('鼓勵和徽章',[
@@ -2810,7 +2814,7 @@ function parentZone(){
     <div style="color:#8a7a90">每日暖身一次 10 題,只練基本算式,不計時、可以跳過。每一題花多久只記在這裡,孩子的畫面上看不到;時間包含按數字的時間,所以只是參考。平均超過 ${WARM_SLOW/1000} 秒或答錯過的算式,之後會比較常出。</div>
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的每日暖身紀錄嗎?',()=>{S.warm={f:{},day:''};save();parentZone()})">清除暖身紀錄</button></div>
     <h3>計時(碼錶)</h3>
-    <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
+    <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習、大魔王、段考'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
     <div style="color:#8a7a90">是碼錶,不是倒數:只記這回合花了多久,時間到不會結束,也不影響分數和貼紙。做題的時候畫面上只有一個 ⏱️ 小圖示,不會有跳動的數字;做完才顯示「這次花了多久」和自己的最快紀錄。最快紀錄只在 80 分以上才會更新,免得為了快而亂猜。切到別的 App 的時間不算。</div>
     <h3>神秘禮物拉霸</h3>
     <label><input type="checkbox" ${S.slotOff?'':'checked'} onchange="S.slotOff=!this.checked;save()"> 在禮物屋顯示拉霸(取消勾選就不顯示)</label>
@@ -4125,7 +4129,7 @@ const AGAIN=[T.again,
 const PV={hl:['這回合的亮點','ㄓㄜˋ ㄏㄨㄟˊ ㄏㄜˊ ˙ㄉㄜ ㄌㄧㄤˋ ㄉㄧㄢˇ'],up1:['比上次進步了','ㄅㄧˇ ㄕㄤˋ ㄘˋ ㄐㄧㄣˋ ㄅㄨˋ ˙ㄌㄜ'],up2:['分!','ㄈㄣ'],
   fix1:['有','ㄧㄡˇ'],fix2:['題自己改對了,你沒有放棄!','ㄊㄧˊ ㄗˋ ㄐㄧˇ ㄍㄞˇ ㄉㄨㄟˋ ˙ㄌㄜ ㄋㄧˇ ㄇㄟˊ ㄧㄡˇ ㄈㄤˋ ㄑㄧˋ'],
   all2:['題全對!','ㄊㄧˊ ㄑㄩㄢˊ ㄉㄨㄟˋ'],combo1:['最多連續答對','ㄗㄨㄟˋ ㄉㄨㄛ ㄌㄧㄢˊ ㄒㄩˋ ㄉㄚˊ ㄉㄨㄟˋ'],combo2:['題!','ㄊㄧˊ'],
-  done10:['你把 10 題都做完了,很努力!','ㄋㄧˇ ㄅㄚˇ ㄊㄧˊ ㄉㄡ ㄗㄨㄛˋ ㄨㄢˊ ˙ㄌㄜ ㄏㄣˇ ㄋㄨˇ ㄌㄧˋ'],
+  done1:['你把','ㄋㄧˇ ㄅㄚˇ'],done2:['題都做完了,很努力!','ㄊㄧˊ ㄉㄡ ㄗㄨㄛˋ ㄨㄢˊ ˙ㄌㄜ ㄏㄣˇ ㄋㄨˇ ㄌㄧˋ'],
   newBadge:['得到新徽章!','ㄉㄜˊ ㄉㄠˋ ㄒㄧㄣ ㄏㄨㄟ ㄓㄤ'],myBadges:['我的徽章','ㄨㄛˇ ˙ㄉㄜ ㄏㄨㄟ ㄓㄤ'],
   morning:['早安','ㄗㄠˇ ㄢ'],noon:['午安','ㄨˇ ㄢ'],evening:['晚上好','ㄨㄢˇ ˙ㄕㄤ ㄏㄠˇ'],
   st1:['你已經連續練習','ㄋㄧˇ ㄧˇ ㄐㄧㄥ ㄌㄧㄢˊ ㄒㄩˋ ㄌㄧㄢˋ ㄒㄧˊ'],st2:['天了!','ㄊㄧㄢ ˙ㄌㄜ'],
@@ -4170,7 +4174,7 @@ function highlights(step,sc,prev){ // 這回合的亮點:具體說出她做到�
   const best=Object.entries(by).filter(([,a])=>a.length>=2&&a.every(Boolean)).sort((x,y)=>y[1].length-x[1].length)[0];
   if(best){const k=kindById(best[0]);if(k)out.push(L([k.n,' ',best[1].length,PV.all2]))}
   if(step&&(G.maxCombo||0)>=5)out.push(L([PV.combo1,G.maxCombo,PV.combo2]));
-  if(!out.length)out.push(L([PV.done10]));
+  if(!out.length)out.push(L([PV.done1,G.qs.length,PV.done2])); // 段考是 20 題,其他是 10 題
   return out.slice(0,2);
 }
 function greetOnce(){ // 每天第一次回到首頁:打招呼,說說連續練習了幾天
@@ -4480,7 +4484,7 @@ function e1TF(){ // 是非題:一句話,判斷對還是錯(錯的那一句常常
   const p=line(parts),opts=[{h:'○ '+Z(EXAM_T.yes),ok:truth},{h:'✕ '+Z(EXAM_T.no),ok:!truth}],q=lab(p.h+'。',v,opts,{say:p.say+',對還是錯',teach});q.opts=opts;
   return q;
 }
-const E1_HARD=.8; // 難題的比例:8 種題型裡「比長短」沒有分難易,其他 7 種各 8 成出難的,整體大約 7 成是難題
+const E1_HARD=.88; // 難題的比例:第一次段考只有「比長短」沒有分難易,其他題型各 88% 出難的,兩次段考整體大約 8 成是難題
 // 段考的題型不放在一年級的單元裡,而是首頁大魔王下面「段考測驗」裡的選項(SPECIAL.exam1、exam2)
 KINDS.push(
   {id:'e1Count',u:'exam1',types:'cf',n:['數數看','ㄕㄨˇ ㄕㄨˇ ㄎㄢˋ'],gen:t=>e1Count(t,Math.random()<E1_HARD)},
@@ -4491,6 +4495,7 @@ KINDS.push(
   {id:'e1More',u:'exam1',types:'cf',n:['比多少','ㄅㄧˇ ㄉㄨㄛ ㄕㄠˇ'],gen:t=>e1More(t,Math.random()<E1_HARD)},
   {id:'e1Bond',u:'exam1',types:'cf',n:['分與合','ㄈㄣ ㄩˇ ㄏㄜˊ'],gen:t=>e1Bond(t,Math.random()<E1_HARD)},
   {id:'e1Len',u:'exam1',types:'cf',n:['比長短','ㄅㄧˇ ㄔㄤˊ ㄉㄨㄢˇ'],gen:t=>gLenCmp(t)},
+  {id:'e1Pat',u:'exam1',types:'c',n:['找規律','ㄓㄠˇ ㄍㄨㄟ ㄌㄩˋ'],gen:()=>e1Pat(Math.random()<E1_HARD)},
   {id:'e1TF',u:'exam1',types:'t',n:['是非題','ㄕˋ ㄈㄟ ㄊㄧˊ'],gen:()=>e1TF()}, // 只在模擬考的是非題出現(單元練習只出選擇和填空)
 );
 
@@ -4509,7 +4514,21 @@ const E2={box:['□ 裡面是多少?','ㄌㄧˇ ㄇㄧㄢˋ ㄕˋ ㄉㄨㄛ ㄕ�
   after:['點,再過 1 個小時是幾點?','ㄉㄧㄢˇ ㄗㄞˋ ㄍㄨㄛˋ ˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ ㄕˋ ㄐㄧˇ ㄉㄧㄢˇ'],
   afterTip:['再過 1 個小時,短針往前走 1 格。','ㄗㄞˋ ㄍㄨㄛˋ ˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ ㄉㄨㄢˇ ㄓㄣ ㄨㄤˇ ㄑㄧㄢˊ ㄗㄡˇ ㄍㄜˊ'],
   tenQ:['的十位數字是多少?','˙ㄉㄜ ㄕˊ ㄨㄟˋ ㄕㄨˋ ㄗˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],oneQ:['的個位數字是多少?','˙ㄉㄜ ㄍㄜˋ ㄨㄟˋ ㄕㄨˋ ㄗˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
-  more2:['多 2 的數是多少?','ㄉㄨㄛ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],less2:['少 2 的數是多少?','ㄕㄠˇ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ']};
+  more2:['多 2 的數是多少?','ㄉㄨㄛ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],less2:['少 2 的數是多少?','ㄕㄠˇ ˙ㄉㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
+  afterC:['以後,','ㄧˇ ㄏㄡˋ'],pickEq:['要用哪一個算式?','ㄧㄠˋ ㄩㄥˋ ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄙㄨㄢˋ ㄕˋ'],
+  origTip:['送出去的和剩下的合起來,就是原來的。','ㄙㄨㄥˋ ㄔㄨ ㄑㄩˋ ˙ㄉㄜ ㄏㄢˋ ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄐㄧㄡˋ ㄕˋ ㄩㄢˊ ㄌㄞˊ ˙ㄉㄜ'],
+  revTip:['先找出誰比較多,再決定用加還是減。','ㄒㄧㄢ ㄓㄠˇ ㄔㄨ ㄕㄟˊ ㄅㄧˇ ㄐㄧㄠˋ ㄉㄨㄛ ㄗㄞˋ ㄐㄩㄝˊ ㄉㄧㄥˋ ㄩㄥˋ ㄐㄧㄚ ㄏㄞˊ ㄕˋ ㄐㄧㄢˇ'],
+  sumSides:['一共有幾個邊?','ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄅㄧㄢ'],noCorner:['哪一個形狀沒有角?','ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄒㄧㄥˊ ㄓㄨㄤˋ ㄇㄟˊ ㄧㄡˇ ㄐㄧㄠˇ'],
+  before:['點,1 個小時以前是幾點?','ㄉㄧㄢˇ ˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ ㄧˇ ㄑㄧㄢˊ ㄕˋ ㄐㄧˇ ㄉㄧㄢˇ'],
+  beforeTip:['1 個小時以前,短針往回走 1 格。','˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ ㄧˇ ㄑㄧㄢˊ ㄉㄨㄢˇ ㄓㄣ ㄨㄤˇ ㄏㄨㄟˊ ㄗㄡˇ ㄍㄜˊ'],moreBy:['多','ㄉㄨㄛ']};
+/* 段考卷最上面的「考前小提醒」:老師改考卷時最常看到的失分原因 */
+const EXAM_TIPS={t:['考前小提醒','ㄎㄠˇ ㄑㄧㄢˊ ㄒㄧㄠˇ ㄊㄧˊ ㄒㄧㄥˇ'],list:[
+  ['題目慢慢讀,把問什麼圈起來。','ㄊㄧˊ ㄇㄨˋ ㄇㄢˋ ㄇㄢˋ ㄉㄨˊ ㄅㄚˇ ㄨㄣˋ ㄕㄣˊ ˙ㄇㄜ ㄑㄩㄢ ㄑㄧˇ ㄌㄞˊ'],
+  ['「第幾個」和「有幾個」不一樣。','ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ ㄏㄢˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄅㄨˋ ㄧˊ ㄧㄤˋ'],
+  ['「比…多」不一定用加,先想誰比較多。','ㄅㄧˇ ㄉㄨㄛ ㄅㄨˋ ㄧˊ ㄉㄧㄥˋ ㄩㄥˋ ㄐㄧㄚ ㄒㄧㄢ ㄒㄧㄤˇ ㄕㄟˊ ㄅㄧˇ ㄐㄧㄠˋ ㄉㄨㄛ'],
+  ['有些數字用不到,不要全部加起來。','ㄧㄡˇ ㄒㄧㄝ ㄕㄨˋ ㄗˋ ㄩㄥˋ ㄅㄨˊ ㄉㄠˋ ㄅㄨˊ ㄧㄠˋ ㄑㄩㄢˊ ㄅㄨˋ ㄐㄧㄚ ㄑㄧˇ ㄌㄞˊ'],
+  ['寫完再檢查一次,答案放回題目算算看。','ㄒㄧㄝˇ ㄨㄢˊ ㄗㄞˋ ㄐㄧㄢˇ ㄔㄚˊ ㄧˊ ㄘˋ ㄉㄚˊ ㄢˋ ㄈㄤˋ ㄏㄨㄟˊ ㄊㄧˊ ㄇㄨˋ ㄙㄨㄢˋ ㄙㄨㄢˋ ㄎㄢˋ']]};
+const examTips=()=>`<div class="extips"><b>💡 ${Z(EXAM_TIPS.t)}</b><ol>${EXAM_TIPS.list.map(x=>`<li>${Z(x)}</li>`).join('')}</ol></div>`;
 const e2Fx=(v,ans,type,say,calc,teach)=>num(Z(v.includes('□')?E2.box:T.calc),expr(v),ans,type,{say,calc,teach,ds:[1,2]});
 function e2Add(type,h){ // 10 以內加法:難題是連加、□ 填空、交換相加
   if(!h)return gAdd(type,2,10,1);
@@ -4531,16 +4550,30 @@ function e2Sub(type,h){ // 10 以內減法:難題是連減、加減混合、□ 
   const a=R(3,10),b=R(1,a-1),c=a-b,left=R(0,1),v=left?`□ − ${b} = ${c}`:`${a} − □ = ${c}`,ans=left?a:b,calc=left?`${c} + ${b} = ${a}`:`${a} − ${c} = ${b}`;
   return e2Fx(v,ans,type,`${v.replace('□','框框')},框框是多少`,calc,[[left?BOXT.back:BOXT.whole],[calc]]);
 }
-function e2Word(type,h){ // 10 以內的加減應用題:難題是兩步驟、比多幾個
-  const it=pick(ITEMS);
-  if(!h){const w=someone();
-    if(R(0,1)){const a=R(2,8),b=R(1,10-a);return wp(type,it.e,a+b,it.m,`${a} + ${b}`,[1,2],TT.wAdd,[w,W.has,a,it.m,it.n,C,W.bought,b,it.m,C,W.total,it.m,Q])}
-    const a=R(3,10),b=R(1,a-1);return wp(type,it.e,a-b,it.m,`${a} − ${b}`,[1,2],TT.wSub,[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.left,it.m,Q]);
-  }
-  if(R(0,1)){const w=someone();let a,b,c;do{a=R(3,10);b=R(1,a-1);c=R(1,9)}while(a-b+c>10);
-    return wp(type,it.e,a-b+c,it.m,`${a} − ${b} + ${c}`,[1,2],E2.inOrder,[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.momGave,c,it.m,C,W.nowHas,it.m,Q])}
-  const [w1,w2]=twoPeople(),a=R(3,10),b=R(1,a-1),more=R(0,1);
-  return wp(type,it.e,a-b,it.m,`${a} − ${b}`,[1,2],TT.wCmp,[w1,W.has,a,it.m,it.n,C,w2,W.has,b,it.m,C,...(more?[w1,W.bi,w2,W.more]:[w2,W.bi,w1,W.less]),it.m,Q]);
+/* 10 以內的加減應用題。難題參考老師段考常出的「活用題」:
+   兩步驟、比多幾個、求原來有幾個、「比…多」卻要用減的(反過來比較)、題目裡有用不到的數字 */
+function e2Story(h){
+  const it=pick(ITEMS),w=someone(),[w1,w2]=twoPeople(),k=h?R(2,6):R(0,1);
+  if(k===0){const a=R(2,8),b=R(1,10-a);return {it,ans:a+b,ex:`${a} + ${b}`,wrong:[`${Math.max(a,b)} − ${Math.min(a,b)}`,`${a} + ${b} + 1`],tip:TT.wAdd,parts:[w,W.has,a,it.m,it.n,C,W.bought,b,it.m,C,W.total,it.m,Q]}}
+  if(k===1){const a=R(3,10),b=R(1,a-1);return {it,ans:a-b,ex:`${a} − ${b}`,wrong:[`${a} + ${b}`,`${b} − ${a}`],tip:TT.wSub,parts:[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.left,it.m,Q]}}
+  if(k===2){let a,b,c;do{a=R(3,10);b=R(1,a-1);c=R(1,9)}while(a-b+c>10);
+    return {it,ans:a-b+c,ex:`${a} − ${b} + ${c}`,wrong:[`${a} + ${b} − ${c}`,`${a} − ${b} − ${c}`],tip:E2.inOrder,parts:[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.momGave,c,it.m,C,W.nowHas,it.m,Q]}}
+  if(k===3){const a=R(3,10),b=R(1,a-1),more=R(0,1);
+    return {it,ans:a-b,ex:`${a} − ${b}`,wrong:[`${a} + ${b}`,`${b} − ${a}`],tip:TT.wCmp,parts:[w1,W.has,a,it.m,it.n,C,w2,W.has,b,it.m,C,...(more?[w1,W.bi,w2,W.more]:[w2,W.bi,w1,W.less]),it.m,Q]}}
+  if(k===4){const b=R(1,6),c=R(1,10-b); // 送出去 b 個以後還剩 c 個,原來有幾個:要用加的
+    return {it,ans:b+c,ex:`${c} + ${b}`,wrong:[`${Math.max(b,c)} − ${Math.min(b,c)}`,`${c} − ${b} − 1`],tip:E2.origTip,parts:[w,W.gave,b,it.m,E2.afterC,W.remain,c,it.m,C,W.orig,it.m,Q]}}
+  if(k===5){const more=R(0,1),d=R(1,4),x=more?R(d+1,10):R(1,10-d),ans=more?x-d:x+d; // 「w2 比 w1 多 d 個,w2 有 x 個,w1 有幾個」:說「多」卻要用減的
+    return {it,ans,ex:more?`${x} − ${d}`:`${x} + ${d}`,wrong:more?[`${x} + ${d}`,`${d} − ${x}`]:[`${x} − ${d}`,`${d} + ${x} + 1`],tip:E2.revTip,
+      parts:[w2,W.bi,w1,more?CR.many:CR.few,d,it.m,it.n,C,w2,W.has,x,it.m,C,w1,CR.hasQ,it.m,Q]}}
+  const age=R(6,8),a=R(2,8),b=R(1,10-a); // 題目裡有一個用不到的數字(年紀)
+  return {it,ans:a+b,ex:`${a} + ${b}`,wrong:[`${age} + ${a} + ${b}`,`${age} + ${a}`],tip:TT.noAge,parts:[w,W.thisYear,age,W.sui,C,W.has,a,it.m,it.n,C,W.bought,b,it.m,C,W.total,it.m,Q]};
+}
+function e2Word(type,h){const s=e2Story(h);return wp(type,s.it.e,s.ans,s.it.m,s.ex,[1,2],s.tip,s.parts)}
+function e2Pick(h){ // 選出正確的算式(不用算出答案,看懂題目要用加還是減)
+  const s=e2Story(h),p=line(s.parts),seen=new Set([s.ex]),opts=[{h:s.ex,ok:true}];
+  const flip=s.ex.replace(/[+−]/g,c=>c==='+'?'−':'+'); // 備用的錯誤選項:加減號換過來
+  for(const x of [...s.wrong,flip,s.ex+' + 1'])if(!seen.has(x)&&opts.length<3){seen.add(x);opts.push({h:x})}
+  return lab(p.h+' '+Z(E2.pickEq),`<div class="story">${s.it.e}</div>`,shuffle(opts),{say:p.say+',選出正確的算式',teach:[[s.tip],[`${s.ex} = ${s.ans}`]]});
 }
 function e2Num(type,h){ // 30 以內的數:十位和個位、數的順序、比大小
   if(!h){const a=R(1,2),b=R(1,9),n=a*10+b,p=line([a,P1.tens,b,P1.onesQ]);
@@ -4563,13 +4596,36 @@ function e2Clock(type,h){ // 整點和半點:難題是不看圖、用長短針�
   if(type==='c'){const p=line([E2.long6,t,E1.and,t+1,E2.mid]),L=(x,half)=>x+Z(T.dian)+(half?Z(T.ban):'');
     return lab(p.h,'',[{h:L(t,1),ok:true},{h:L(t+1,1)},{h:L(t,0)}],{say:p.say,teach:[[E2.halfTip]]})}
   if(R(0,1)){const p=line([E2.long12,t,E2.whatTime]);return num(p.h,'',t,type,{unit:Z(T.dian),say:p.say,ds:[1,2],teach:[[TT.whole],[TT.shortHand]]})}
-  const p=line([T.now,t,E2.after]);return num(p.h,clockSvg(t,0),t+1,type,{unit:Z(T.dian),say:p.say,ds:[1,2],teach:[[E2.afterTip]]});
+  if(R(0,1)){const p=line([T.now,t,E2.after]);return num(p.h,clockSvg(t,0),t+1,type,{unit:Z(T.dian),say:p.say,ds:[1,2],teach:[[E2.afterTip]]})}
+  const p=line([T.now,t+1,E2.before]);return num(p.h,clockSvg(t+1,0),t,type,{unit:Z(T.dian),say:p.say,ds:[1,2],wrong:[t+2],teach:[[E2.beforeTip]]});
+}
+function e2Shape(type,h){ // 認識形狀:難題是「哪一個沒有角」「兩個形狀一共有幾個邊」
+  if(!h)return gShape(type);
+  if(type==='c'){const c=SHAPES.find(x=>!x.sides),o=shuffle(SHAPES.filter(x=>x.sides)).slice(0,2);
+    return lab(Z(E2.noCorner),'',shuffle([c,...o]).map(x=>({h:zy(x.n,x.z),ok:x===c})),{say:'哪一個形狀沒有角',teach:[[SHAPE_TIP[c.k]]]})}
+  const [a,b]=shuffle(SHAPES.filter(x=>x.sides)).slice(0,2),p=line([[a.n,a.z],E1.and,[b.n,b.z],E2.sumSides]);
+  return num(p.h,shapeSvg(a.k,110,undefined,1)+shapeSvg(b.k,110,undefined,1),a.sides+b.sides,type,{say:p.say,ds:[1,2],teach:[[`${a.sides} + ${b.sides} = ${a.sides+b.sides}`]]});
+}
+/* 找規律(一上「排順序」單元常考):一組圖案一直重複,猜下一個或第幾個 */
+const PAT={next:['照這樣排下去,下一個是什麼?','ㄓㄠˋ ㄓㄜˋ ㄧㄤˋ ㄆㄞˊ ㄒㄧㄚˋ ㄑㄩˋ ㄒㄧㄚˋ ㄧˊ ˙ㄍㄜ ㄕˋ ㄕㄣˊ ˙ㄇㄜ'],
+  nth:['照這樣排下去,第','ㄓㄠˋ ㄓㄜˋ ㄧㄤˋ ㄆㄞˊ ㄒㄧㄚˋ ㄑㄩˋ ㄉㄧˋ'],what:['個是什麼?','˙ㄍㄜ ㄕˋ ㄕㄣˊ ˙ㄇㄜ'],
+  tip:['先找出一組一組重複的樣子。','ㄒㄧㄢ ㄓㄠˇ ㄔㄨ ㄧˋ ㄗㄨˇ ㄧˋ ㄗㄨˇ ㄔㄨㄥˊ ㄈㄨˋ ˙ㄉㄜ ㄧㄤˋ ˙ㄗ']};
+function e1Pat(h){
+  const em=shuffle(['🔺','🔵','⭐','🌸','🍎','🐟','🟩','💛']),form=h?pick(['ABB','AAB','ABC','AABB']):'AB',unit=[...form].map(c=>em[c.charCodeAt(0)-65]);
+  const len=unit.length*2+R(0,unit.length-1),seq=Array.from({length:len},(_,i)=>unit[i%unit.length]);
+  const nth=h&&R(0,1)?len+R(2,4):0,at=(nth||len+1)-1,ans=unit[at%unit.length];
+  const p=nth?line([PAT.nth,nth,PAT.what]):{h:Z(PAT.next),say:'照這樣排下去,下一個是什麼'};
+  const pool=[...new Set([...unit,em[4]])].slice(0,3),opts=shuffle(pool.includes(ans)?pool:[ans,...pool.slice(0,2)]).map(x=>({h:x,ok:x===ans}));
+  return lab(p.h,`<div class="emo">${seq.join('')}${nth?'':'❓'}</div>`,opts,{say:p.say,teach:[[PAT.tip],[unit.join(' ')]]});
 }
 function e2TF(){ // 二段是非題:算式對不對、十位和個位、下一個數、形狀的邊、時鐘
-  const truth=R(0,1)===1,hard=Math.random()<E1_HARD,k=R(0,5);let parts,v='',teach;
+  const truth=R(0,1)===1,hard=Math.random()<E1_HARD,k=R(0,6);let parts,v='',teach;
   if(k<=1){let a,b,r,s;if(k===0){a=R(1,8);b=R(1,10-a);r=a+b;s=`${a} + ${b}`}else{a=R(2,10);b=R(1,a);r=a-b;s=`${a} − ${b}`}
     let m=r;if(!truth){do{m=r+(hard?pick([-1,1]):pick([-2,2,3]))}while(m===r||m<0||m>10)}
+    if(hard&&R(0,2)===0){a=R(2,9);[s,r,m]=pick([[`${a} − 0`,a,0],[`${a} − ${a}`,0,a],[`0 + ${a}`,a,0]]);if(truth)m=r} // 有 0 的陷阱題
     parts=[E2.formula];v=expr(`${s} = ${m}`);teach=[[`${s} = ${r}`]]}
+  else if(k===6){const b=R(1,7),a=R(b+1,10),d=a-b;let m=d;if(!truth){do{m=d+pick([-1,1])}while(m===d||m<1)}
+    parts=[a,E1.bi,b,E2.moreBy,m];teach=[[`${a} − ${b} = ${d}`]]}
   else if(k===2){const a=R(1,2),b=R(1,9),n=a*10+b;let [x,y]=[a,b];if(!truth){if(hard&&a!==b)[x,y]=[b,a];else x=a===1?2:1}
     parts=[n,E2.is,x,E2.ten,y,E2.one];teach=[[n,TT.has,a,TT.h10,'、',b,TT.h1,'。']]}
   else if(k===3){const n=R(9,29);let m=n+1;if(!truth){do{m=n+1+(hard?pick([-1,1]):pick([-2,2]))}while(m===n+1)}parts=[n,EXAM_T.next,m];teach=[[`${n} + 1 = ${n+1}`]]}
@@ -4585,7 +4641,8 @@ KINDS.push(
   {id:'e2Sub',u:'exam2',types:'cf',n:['10 以內減法',ZS],gen:t=>e2Sub(t,Math.random()<E1_HARD)},
   {id:'e2Word',u:'exam2',types:'cf',n:['加減應用題','ㄐㄧㄚ ㄐㄧㄢˇ ㄧㄥˋ ㄩㄥˋ ㄊㄧˊ'],gen:t=>e2Word(t,Math.random()<E1_HARD)},
   {id:'e2Num',u:'exam2',types:'cf',n:['30 以內的數','ㄧˇ ㄋㄟˋ ˙ㄉㄜ ㄕㄨˋ'],gen:t=>e2Num(t,Math.random()<E1_HARD)},
-  {id:'e2Shape',u:'exam2',types:'cf',n:['認識形狀','ㄖㄣˋ ㄕˋ ㄒㄧㄥˊ ㄓㄨㄤˋ'],gen:t=>gShape(t)},
+  {id:'e2Shape',u:'exam2',types:'cf',n:['認識形狀','ㄖㄣˋ ㄕˋ ㄒㄧㄥˊ ㄓㄨㄤˋ'],gen:t=>e2Shape(t,Math.random()<E1_HARD)},
+  {id:'e2Pick',u:'exam2',types:'c',n:['選出算式','ㄒㄩㄢˇ ㄔㄨ ㄙㄨㄢˋ ㄕˋ'],gen:()=>e2Pick(Math.random()<E1_HARD)},
   {id:'e2Clock',u:'exam2',types:'cf',n:['整點和半點','ㄓㄥˇ ㄉㄧㄢˇ ㄏㄢˋ ㄅㄢˋ ㄉㄧㄢˇ'],gen:t=>e2Clock(t,Math.random()<E1_HARD)},
   {id:'e2TF',u:'exam2',types:'t',n:['是非題','ㄕˋ ㄈㄟ ㄊㄧˊ'],gen:()=>e2TF()},
 );
