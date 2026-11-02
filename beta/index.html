@@ -1658,11 +1658,16 @@ function gBox(type,g2){ // 填空格:□ + 5 = 12
   return num(Z(BOXT.q),expr(v),ans,type,{say:`${v},空格是多少`,calc,teach:[say1,[calc]]});
 }
 const PICKT=['要用哪一個算式?','ㄧㄠˋ ㄩㄥˋ ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄙㄨㄢˋ ㄕˋ'];
+// 算出「7 − 1 + 1」這種算式的值(從左算到右;有 × 的算式只有兩個數)。選算式題用來確定錯的選項算出來不會剛好也是答案
+const exprVal=s=>{const t=s.split(' ');let v=+t[0];for(let i=1;i<t.length;i+=2){const n=+t[i+1];v=t[i]==='+'?v+n:t[i]==='−'?v-n:v*n}return v};
 function gPickF(g2){ // 選算式:讀完應用題,選出該用哪一個算式(不用算出答案)
   const src=g2?[t=>wAdd(t,1),t=>wSub(t,1),t=>wCmp(t,1),wMul,wBuy,wChange,wOrig]:[t=>wAdd(t),t=>wSub(t),t=>wCmp(t)];
-  const q=pick(src)('f'),m=q.calc.match(/^(\d+) ([+−×]) (\d+) = /),a=+m[1],op=m[2],b=+m[3],good=`${a} ${op} ${b}`;
   const sub=(x,y)=>x>=y?`${x} − ${y}`:`${y} − ${x}`;
-  const wrong=op==='+'?[sub(a,b),`${a} × ${b}`]:op==='−'?[`${a} + ${b}`,`${b} − ${a}`]:[`${a} + ${b}`,sub(a,b)];
+  let q,good,wrong,n=0;
+  do{ // 2 × 2 和 2 + 2 一樣是 4:錯的選項算出來和答案一樣就重出一題
+    q=pick(src)('f');const m=q.calc.match(/^(\d+) ([+−×]) (\d+) = /),a=+m[1],op=m[2],b=+m[3];good=`${a} ${op} ${b}`;
+    wrong=op==='+'?[sub(a,b),`${a} × ${b}`]:op==='−'?[`${a} + ${b}`,`${b} − ${a}`]:[`${a} + ${b}`,sub(a,b)];
+  }while(wrong.some(w=>exprVal(w)===exprVal(good))&&n++<50);
   return lab(q.p+`<br>✏️ ${Z(PICKT)}`,q.v,[good,...wrong].map(h=>({h,ok:h===good})),{say:q.say+'。要用哪一個算式?',teach:q.teach,calc:q.calc});
 }
 const BONDT={join:['合起來是','ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄕˋ'],q:['□ 是多少?','ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
@@ -2713,9 +2718,9 @@ function guideHtml(){
     '<b>成就徽章</b>(在貼紙簿下面,共 12 個):第一步、滿分、連續三天、連續一星期、不放棄、連對十題、錯題清光光、進步之星、打敗大魔王、暖身五天、小小邏輯家、練習五十回。多數是獎勵努力和堅持,不只看分數。得到時會跳出來慶祝。徽章不換貼紙、不影響獎品。',
     '答錯第一次時,鼓勵的話會換著說(「差一點點!再試試看!」「沒關係,錯了才學得會!」);每天第一次打開會打招呼,並說連續練習了幾天。'])}
   ${sec('一步一步的算法、填空題',[
-    '<b>答錯時會列出完整算法</b>:加減法用直式,從個位開始一位一位算,寫出「不夠減,向十位借 1」「寫 3,進 1 到十位」;一年級 20 以內用湊十、破十(從 10 裡面借);除法畫出直式除法,一步一步除,最後驗算。',
+    '<b>答錯時會列出完整算法</b>:加減法用直式,從個位開始一位一位算,寫出「不夠減,向十位借 1」「寫 3,進 1 到十位」;一年級 20 以內用湊十、破十(從 10 裡面借);三年級乘法用直式,從個位乘起,寫出「寫 5,進 3 到十位」;除法畫出直式除法,一步一步除,最後驗算。',
     '<b>例題教學</b>:這些步驟會一步一步出現,每一步的答案先蓋起來讓她自己填,最後才出現答案。',
-    '<b>填空題</b>:一年級「湊十破十填空」、二年級「借位填空」「進位填空」、三年級「直式除法填空」,列出算法的前幾步,其中一格是 □ 要她填。',
+    '<b>填空題</b>:一年級「湊十破十填空」、二年級「借位填空」「進位填空」、三年級「直式乘法填空」「直式除法填空」,列出算法的前幾步,其中一格是 □ 要她填。',
     '用語是課本常見的「借 1」「從 10 裡面借」;如果學校或補習班的說法不同(例如「退位」),可以請我改。'])}
   ${sec('看圖想一想、資優邏輯',[
     '<b>一年級「看圖想一想」</b>:照學校考卷的題型設計——排隊前後有幾個、「第幾個」和「前面幾個」的差別、從上或從下數樓層、爬樓梯上上下下、一個配一個比多少、分合樹。',
@@ -4196,7 +4201,10 @@ const AS={notEnough:['不夠減','ㄅㄨˊ ㄍㄡˋ ㄐㄧㄢˇ'],toward:['向',
   write:['寫','ㄒㄧㄝˇ'],carry1:['進 1 到','ㄐㄧㄣˋ ㄉㄠˋ'],ans:['答案:','ㄉㄚˊ ㄢˋ'],
   need:['還差','ㄏㄞˊ ㄔㄚ'],make10:['個就是 10,','˙ㄍㄜ ㄐㄧㄡˋ ㄕˋ'],split:['把','ㄅㄚˇ'],into:['分成','ㄈㄣ ㄔㄥˊ'],and:['和','ㄏㄢˋ'],
   from10:['從 10 裡面借:','ㄘㄨㄥˊ ㄌㄧˇ ˙ㄇㄧㄢ ㄐㄧㄝˋ'],join:['剩下的和','ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ ㄏㄢˋ'],joinB:['合起來:','ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ'],
-  first10:['先湊成 10:','ㄒㄧㄢ ㄘㄡˋ ㄔㄥˊ'],then:['再加剩下的:','ㄗㄞˋ ㄐㄧㄚ ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ']};
+  first10:['先湊成 10:','ㄒㄧㄢ ㄘㄡˋ ㄔㄥˊ'],then:['再加剩下的:','ㄗㄞˋ ㄐㄧㄚ ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ'],
+  carryDown:['把進上來的 1 寫下來','ㄅㄚˇ ㄐㄧㄣˋ ㄕㄤˋ ㄌㄞˊ ˙ㄉㄜ ㄒㄧㄝˇ ㄒㄧㄚˋ ㄌㄞˊ'],
+  zeroB:['不夠借,先向','ㄅㄨˊ ㄍㄡˋ ㄐㄧㄝˋ ㄒㄧㄢ ㄒㄧㄤˋ'],giveR:[',借給右邊 1 以後剩下','ㄐㄧㄝˋ ㄍㄟˇ ㄧㄡˋ ㄅㄧㄢ ㄧˇ ㄏㄡˋ ㄕㄥˋ ㄒㄧㄚˋ'],
+  carryN:['進','ㄐㄧㄣˋ'],to:['到','ㄉㄠˋ']};
 const LD={lt:['比','ㄅㄧˇ'],small:['小,不夠除,要看','ㄒㄧㄠˇ ㄅㄨˊ ㄍㄡˋ ㄔㄨˊ ㄧㄠˋ ㄎㄢˋ'],h1:['裡面最多有幾個','ㄌㄧˇ ˙ㄇㄧㄢ ㄗㄨㄟˋ ㄉㄨㄛ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ'],
   sub:['減掉:','ㄐㄧㄢˇ ㄉㄧㄠˋ'],down1:['把下一位的','ㄅㄚˇ ㄒㄧㄚˋ ㄧˊ ㄨㄟˋ ˙ㄉㄜ'],down2:['搬下來,變成','ㄅㄢ ㄒㄧㄚˋ ㄌㄞˊ ㄅㄧㄢˋ ㄔㄥˊ'],
   quot:['商是','ㄕㄤ ㄕˋ'],rem:[',餘數是','ㄩˊ ㄕㄨˋ ㄕˋ'],check:['驗算:','ㄧㄢˋ ㄙㄨㄢˋ'],think:['想:','ㄒㄧㄤˇ']};
@@ -4205,14 +4213,15 @@ function addSubSteps(a,op,b){ // 直式加減:回傳 teach 的每一行
   const r=op==='+'?a+b:a-b,n=Math.max(String(a).length,String(b).length),L=[];let c=0;
   for(let k=0;k<n;k++){
     const da=D10(a,k),hasB=b>=10**k||k===0,db=hasB?D10(b,k):0,P=PL[k],Pn=PL[k+1]||PL[k];
-    if(op==='+'){
-      const hasA=a>=10**k||k===0,s=(hasA?da:0)+db+c;
-      if(!hasB&&!c){L.push([P,':',AS.direct,da]);continue}
-      L.push([P,':',hasB?`${hasA?da:0} + ${db}${c?' + 1':''} = ${s}`:`${da} + 1 = ${s}`]);
+    if(op==='+'){ // 只寫這一位真的有的數:7 + 45 的十位是「4 + 1」,不是「0 + 4 + 1」
+      const ts=[...(a>=10**k||k===0?[da]:[]),...(hasB?[db]:[]),...(c?[1]:[])],s=ts.reduce((x,y)=>x+y,0);
+      if(ts.length===1){L.push([P,':',AS.direct,s]);continue}
+      L.push([P,':',`${ts.join(' + ')} = ${s}`]);
       c=s>=10?1:0;if(c)L.push([AS.write,s%10,',',AS.carry1,Pn]);
     }else{
       const top=da-c,need=top<db?1:0;
-      if(c&&need)L.push([P,':',da,AS.lentNeed,',',AS.toward,Pn,AS.borrow1,P,AS.become,`${da} − 1 + 10 = ${da+9}`]);
+      if(c&&need&&da===0)L.push([P,':',0,AS.zeroB,Pn,AS.borrow1,P,AS.become,10,AS.giveR,'10 − 1 = 9']); // 503 − 278:十位是 0,要先向百位借
+      else if(c&&need)L.push([P,':',da,AS.lentNeed,',',AS.toward,Pn,AS.borrow1,P,AS.become,`${da} − 1 + 10 = ${da+9}`]);
       else if(c)L.push([P,':',da,AS.lent,`${da} − 1 = ${da-1}`]);
       else if(need)L.push([P,':',da,AS.notEnough,db,',',AS.toward,Pn,AS.borrow1,P,AS.become,`${da} + 10 = ${da+10}`]);
       const t=top+need*10;
@@ -4220,8 +4229,25 @@ function addSubSteps(a,op,b){ // 直式加減:回傳 teach 的每一行
       c=need;
     }
   }
+  if(op==='+'&&c)L.push([PL[Math.min(n,PL.length-1)],':',AS.carryDown]); // 75 + 48:最後進上來的 1 寫在百位
   L.push([AS.ans,`${a} ${op} ${b} = ${r}`]);
   return L;
+}
+function mulSteps(a,b){ // 直式乘法(幾位數 × 一位數):從個位開始,每一位乘以 b,再加上進上來的數
+  const n=String(a).length,L=[];let c=0;
+  for(let k=0;k<n;k++){
+    const d=D10(a,k),p=d*b+c,P=PL[k];
+    L.push([P,':',`${d} × ${b}${c?' + '+c:''} = ${p}`]);
+    if(k<n-1&&p>=10)L.push([AS.write,p%10,',',AS.carryN,Math.floor(p/10),AS.to,PL[k+1]]);
+    c=Math.floor(p/10);
+  }
+  L.push([AS.ans,`${a} × ${b} = ${a*b}`]);
+  return L;
+}
+function vertMul(a,b){ // 直式乘法的圖:進上去的數用小小的字寫在上面
+  const r=a*b,w=String(r).length,cy=[];let c=0;
+  for(let k=0;k<String(a).length;k++){c=Math.floor((D10(a,k)*b+c)/10);if(c&&k<String(a).length-1)cy[k+1]=c}
+  return `<div class="vert">${cy.length?`<div class="cy">${Array.from({length:w},(_,j)=>`<span>${cy[w-1-j]||'&nbsp;'}</span>`).join('')}</div>`:''}<div>${a}</div><div>× ${b}</div><div class="vl">${r}</div></div>`;
 }
 function tenSteps(a,op,b){ // 一年級:湊十(9 + 5)、破十(13 − 8);不適用就回傳 null
   if(op==='+'&&a<10&&b<10&&a+b>10){const x=Math.max(a,b),y=Math.min(a,b),n=10-x,m=y-n;
@@ -4253,15 +4279,16 @@ function longDivHtml(a,b){ // 直式除法的圖:商在上面,除數在左邊,�
   D.steps.forEach((s,k)=>{const p=blank();put(p,s.p,s.i);rows.push(['',p,'ldp']);const r=blank(),nx=D.steps[k+1];put(r,nx?nx.cur:s.r,nx?nx.i:s.i);rows.push(['',r,'ldr'])});
   return `<div class="ldiv" style="grid-template-columns:auto repeat(${W},1.1em)">${rows.map(([lead,cells,cls])=>`<span class="ldl ${cls}">${lead}</span>`+cells.map(c=>`<span class="${cls}${c?' on':''}">${c}</span>`).join('')).join('')}</div>`;
 }
-const STEP_AS=/^(add2|sub2|add3|sub3|add4|sub4|wAdd2|wSub2|wCmp2|wAdd4|wSub4|chainX)$/,STEP_TEN=/^(add20|sub20|wAdd1|wSub1)$/,STEP_DIV=/^(divE|divR|wDiv|wDivPack)$/;
+const STEP_AS=/^(add2|sub2|add3|sub3|add4|sub4|wAdd2|wSub2|wCmp2|wAdd4|wSub4|chainX)$/,STEP_TEN=/^(add20|sub20|wAdd1|wSub1)$/,STEP_DIV=/^(divE|divR|wDiv|wDivPack)$/,STEP_MUL=/^(mul21|wMul3)$/;
 function stepify(q,id){ // 出完題目後,把解說換成一步一步的算法
   if(q.full||q.type==='m')return;
-  const m=String(q.calc||'').replace(/\s/g,'').match(/^(\d+)([+−÷])(\d+)=(\d+)(?:…(\d+))?$/);if(!m)return;
+  const m=String(q.calc||'').replace(/\s/g,'').match(/^(\d+)([+−×÷])(\d+)=(\d+)(?:…(\d+))?$/);if(!m)return;
   const a=+m[1],op=m[2],b=+m[3],keep=/^w/.test(id)&&q.teach[0]?[q.teach[0]]:[]; // 應用題保留第一句提示(例如「合起來要用加的」)
   let L=null;
   if(STEP_DIV.test(id)&&op==='÷'){L=divSteps(a,b);q.ex=longDivHtml(a,b)}
-  else if(STEP_TEN.test(id)&&op!=='÷')L=tenSteps(a,op,b);
-  else if(STEP_AS.test(id)&&op!=='÷'&&Math.max(a,b)>=10)L=addSubSteps(a,op,b);
+  else if(STEP_MUL.test(id)&&op==='×'&&a>=10&&b<10){L=mulSteps(a,b);q.ex=vertMul(a,b)}
+  else if(STEP_TEN.test(id)&&/[+−]/.test(op))L=tenSteps(a,op,b);
+  else if(STEP_AS.test(id)&&/[+−]/.test(op)&&Math.max(a,b)>=10)L=addSubSteps(a,op,b);
   if(!L)return;
   q.teach=[...keep,...L];q.full=true;
 }
@@ -4299,7 +4326,13 @@ function gDivFill(){ // 三年級:直式除法的步驟填空
   const b=R(3,9),q=R(4,9),r=R(0,b-1),a=b*q+r,L=divSteps(a,b),f=stepFill(`<div class="expr">${a} ÷ ${b}</div>`,L.slice(0,-1),eqEnd);
   return num(Z(FB.q),f.v,f.ans,'f',{say:`${a} 除以 ${b},照著算法,框框裡要填多少`,ds:[1,2,b],teach:L,calc:f.eq,ex:longDivHtml(a,b)});
 }
+function gMulFill(){ // 三年級:直式乘法的步驟填空(個位乘出來一定要進位)
+  let a,b;do{a=R(12,98);b=R(2,9)}while(a%10*b<10);
+  const L=mulSteps(a,b),f=stepFill(`<div class="expr">${a} × ${b} = ?</div>`,L.slice(0,-1),eqEnd);
+  return num(Z(FB.q),f.v,f.ans,'f',{say:`${a} 乘以 ${b},照著算法,框框裡要填多少`,ds:[1,10],teach:L,calc:f.eq,ex:vertMul(a,b)});
+}
 KINDS.push(
+  {id:'mulFill',u:'mul3',types:'f',n:['直式乘法填空','ㄓˊ ㄕˋ ㄔㄥˊ ㄈㄚˇ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gMulFill();q.full=true;return q}},
   {id:'tenFill',u:'a20',types:'f',n:['湊十破十填空','ㄘㄡˋ ㄕˊ ㄆㄛˋ ㄕˊ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gTenFill();q.full=true;return q}},
   {id:'carryFill',u:'add2',types:'f',n:['進位填空','ㄐㄧㄣˋ ㄨㄟˋ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gColFill('+');q.full=true;return q}},
   {id:'borrowFill',u:'add2',types:'f',n:['借位填空','ㄐㄧㄝˋ ㄨㄟˋ ㄊㄧㄢˊ ㄎㄨㄥˋ'],gen:()=>{const q=gColFill('−');q.full=true;return q}},
@@ -4556,7 +4589,7 @@ function e2Story(h){
   const it=pick(ITEMS),w=someone(),[w1,w2]=twoPeople(),k=h?R(2,6):R(0,1);
   if(k===0){const a=R(2,8),b=R(1,10-a);return {it,ans:a+b,ex:`${a} + ${b}`,wrong:[`${Math.max(a,b)} − ${Math.min(a,b)}`,`${a} + ${b} + 1`],tip:TT.wAdd,parts:[w,W.has,a,it.m,it.n,C,W.bought,b,it.m,C,W.total,it.m,Q]}}
   if(k===1){const a=R(3,10),b=R(1,a-1);return {it,ans:a-b,ex:`${a} − ${b}`,wrong:[`${a} + ${b}`,`${b} − ${a}`],tip:TT.wSub,parts:[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.left,it.m,Q]}}
-  if(k===2){let a,b,c;do{a=R(3,10);b=R(1,a-1);c=R(1,9)}while(a-b+c>10);
+  if(k===2){let a,b,c;do{a=R(3,10);b=R(1,a-1);c=R(1,9)}while(a-b+c>10||b===c); // 送出去和拿到的一樣多,「7 − 1 + 1」和「7 + 1 − 1」會一樣大
     return {it,ans:a-b+c,ex:`${a} − ${b} + ${c}`,wrong:[`${a} + ${b} − ${c}`,`${a} − ${b} − ${c}`],tip:E2.inOrder,parts:[w,W.has,a,it.m,it.n,C,W.gave,b,it.m,C,W.momGave,c,it.m,C,W.nowHas,it.m,Q]}}
   if(k===3){const a=R(3,10),b=R(1,a-1),more=R(0,1);
     return {it,ans:a-b,ex:`${a} − ${b}`,wrong:[`${a} + ${b}`,`${b} − ${a}`],tip:TT.wCmp,parts:[w1,W.has,a,it.m,it.n,C,w2,W.has,b,it.m,C,...(more?[w1,W.bi,w2,W.more]:[w2,W.bi,w1,W.less]),it.m,Q]}}
@@ -4572,7 +4605,7 @@ function e2Word(type,h){const s=e2Story(h);return wp(type,s.it.e,s.ans,s.it.m,s.
 function e2Pick(h){ // 選出正確的算式(不用算出答案,看懂題目要用加還是減)
   const s=e2Story(h),p=line(s.parts),seen=new Set([s.ex]),opts=[{h:s.ex,ok:true}];
   const flip=s.ex.replace(/[+−]/g,c=>c==='+'?'−':'+'); // 備用的錯誤選項:加減號換過來
-  for(const x of [...s.wrong,flip,s.ex+' + 1'])if(!seen.has(x)&&opts.length<3){seen.add(x);opts.push({h:x})}
+  for(const x of [...s.wrong,flip,s.ex+' + 1'])if(!seen.has(x)&&exprVal(x)!==s.ans&&opts.length<3){seen.add(x);opts.push({h:x})} // 錯的選項算出來不能剛好也是答案
   return lab(p.h+' '+Z(E2.pickEq),`<div class="story">${s.it.e}</div>`,shuffle(opts),{say:p.say+',選出正確的算式',teach:[[s.tip],[`${s.ex} = ${s.ans}`]]});
 }
 function e2Num(type,h){ // 30 以內的數:十位和個位、數的順序、比大小
