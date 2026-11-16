@@ -11,6 +11,43 @@
   --yellow:#ffe58a;--purple:#cdb4f6;--purple-d:#9575cd;
   --ink:#5a4a63;--card:#fffdfb;
 }
+/* 一題一題時小兔子的心情:連對戴上的東西、答錯抱抱 */
+.ptalk .tav{position:relative;display:inline-block}
+.tmood{position:absolute;top:-.6em;right:-.6em;font-size:.8em;animation:popin .35s}
+/* 數字賓果 */
+.bgo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:340px;margin:12px auto 0}
+.bgo button{font:inherit;font-size:34px;aspect-ratio:1;border-radius:22px;border:4px solid var(--pink-l);background:#fff;color:var(--ink);cursor:pointer;position:relative;font-variant-numeric:tabular-nums}
+.bgo button.hit{background:var(--pink);border-color:var(--pink);color:#fff}
+.bgo button.hit::after{content:'⭐';position:absolute;top:2px;right:6px;font-size:18px}
+.bgo button.bad{animation:shake .4s}
+.bgo button.line{animation:pulse .6s 3;background:var(--mint-d);border-color:var(--mint-d)}
+/* 九九乘法表 */
+.t9tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.t9tabs button{font:inherit;font-size:22px;min-width:44px;min-height:44px;padding:0 8px;border-radius:14px;border:3px solid var(--pink-l);background:#fff;color:var(--pink-d);cursor:pointer}
+.t9tabs button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+.t9list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-top:10px}
+.t9row{font:inherit;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 14px;border-radius:18px;border:3px solid var(--pink-l);background:#fff;color:var(--ink);cursor:pointer;text-align:left}
+.t9row .t9e{font-size:26px;white-space:nowrap}.t9row .t9e b{color:var(--pink-d)}.t9row .t9k{font-size:18px;color:var(--purple-d)}
+.t9row.hid{background:var(--pink-l)}
+.t9row.sing{border-color:var(--pink-d);background:#fff6d6;transform:scale(1.03);transition:transform .2s}
+.t9tabs button{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}
+.t9tabs .t9s{font-size:13px;line-height:1}
+.t9pic{display:grid;gap:4px;justify-content:center;margin:10px 0}
+.t9pic div{display:flex;align-items:center;gap:2px;font-size:22px;opacity:0;animation:t9in .35s forwards}
+@keyframes t9in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.t9pic b{font-size:16px;color:var(--pink-d);margin-left:8px;min-width:2em;text-align:left;font-variant-numeric:tabular-nums}
+@media (max-width:420px){.t9pic div{font-size:19px}}
+/* 首頁:今天的任務 */
+.tasks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.tasks button{font:inherit;font-size:16px;border-radius:18px;border:3px solid var(--pink-l);background:#fff;color:var(--ink);padding:8px 4px;cursor:pointer;line-height:1.3;min-width:0}
+.tasks button.ok{background:#e6f8f1;border-color:var(--mint-d)}
+.tasks .tk{display:block;font-size:24px}
+.t9big{overflow-x:auto;margin-top:10px}
+.t9big table{border-collapse:collapse;margin:0 auto;font-variant-numeric:tabular-nums}
+.t9big td,.t9big th{width:2.1em;height:2.1em;text-align:center;font-size:18px;border:2px solid var(--pink-l);background:#fff;cursor:pointer;padding:0}
+.t9big th{background:var(--pink-l);color:var(--pink-d)}
+.t9big td.sq{background:#fff6d6}
+@media (max-width:420px){.t9big td,.t9big th{font-size:15px;width:1.9em;height:1.9em}.t9row .t9e{font-size:23px}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
 body{
@@ -858,18 +895,31 @@ const GIFTS_VER=3; // 預設禮物清單改版時加一,舊存檔會換成新清
 const STICKERS=['🐰','🐱','🦄','🐶','🐼','🦋','🐥','🐬','🍓','🍰','🧁','🍩','🍭','🍦','🌸','🌷','🌻','🌈','⭐','💎','👑','🎀','🎈','🧸'];
 const DRESS=[{e:'🎀',at:1,c:'a-bow'},{e:'🌸',at:3,c:'a-flower'},{e:'👑',at:5,c:'a-crown'},{e:'🪄',at:10,c:'a-wand'},{e:'🏰',at:30,c:''}];
 const BIG=30; // 貼滿這麼多張,可以換一個獎品,或換 1 枚硬幣;貼紙簿一頁也是這麼多格
+// 生活約定扣點:爸媽在爸媽專區按,扣的是點數(貼好的貼紙不會拿走);點數不夠扣的,之後得到的貼紙會先抵掉。孩子下次回首頁會看到一張小卡
+const FINES=[
+  {c:1,n:'鞋子沒有擺好',z:'ㄒㄧㄝˊ ˙ㄗ ㄇㄟˊ ㄧㄡˇ ㄅㄞˇ ㄏㄠˇ'},
+  {c:1,n:'被子沒有放好',z:'ㄅㄟˋ ˙ㄗ ㄇㄟˊ ㄧㄡˇ ㄈㄤˋ ㄏㄠˇ'},
+  {c:2,n:'水壺忘記帶回家',z:'ㄕㄨㄟˇ ㄏㄨˊ ㄨㄤˋ ㄐㄧˋ ㄉㄞˋ ㄏㄨㄟˊ ㄐㄧㄚ'},
+  {c:2,n:'十點之後才睡覺',z:'ㄕˊ ㄉㄧㄢˇ ㄓ ㄏㄡˋ ㄘㄞˊ ㄕㄨㄟˋ ㄐㄧㄠˋ'},
+  {c:5,n:'說謊',z:'ㄕㄨㄛ ㄏㄨㄤˇ'}];
+const FINE_T={
+  title:['爸爸媽媽扣了點數','ㄅㄚˋ ˙ㄅㄚ ㄇㄚ ˙ㄇㄚ ㄎㄡˋ ˙ㄌㄜ ㄉㄧㄢˇ ㄕㄨˋ'],
+  k:['扣','ㄎㄡˋ'],p:['點','ㄉㄧㄢˇ'],
+  cheer:['下次記得喔,我們一起加油!','ㄒㄧㄚˋ ㄘˋ ㄐㄧˋ ˙ㄉㄜ ㄛ ㄨㄛˇ ˙ㄇㄣ ㄧˋ ㄑㄧˇ ㄐㄧㄚ ㄧㄡˊ'],
+  ok:['我知道了','ㄨㄛˇ ㄓ ㄉㄠˋ ˙ㄌㄜ']};
 
 /* ===== 存檔 ===== */
 // v2 用自己的存檔;第一次開的時候把原版(v1)的資料複製過來,之後兩邊各存各的,不會改到原版的資料
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails','badges','cnt'];
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails','badges','cnt','fines','t9','t9day','taskDay'];
 // 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
 // 養成遊戲的總開關:false 的時候首頁不顯示這一區,不能進入、也不累積愛心;等內容成熟了改成 true 就開放
 const GROW_READY=false;
 const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0,badges:{},cnt:{}});
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0,badges:{},cnt:{},fines:[],t9:{},t9day:'',taskDay:''});
+// t9:九九乘法表每一段「考考我」全對的日子 {7:['2026-11-16',…]};t9day:最近一次做乘法表考考我、接力的那天;taskDay:今日任務全部完成、已經慶祝過的那天
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -892,6 +942,7 @@ function load(){
 const filled=()=>S.card.filter(Boolean).length; // 貼在貼紙簿上的貼紙數
 const pts=()=>Math.max(0,filled()-(S.spent||0)); // 點數 = 貼上去的貼紙數 − 換禮物花掉的(合併兩台裝置的進度後,不會出現負的)
 function spend(c){S.spent=(S.spent||0)+c} // 只扣點數,貼好的貼紙留著
+const debt=()=>Math.max(0,(S.spent||0)-filled()); // 扣點時點數不夠,還欠幾點(之後貼上去的貼紙會先抵掉)
 // 硬幣不另外存數字,從兌換紀錄算:換硬幣的筆數 − 換大獎用掉的 + 爸媽手動調整的。
 // 這樣合併兩台裝置的備份時(兌換紀錄本來就會合併),硬幣自然就對
 const coins=()=>Math.max(0,S.redeemed.reduce((n,r)=>n+(r.k==='coin'?1:0)-(r.coin||0),0)+(S.coinAdj||0));
@@ -1142,6 +1193,15 @@ function gardenHtml(){ // 首頁的學習花園:現在這個年級的每個單�
 }
 function mascot(cls='idle'){
   return `<span class="mascot ${cls}" id="petIcon" onclick="chat()">${bunnySvg()}${DRESS.filter(d=>d.c&&S.total>=d.at).map(d=>`<span class="ma ${d.c}">${d.e}</span>`).join('')}</span>`;
+}
+// 一題一題時,上方小兔子跟著心情變:連續答對越多題,戴上的東西越厲害(🎀 3 題、👑 5 題、🌈 7 題、🏆 10 題)、跳得越高;答錯抱抱她
+const MOOD=[[10,'🏆'],[7,'🌈'],[5,'👑'],[3,'🎀']];
+function moodPop(ok){
+  const tv=$('#playTalk .tav');if(!tv||!G)return;
+  const m=ok?(MOOD.find(([n])=>G.combo>=n)||[])[1]:'🤗';
+  if(m)tv.insertAdjacentHTML('beforeend',`<span class="tmood">${m}</span>`);
+  tv.style.animation='none';void tv.offsetWidth;
+  tv.style.animation=ok?(G.combo>=3?`jump ${G.combo>=7?.6:.8}s ${G.combo>=5?2:1}`:'bob .6s'):'sway .5s 2';
 }
 function mascotAnim(c){const m=$('#petIcon');if(!m)return;m.className='mascot';void m.offsetWidth;m.className='mascot '+c;setTimeout(()=>{if(m.isConnected)m.className='mascot idle'},800)}
 function modal(html){$('#modalBody').innerHTML=html;$('#modalBox').classList.add('on')}
@@ -1461,6 +1521,33 @@ function wTime(t){
   const w=someone(),h=R(1,8),d=R(1,3);
   return wp(t,'📚✏️',h+d,T.dian,`${h} + ${d}`,[1,2],TT.wTime,[w,h,W.hw,C,W.wrote,d,W.hour,C,W.done,Q]);
 }
+/* 生活小故事:題目用家裡的生活約定(擺鞋子、喝水、早點睡),和爸媽專區的生活約定扣點互相呼應 */
+const LF={
+  door:['門口有','ㄇㄣˊ ㄎㄡˇ ㄧㄡˇ'],messy:['雙鞋子沒有擺好','ㄕㄨㄤ ㄒㄧㄝˊ ˙ㄗ ㄇㄟˊ ㄧㄡˇ ㄅㄞˇ ㄏㄠˇ'],tidied:['擺好了','ㄅㄞˇ ㄏㄠˇ ˙ㄌㄜ'],
+  shuang:['雙','ㄕㄨㄤ'],stillMessy:['還有幾雙沒擺好','ㄏㄞˊ ㄧㄡˇ ㄐㄧˇ ㄕㄨㄤ ㄇㄟˊ ㄅㄞˇ ㄏㄠˇ'],
+  tidyTip:['擺好了就變少,要用減的。','ㄅㄞˇ ㄏㄠˇ ˙ㄌㄜ ㄐㄧㄡˋ ㄅㄧㄢˋ ㄕㄠˇ ㄧㄠˋ ㄩㄥˋ ㄐㄧㄢˇ ˙ㄉㄜ'],
+  drank:['今天喝了','ㄐㄧㄣ ㄊㄧㄢ ㄏㄜ ˙ㄌㄜ'],cupWater:['杯水','ㄅㄟ ㄕㄨㄟˇ'],dadSays:['爸爸說一天要喝','ㄅㄚˋ ˙ㄅㄚ ㄕㄨㄛ ㄧˋ ㄊㄧㄢ ㄧㄠˋ ㄏㄜ'],
+  cup:['杯','ㄅㄟ'],moreDrink:['還要再喝幾杯','ㄏㄞˊ ㄧㄠˋ ㄗㄞˋ ㄏㄜ ㄐㄧˇ ㄅㄟ'],
+  drinkTip:['要喝的減掉喝了的,就是還要喝的。','ㄧㄠˋ ㄏㄜ ˙ㄉㄜ ㄐㄧㄢˇ ㄉㄧㄠˋ ㄏㄜ ˙ㄌㄜ ˙ㄉㄜ ㄐㄧㄡˋ ㄕˋ ㄏㄞˊ ㄧㄠˋ ㄏㄜ ˙ㄉㄜ'],
+  night:['晚上','ㄨㄢˇ ㄕㄤˋ'],bedAt:['點要上床睡覺','ㄉㄧㄢˇ ㄧㄠˋ ㄕㄤˋ ㄔㄨㄤˊ ㄕㄨㄟˋ ㄐㄧㄠˋ'],nowIs:['現在是','ㄒㄧㄢˋ ㄗㄞˋ ㄕˋ'],
+  dian:['點','ㄉㄧㄢˇ'],untilBed:['再過幾個小時要睡覺','ㄗㄞˋ ㄍㄨㄛˋ ㄐㄧˇ ˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ ㄧㄠˋ ㄕㄨㄟˋ ㄐㄧㄠˋ'],
+  bedTip:['用睡覺的時間減掉現在的時間。','ㄩㄥˋ ㄕㄨㄟˋ ㄐㄧㄠˋ ˙ㄉㄜ ㄕˊ ㄐㄧㄢ ㄐㄧㄢˇ ㄉㄧㄠˋ ㄒㄧㄢˋ ㄗㄞˋ ˙ㄉㄜ ㄕˊ ㄐㄧㄢ'],hour:['小時','ㄒㄧㄠˇ ㄕˊ'],
+  sleptAt:['點睡覺','ㄉㄧㄢˇ ㄕㄨㄟˋ ㄐㄧㄠˋ'],morning:['早上','ㄗㄠˇ ㄕㄤˋ'],wake:['點起床','ㄉㄧㄢˇ ㄑㄧˇ ㄔㄨㄤˊ'],
+  slept:['睡了幾個小時','ㄕㄨㄟˋ ˙ㄌㄜ ㄐㄧˇ ˙ㄍㄜ ㄒㄧㄠˇ ㄕˊ'],
+  sleepTip:['先算到半夜 12 點,再加上早上的。','ㄒㄧㄢ ㄙㄨㄢˋ ㄉㄠˋ ㄅㄢˋ ㄧㄝˋ ㄉㄧㄢˇ ㄗㄞˋ ㄐㄧㄚ ㄕㄤˋ ㄗㄠˇ ㄕㄤˋ ˙ㄉㄜ'],
+  cabinet:['鞋櫃有','ㄒㄧㄝˊ ㄍㄨㄟˋ ㄧㄡˇ'],ceng:['層','ㄘㄥˊ'],eachLayer:['每層放','ㄇㄟˇ ㄘㄥˊ ㄈㄤˋ'],pairShoes:['雙鞋子','ㄕㄨㄤ ㄒㄧㄝˊ ˙ㄗ'],
+  canHold:['一共可以放幾雙','ㄧˊ ㄍㄨㄥˋ ㄎㄜˇ ㄧˇ ㄈㄤˋ ㄐㄧˇ ㄕㄨㄤ'],layerTip:['每層一樣多,用乘的。','ㄇㄟˇ ㄘㄥˊ ㄧˊ ㄧㄤˋ ㄉㄨㄛ ㄩㄥˋ ㄔㄥˊ ˙ㄉㄜ'],
+  week:['一個星期上學','ㄧˊ ˙ㄍㄜ ㄒㄧㄥ ㄑㄧˊ ㄕㄤˋ ㄒㄩㄝˊ'],days:['天','ㄊㄧㄢ'],bottle:['水壺每天裝','ㄕㄨㄟˇ ㄏㄨˊ ㄇㄟˇ ㄊㄧㄢ ㄓㄨㄤ'],
+  weekTotal:['一共裝幾杯水','ㄧˊ ㄍㄨㄥˋ ㄓㄨㄤ ㄐㄧˇ ㄅㄟ ㄕㄨㄟˇ'],dayTip:['每天一樣多,用乘的。','ㄇㄟˇ ㄊㄧㄢ ㄧˊ ㄧㄤˋ ㄉㄨㄛ ㄩㄥˋ ㄔㄥˊ ˙ㄉㄜ']};
+function wLife(t,g2){
+  const w=someone(),k=g2?R(0,4):R(0,2);
+  if(k===0){const a=g2?R(6,12):R(3,9),b=R(1,a-1);return wp(t,'👟',a-b,LF.shuang,`${a} − ${b}`,[1,2],LF.tidyTip,[LF.door,a,LF.messy,C,w,LF.tidied,b,LF.shuang,C,LF.stillMessy,Q])}
+  if(k===1){const c=g2?R(6,10):R(5,8),a=R(1,c-1);return wp(t,'💧',c-a,LF.cup,`${c} − ${a}`,[1,2],LF.drinkTip,[w,LF.drank,a,LF.cupWater,C,LF.dadSays,c,LF.cup,C,LF.moreDrink,Q])}
+  if(k===2){const b=R(8,9),h=R(5,b-1);return wp(t,'🛏️',b-h,LF.hour,`${b} − ${h}`,[1,2],LF.bedTip,[w,LF.night,b,LF.bedAt,C,LF.nowIs,h,LF.dian,C,LF.untilBed,Q])}
+  if(k===3){const h=R(8,10),u=R(6,7);return wp(t,'🛏️⏰',12-h+u,LF.hour,`${12-h} + ${u}`,[1,2],LF.sleepTip,[w,LF.night,h,LF.sleptAt,C,LF.morning,u,LF.wake,C,LF.slept,Q])}
+  if(R(0,1)){const a=R(2,5),b=R(3,6);return wp(t,'👟',a*b,LF.shuang,`${a} × ${b}`,[1,a,b],LF.layerTip,[LF.cabinet,a,LF.ceng,C,LF.eachLayer,b,LF.pairShoes,C,LF.canHold,Q])}
+  const b=R(2,4);return wp(t,'💧',5*b,LF.cup,`5 × ${b}`,[1,5],LF.dayTip,[w,LF.week,5,LF.days,C,LF.bottle,b,LF.cupWater,C,LF.weekTotal,Q]);
+}
 function wOrig(t){
   const w=someone(),it=pick(ITEMS.filter(x=>x.food)),b=R(3,9),c=R(5,it.max-10);
   return wp(t,it.e,b+c,it.m,`${b} + ${c}`,[1,2,10],TT.wOrig,[w,W.ate,b,it.m,it.n,W.after,C,W.remain,c,it.m,C,W.orig,it.m,Q]);
@@ -1558,6 +1645,7 @@ const KINDS=[
   {id:'wSub1',u:'w1',types:'cf',n:N_SUB,gen:t=>wSub(t)},
   {id:'wCmp1',u:'w1',types:'cf',n:N_CMP,gen:t=>wCmp(t)},
   {id:'wQueue',u:'w1',types:'cf',n:['排隊問題','ㄆㄞˊ ㄉㄨㄟˋ ㄨㄣˋ ㄊㄧˊ'],gen:t=>wQueue(t)},
+  {id:'wLife1',u:'w1',types:'cf',n:['生活小故事','ㄕㄥ ㄏㄨㄛˊ ㄒㄧㄠˇ ㄍㄨˋ ㄕˋ'],gen:t=>wLife(t)},
   // 二年級
   {id:'add2',u:'add2',types:'cf',n:['兩位數加法','ㄌㄧㄤˇ ㄨㄟˋ ㄕㄨˋ ㄐㄧㄚ ㄈㄚˇ'],gen:t=>gAdd2(t,1)},
   {id:'sub2',u:'add2',types:'cf',n:['兩位數減法','ㄌㄧㄤˇ ㄨㄟˋ ㄕㄨˋ ㄐㄧㄢˇ ㄈㄚˇ'],gen:t=>gAdd2(t,0)},
@@ -1580,6 +1668,7 @@ const KINDS=[
   {id:'wBuy',u:'w2',types:'cf',n:['買東西','ㄇㄞˇ ㄉㄨㄥ ˙ㄒㄧ'],gen:t=>wBuy(t)},
   {id:'wTime',u:'w2',types:'cf',n:['過了多久','ㄍㄨㄛˋ ˙ㄌㄜ ㄉㄨㄛ ㄐㄧㄡˇ'],gen:t=>wTime(t)},
   {id:'wOrig',u:'w2',types:'cf',n:['原來有多少','ㄩㄢˊ ㄌㄞˊ ㄧㄡˇ ㄉㄨㄛ ㄕㄠˇ'],gen:t=>wOrig(t)},
+  {id:'wLife2',u:'w2',types:'cf',n:['生活小故事','ㄕㄥ ㄏㄨㄛˊ ㄒㄧㄠˇ ㄍㄨˋ ㄕˋ'],gen:t=>wLife(t,1)},
 ];
 /* ===== 常見錯誤:答案剛好是這些「典型算錯」的數字時,解說會先點出來,弱點分析也會統計 =====
    tip 給小朋友看,n 給爸媽看 */
@@ -1715,6 +1804,31 @@ function gChain(type){ // 連加連減
   return num(Z(T.calc),`<div class="expr sm">${e} = ?</div>`,y,type,{say:sayOps(e)+'等於多少',calc:`${e} = ${y}`,teach:[[A3.left],[`${a} ${o1} ${b} = ${x}`],[`${x} ${o2} ${c} = ${y}`]]});
 }
 const SH={to:['平分給','ㄆㄧㄥˊ ㄈㄣ ㄍㄟˇ'],each:['每個人有幾','ㄇㄟˇ ˙ㄍㄜ ㄖㄣˊ ㄧㄡˇ ㄐㄧˇ'],think:['想想看:','ㄒㄧㄤˇ ㄒㄧㄤˇ ㄎㄢˋ'],times:['乘以多少是','ㄔㄥˊ ㄧˇ ㄉㄨㄛ ㄕㄠˇ ㄕˋ']};
+/* 二年級「九九乘法」單元:背九九、口訣配算式、乘法填空格(7 × □ = 56)、乘法表找規律(7, 14, 21, ?)。口訣用九九乘法表那邊的 kj() */
+const M99={kj:['口訣:','ㄎㄡˇ ㄐㄩㄝˊ'],kjQ:['這句口訣是哪一個算式?','ㄓㄜˋ ㄐㄩˋ ㄎㄡˇ ㄐㄩㄝˊ ㄕˋ ㄋㄚˇ ㄧˊ ˙ㄍㄜ ㄙㄨㄢˋ ㄕˋ'],
+  of:['這是','ㄓㄜˋ ㄕˋ'],tbl:['的乘法,','˙ㄉㄜ ㄔㄥˊ ㄈㄚˇ']};
+const m99ab=()=>[pick([2,3,3,4,4,5,6,6,7,7,8,8,9,9]),R(2,9)]; // 3、4、6、7、8、9 比較難背,出多一點
+function gM99Calc(type){
+  const [a,b]=m99ab(),p=a*b;
+  return num(Z(T.calc),expr(`${a} × ${b} = ?`),p,type,{say:`${a} 乘以 ${b} 等於多少`,ds:[a,b,1],calc:`${a} × ${b} = ${p}`,
+    teach:[[M99.kj,kj(a,b)],[`${a} × ${b} = ${p}`]]});
+}
+function gM99Kj(){
+  let a,b;do{[a,b]=m99ab()}while(a+b===a*b);
+  const k=kj(a,b),c=b<9?b+1:b-1;
+  return lab(Z(M99.kjQ),`<div class="expr">${zy(k[0],k[1])}</div>`,[{h:`${a} × ${b}`,ok:1},{h:`${a} + ${b}`},{h:`${a} × ${c}`}],
+    {say:k[0]+',是哪一個算式',calc:`${a} × ${b} = ${a*b}`,teach:[[M99.kj,k],[`${a} × ${b} = ${a*b}`]]});
+}
+function gM99Box(type){
+  const [a,b]=m99ab(),p=a*b,v=R(0,1)?`${a} × □ = ${p}`:`□ × ${a} = ${p}`;
+  return num(Z(BOXT.q),expr(v),b,type,{say:`${v.replace('□','空格')},空格是多少`,ds:[1,2],calc:`${a} × ${b} = ${p}`,
+    teach:[[SH.think,a,SH.times,p,'?'],[M99.kj,kj(a,b)],[`${a} × ${b} = ${p}`]]});
+}
+function gM99Seq(type){
+  const [a]=m99ab(),k=R(1,5),s=[0,1,2].map(i=>a*(k+i)),ans=a*(k+3);
+  return num(Z(T.seq),expr(`${s.join(', ')}, ?`),ans,type,{say:`${s.join('、')},接下來是多少`,ds:[a,1,2],
+    teach:[[M99.of,a,M99.tbl,TT.eachMore,a,'。'],[`${s[2]} + ${a} = ${ans}`]]});
+}
 function gShare(type){ // 平分(除法的前置概念)
   const it=pick(ITEMS.filter(x=>x.food)),k=R(2,5),q=R(2,6),n=k*q,p=line([n,it.m,it.n,',',SH.to,k,W.people,',',SH.each,it.m,'?']);
   return num(p.h,emoRow(it.e,n),q,type,{unit:Z(it.m),say:p.say,ds:[1,2],calc:`${k} × ${q} = ${n}`,teach:[[SH.think,k,SH.times,n,'?'],[`${k} × ${q} = ${n}`]]});
@@ -1755,6 +1869,10 @@ KINDS.push(
   {id:'sub3',u:'add2',types:'cf',n:['三位數減法','ㄙㄢ ㄨㄟˋ ㄕㄨˋ ㄐㄧㄢˇ ㄈㄚˇ'],gen:t=>gAdd3(t,0)},
   {id:'chain',u:'add2',types:'cf',n:['連加連減','ㄌㄧㄢˊ ㄐㄧㄚ ㄌㄧㄢˊ ㄐㄧㄢˇ'],gen:t=>gChain(t)},
   {id:'share',u:'mul',types:'cf',n:['平分','ㄆㄧㄥˊ ㄈㄣ'],gen:t=>gShare(t)},
+  {id:'m99Calc',u:'mul',types:'cf',n:['背九九','ㄅㄟˋ ㄐㄧㄡˇ ㄐㄧㄡˇ'],gen:t=>gM99Calc(t)},
+  {id:'m99Kj',u:'mul',types:'c',n:['口訣配算式','ㄎㄡˇ ㄐㄩㄝˊ ㄆㄟˋ ㄙㄨㄢˋ ㄕˋ'],gen:()=>gM99Kj()},
+  {id:'m99Box',u:'mul',types:'cf',n:['乘法填空格','ㄔㄥˊ ㄈㄚˇ ㄊㄧㄢˊ ㄎㄨㄥˋ ㄍㄜˊ'],gen:t=>gM99Box(t)},
+  {id:'m99Seq',u:'mul',types:'cf',n:['乘法表找規律','ㄔㄥˊ ㄈㄚˇ ㄅㄧㄠˇ ㄓㄠˇ ㄍㄨㄟ ㄌㄩˋ'],gen:t=>gM99Seq(t)},
   {id:'weigh',u:'wt',types:'cf',n:['比輕重','ㄅㄧˇ ㄑㄧㄥ ㄓㄨㄥˋ'],gen:t=>gWeigh(t)},
   {id:'pickF2',u:'w2',types:'c',n:N_PICK,gen:()=>gPickF(1)},
   {id:'wCmpR2',u:'w2',types:'cf',n:N_CMPR,gen:t=>wCmpR(t,1)},
@@ -1801,6 +1919,29 @@ function retryList(){ // 「錯題再練」的十題:把還沒學會的題型輪
   return Array.from({length:10},(_,i)=>{const k=due[i%due.length];return {gen:t=>genKind(k,t)}});
 }
 /* 給爸媽看的弱點分析:每種題型答對幾成,正確率低的排前面 */
+// 爸媽專區:這 7 天和前 7 天比一比(練習天數、回合、平均分數、貼紙、扣點),哪些單元進步、退步,哪些題型還要加強
+function weekReport(){
+  const now=Date.now(),W7=7*864e5,inW=(t,k)=>t>now-W7*(k+1)&&t<=now-W7*k;
+  const lg=k=>S.log.filter(r=>inW(r.t,k)),cur=lg(0),prv=lg(1);
+  const dayIn=k=>(S.days||[]).filter(d=>{const [y,m,dd]=d.split('-').map(Number);return inW(new Date(y,m-1,dd,12).getTime(),k)}).length;
+  const avg=l=>l.length?Math.round(l.reduce((a,r)=>a+r.s,0)/l.length):null;
+  const fine=(S.fines||[]).filter(f=>!f.undo&&inW(f.t,0)).reduce((a,f)=>a+f.c,0);
+  const cmp=(a,b,u='')=>b==null||a==null?'':a>b?` <span style="color:#4fc3a1">(比上週 +${a-b}${u})</span>`:a<b?` <span style="color:#f06292">(比上週 −${b-a}${u})</span>`:' (和上週一樣)';
+  if(!cur.length&&!dayIn(0))return '<div>這 7 天還沒有練習紀錄。</div>';
+  // 每個單元這週和上週的平均分數(兩週都有做過才比)
+  const by=l=>{const m={};l.forEach(r=>{(m[r.u]=m[r.u]||[]).push(r.s)});return m},bc=by(cur),bp=by(prv);
+  const name=id=>{const u=unitOf(id);return u?u.e+' '+u.t[0]:id},mean=a=>Math.round(a.reduce((x,y)=>x+y,0)/a.length);
+  const ch=Object.keys(bc).filter(id=>bp[id]).map(id=>({id,d:mean(bc[id])-mean(bp[id])}));
+  const up=ch.filter(x=>x.d>=5).sort((a,b)=>b.d-a.d),down=ch.filter(x=>x.d<=-5).sort((a,b)=>a.d-b.d);
+  const most=Object.entries(bc).sort((a,b)=>b[1].length-a[1].length).slice(0,3).map(([id,a])=>`${name(id)} ${a.length} 回`);
+  const weak=KINDS.map(k=>({k,s:S.stat[k.id]})).filter(x=>x.s&&x.s.r+x.s.w>=3&&x.s.r/(x.s.r+x.s.w)<.6).sort((a,b)=>a.s.r/(a.s.r+a.s.w)-b.s.r/(b.s.r+b.s.w)).slice(0,3).map(x=>x.k.n[0]);
+  return `<div class="row">📅 練習 <b>${dayIn(0)}</b> 天${cmp(dayIn(0),dayIn(1),' 天')}　✏️ 做了 <b>${cur.length}</b> 回合${cmp(cur.length,prv.length,' 回')}</div>
+    <div class="row">⭐ 平均 <b>${avg(cur)==null?'—':avg(cur)}</b> 分${cmp(avg(cur),avg(prv),' 分')}　💯 滿分 ${cur.filter(r=>r.s===100).length} 次　🌟 拿到 ${cur.reduce((a,r)=>a+(r.p||0),0)} 張貼紙${fine?`　📌 扣了 ${fine} 點`:''}</div>
+    ${most.length?`<div>最常練:${most.join('、')}</div>`:''}
+    ${up.length?`<div>👍 進步了:${up.map(x=>`${name(x.id)}(+${x.d} 分)`).join('、')}</div>`:''}
+    ${down.length?`<div>🔎 這週比較不穩:${down.map(x=>`${name(x.id)}(−${-x.d} 分)`).join('、')}</div>`:''}
+    ${weak.length?`<div>💪 還要加強的題型:${weak.join('、')}(到「錯題再練」或「例題教學」可以多練)</div>`:''}`;
+}
 function analysisHtml(){
   const rows=KINDS.map(k=>({k,s:S.stat[k.id]})).filter(x=>x.s&&x.s.r+x.s.w>0)
     .map(x=>({...x,n:x.s.r+x.s.w,p:Math.round(x.s.r*100/(x.s.r+x.s.w))})).sort((a,b)=>a.p-b.p||b.n-a.n);
@@ -1855,7 +1996,7 @@ const UNITS={
   2:[
     {id:'w2',e:'📖',t:WORD_T},
     {id:'add2',e:'➕',t:['加法和減法','ㄐㄧㄚ ㄈㄚˇ ㄏㄢˋ ㄐㄧㄢˇ ㄈㄚˇ'],gen:gAdd2},
-    {id:'mul',e:'✖️',t:['乘法和平分','ㄔㄥˊ ㄈㄚˇ ㄏㄢˋ ㄆㄧㄥˊ ㄈㄣ'],gen:gMul},
+    {id:'mul',e:'🔢',t:['九九乘法','ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ'],gen:gMul}, // 原本叫「乘法和平分」;九九的題目都集中在這個單元(平分也在這裡,是乘法反過來想)
     {id:'big',e:'💯',t:['大數比大小','ㄉㄚˋ ㄕㄨˋ ㄅㄧˇ ㄉㄚˋ ㄒㄧㄠˇ'],gen:t=>t==='c'?pick([()=>gCompare(100,999),()=>gPlace('c'),()=>gSeq('c',[10,100],1000)])():pick([()=>gPlace('f'),()=>gSeq('f',[10,100,5],1000)])()},
     {id:'len',e:'📏',t:['量長度','ㄌㄧㄤˊ ㄔㄤˊ ㄉㄨˋ'],gen:gLength},
     {id:'clk2',e:'⏰',t:['幾點幾分','ㄐㄧˇ ㄉㄧㄢˇ ㄐㄧˇ ㄈㄣ'],gen:gClock2},
@@ -1882,7 +2023,7 @@ function examMenu(){
 }
 /* 今日大魔王:二、三年級才有,一天一次,10 題裡 6 題難題 + 4 題一般題,貼紙加倍 */
 const BOSS_HARD={ // 每個年級比較難的題型
-  2:['wTwo','wChange','wOrig','wCmpR2','wTime','add3','sub3','chain','box2','share','pickF2'],
+  2:['wTwo','wChange','wOrig','wCmpR2','wTime','add3','sub3','chain','box2','share','pickF2','m99Box'],
   3:['wTwo3','wDivPack','wDiv','wMul3','divR','mul21','add4','sub4','elapsed','perim','area','fracAdd','decAdd'],
 };
 const bossOpen=()=>S.grade>=2&&S.bossDay!==dayKey(); // 現在可以挑戰嗎
@@ -1916,7 +2057,7 @@ const bestTag=id=>S.best[id]!=null?`<span class="best">⭐${S.best[id]}</span>`:
 
 function home(quiet){
   if(!quiet)newPet();
-  closeModal();setTimeout(()=>{if(scr==='home'&&!quiet)talk(pick(CHAT.home))},300);setTimeout(greetOnce,700); // 每天第一次回首頁:打招呼、說連續練習幾天
+  closeModal();setTimeout(()=>{if(scr==='home'&&!quiet)talk(pick(CHAT.home))},300);setTimeout(greetOnce,700);setTimeout(fineCard,900);setTimeout(taskCheer,1300); // 每天第一次回首頁:打招呼、說連續練習幾天
   show('home',`
   <div class="row">${streakBadge()}<span class="sp"></span>${ptsBadge()}</div>
   <div class="row center">${mascot()}<h1><span class="jo">JOJO </span>${Z(T.title)}<span class="ver">v4</span></h1></div>
@@ -1925,6 +2066,7 @@ function home(quiet){
     ${S.kids.length<6?`<button class="kid" onclick="addKidAsk()">＋</button>`:''}</div>
   <div class="row center" style="margin-top:8px"><span>${Z(T.myname)}</span>
     <input class="name" maxlength="8" value="${esc(S.name)}" oninput="S.name=this.value;save();document.querySelector('.kid.on span').textContent=this.value||'？'" placeholder="✏️"></div>
+  ${tasksHtml()}
   <div class="mixes"><button class="mix" onclick="warm()"><span class="ue">🔥</span><span><span class="mt">${Z(T.warm)}</span><br><span class="ms">${warmFix(S.warm).day===dayKey()?'✅ ':''}${Z(T.warmSub)}</span></span></button>${Object.values(MIXES).map(m=>`
     <button class="mix" onclick="start('${m.id}')">${bestTag(m.id)}
       <span class="ue">${m.e}</span><span><span class="mt">${Z(m.t)}</span><br><span class="ms">${Z(m.s)}</span></span></button>`).join('')}${bossCard()}
@@ -1948,16 +2090,18 @@ function home(quiet){
     <button class="btn purple" onclick="growPet()">${hb(gw().pet&&gw().pet.step>1?PETS[gw().pet.id].e:'🥚',Z(GW.pet))}</button>
   </div>`:''} ${''/* 養成遊戲還沒開放(GROW_READY 是 false)時,首頁完全不顯示這一區 */}
   <h2 style="margin-top:16px">🎮 ${Z(T.games)}</h2>
-  <div class="hgrid">
+  <div class="hgrid" style="--n:5;--m:3">
     <button class="btn" onclick="shop()">${hb('🏪',Z(SHP.title))}</button>
     <button class="btn purple" onclick="game()">${hb('🃏',Z(T.game))}</button>
     <button class="btn mint" onclick="frog()">${hb('🐸',Z(T.frog))}</button>
     <button class="btn" onclick="balloon()">${hb('🎈',Z(T.bln))}</button>
+    <button class="btn purple" onclick="bingo()">${hb('🎯',Z(BGT.title))}</button>
   </div>
   <h2 style="margin-top:16px">🎤 ${Z(T.talkZone)}</h2>
-  <div class="hgrid" style="--n:2">
+  <div class="hgrid" style="--n:3;--m:3">
     <button class="btn purple" onclick="vquiz()">${hb('🎤',Z(T.vq))}</button>
     <button class="btn" onclick="askT()">${hb('🙋',Z(T.askTitle))}</button>
+    <button class="btn mint" onclick="timesTable()">${hb('✖️',Z(TT9.home))}</button>
   </div>
   <div class="hgrid" style="margin-top:14px">
     <button class="btn mint" onclick="lessons()">${hb('📖',Z(T.lessonT))}</button>
@@ -1977,6 +2121,25 @@ function home(quiet){
         <button class="btn ghost small" style="min-height:36px;font-size:15px" onclick="pasteRestore()">貼上備份文字</button>`:''}
   </div>`);
 }
+/* 今天的任務:首頁三張小卡,做完就打勾。不送貼紙,只是讓她知道今天要做什麼;三個都完成,當天第一次回首頁時放彩帶
+   ① 每日暖身 ② 完成一回練習 ③ 有錯題就「錯題再練」,沒有的話二、三年級是「九九乘法考考我」,一年級是「小遊戲過關一次」 */
+const TK={title:['今天的任務','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ'],one:['完成一回練習','ㄨㄢˊ ㄔㄥˊ ㄧˋ ㄏㄨㄟˊ ㄌㄧㄢˋ ㄒㄧˊ'],
+  t9:['九九乘法考考我','ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ ㄎㄠˇ ㄎㄠˇ ㄨㄛˇ'],game:['小遊戲過關一次','ㄒㄧㄠˇ ㄧㄡˊ ㄒㄧˋ ㄍㄨㄛˋ ㄍㄨㄢ ㄧˊ ㄘˋ'],
+  all:['今天的任務都完成了!','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ ㄉㄡ ㄨㄢˊ ㄔㄥˊ ˙ㄌㄜ']};
+function todayTasks(){
+  const dk=dayKey(),logs=S.log.filter(r=>dayKey(r.t)===dk),retried=logs.some(r=>r.u==='retry');
+  const t=[{e:'🔥',t:T.warm,ok:warmFix(S.warm).day===dk,go:'warm()'},{e:'✏️',t:TK.one,ok:logs.length>0,go:`start('mix2')`}];
+  if(retried||dueKinds().length)t.push({e:'📕',t:SPECIAL.retry.t,ok:retried,go:`start('retry')`});
+  else if(S.grade>=2)t.push({e:'✖️',t:TK.t9,ok:S.t9day===dk,go:'timesTable()'});
+  else t.push({e:'🎮',t:TK.game,ok:S.gamePaid===dk,go:'bingo()'});
+  return t;
+}
+function tasksHtml(){
+  const t=todayTasks(),n=t.filter(x=>x.ok).length;
+  return `<div class="card" style="margin-top:10px;padding:12px 14px"><b>📋 ${Z(TK.title)}　${n} / ${t.length}${n===t.length?'　🎉':''}</b>
+    <div class="tasks">${t.map(x=>`<button class="${x.ok?'ok':''}" ${x.ok?'':`onclick="${x.go}"`}><span class="tk">${x.ok?'✅':x.e}</span>${Z(x.t)}</button>`).join('')}</div></div>`;
+}
+function taskCheer(){const dk=dayKey();if(scr!=='home'||S.taskDay===dk||todayTasks().some(x=>!x.ok))return;S.taskDay=dk;save();confetti(100);talk(TK.all)}
 // 首頁格子按鈕的內容:圖示和文字各包一層,手機上才能排成「圖示在上、文字在下」
 function hb(e,h){return `<span class="hi">${e}</span><span class="hl">${h}</span>`}
 function switchKid(i){if(i===S.cur)return;save();useKid(i);save();sfx.tap();home()}
@@ -2116,6 +2279,7 @@ function key(k){
   if(scr==='shop')return shopKey(k); // 小小商店算總價
   if(scr==='vquiz')return vqKey(k); // 口算問答改用按的回答
   if(scr==='warm')return warmKey(k); // 每日暖身
+  if(scr==='times')return t9Key(k); // 九九乘法表的考考我
   const i=G&&G.act;if(i==null||G.done)return;sfx.tap();
   if(G.cell)return vfKey(k); // 直式的小格子
   let s=G.ans[i]||'';
@@ -2501,8 +2665,8 @@ function kidsOf(d){
   const list=Array.isArray(d.kids)&&d.kids.length?d.kids:[d];
   return list.map(k=>{
     const x=Object.assign(blankKid(''),kidOf(k));
-    for(const f of ['card','tray','log','redeemed','days'])if(!Array.isArray(x[f]))x[f]=[];
-    for(const f of ['best','stat','bestPaid','bestTime','badges','cnt'])if(!x[f]||typeof x[f]!=='object')x[f]={};
+    for(const f of ['card','tray','log','redeemed','days','fines'])if(!Array.isArray(x[f]))x[f]=[];
+    for(const f of ['best','stat','bestPaid','bestTime','badges','cnt','t9'])if(!x[f]||typeof x[f]!=='object')x[f]={};
     x.grow=growFix(x.grow);x.warm=warmFix(x.warm);
     x.name=String(x.name||'');return x;
   });
@@ -2535,6 +2699,16 @@ function mergeKid(a,b){
     if(theirs[key]>(mine[key]||0)){k.redeemed.push(copy(r));k.spent=(k.spent||0)+(r.c||0);if(r.k!=='coin')gifts++} // 備份裡多換的禮物
     else if(r.given){const m=k.redeemed.find(x=>rk(x)===key&&!x.given);if(m)m.given=true} // 同一個禮物,有一邊已經標成拿到了
   });
+  // 扣點紀錄:備份裡多出來的加進來,點數也跟著扣;同一筆在另一台撤銷了,這邊也撤銷
+  k.fines=Array.isArray(k.fines)?k.fines:[];
+  for(const r of b.fines||[]){
+    const m=k.fines.find(x=>x.t===r.t&&x.n===r.n);
+    if(!m){k.fines.push(copy(r));if(!r.undo)k.spent=(k.spent||0)+r.c;continue}
+    if(r.undo&&!m.undo){m.undo=true;k.spent=Math.max(0,(k.spent||0)-m.c)}
+    if(r.seen)m.seen=true;
+  }
+  k.fines.sort((x,y)=>y.t-x.t);k.fines.length=Math.min(k.fines.length,200);
+  k.t9=Object.assign({},k.t9||{});for(const n in b.t9||{})k.t9[n]=[...new Set([...(k.t9[n]||[]),...b.t9[n]])].slice(-30); // 九九星星:兩邊全對的日子合在一起
   // 養成遊戲:取進度比較多的那一邊(開過的花、養大的寵物比較多;一樣多就看愛心),不相加——相加的話每合併一次就多一倍
   const gs=g=>{g=growFix(g);return [g.garden.length+g.pets.length*3+(g.plant?g.plant.step:0)+(g.pet?g.pet.step:0),g.hearts]},ga=gs(a.grow),gb=gs(b.grow);
   k.grow=copy(growFix(gb[0]>ga[0]||(gb[0]===ga[0]&&gb[1]>ga[1])?b.grow:a.grow));
@@ -2804,6 +2978,15 @@ function parentZone(){
       <button class="btn ghost" onclick="adj(-1)">−1</button><button class="btn ghost" onclick="adj(1)">+1</button></div>
     <div class="row">🪙 硬幣 <b>${coins()}</b> 枚(${BIG} 張貼紙換 1 枚,存到 3 枚可以換大獎)
       <button class="btn ghost" onclick="adjCoin(-1)">−1</button><button class="btn ghost" onclick="adjCoin(1)">+1</button></div>
+    <h3>生活約定扣點</h3>
+    <div class="row">${FINES.map((f,i)=>`<button class="btn ghost" onclick="fineAsk(${i})">${esc(f.n)} −${f.c}</button>`).join('')}</div>
+    <div class="row">其他理由 <input id="fineN" maxlength="20" style="font:inherit;padding:6px;width:10em"> 扣 <input id="fineC" type="number" min="1" value="1" style="font:inherit;padding:6px;width:4em"> 點
+      <button class="btn ghost" onclick="fineAsk(-1)">扣點</button></div>
+    ${debt()?`<div class="row"><b>點數不夠扣,還欠 ${debt()} 點</b>,之後貼上去的貼紙會先抵掉。</div>`:''}
+    ${(S.fines||[]).length?`<div>${S.fines.slice(0,20).map(r=>`<div class="row" style="${r.undo?'color:#b0a6b5;text-decoration:line-through':''}">${fmtDate(r.t)} ${esc(r.n)} −${r.c}${r.undo?'(已撤銷)':` ${r.seen?'':'(孩子還沒看到)'} <button class="btn ghost small" onclick="fineUndo(${r.t})">撤銷</button>`}</div>`).join('')}</div>`:'<div>目前沒有扣點紀錄。</div>'}
+    <div style="color:#8a7a90">扣的是點數,貼好的貼紙會留在貼紙簿上。點數不夠時,不夠的部分會從之後得到的貼紙先抵掉。孩子下次回到首頁會看到一張小卡,寫著為什麼扣點(會唸出來),按「我知道了」就不再出現。按錯了可以「撤銷」,點數會還回去。</div>
+    <h3>這週小報告(${esc(S.name||'這位小朋友')},最近 7 天)</h3>
+    ${weekReport()}
     <h3>弱點分析(${esc(S.name||'這位小朋友')})</h3>
     ${analysisHtml()}
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的弱點分析和錯題本嗎?',()=>{S.stat={};save();parentZone()})">清除弱點分析和錯題本</button></div>
@@ -2819,7 +3002,7 @@ function parentZone(){
     <div style="color:#8a7a90">每日暖身一次 10 題,只練基本算式,不計時、可以跳過。每一題花多久只記在這裡,孩子的畫面上看不到;時間包含按數字的時間,所以只是參考。平均超過 ${WARM_SLOW/1000} 秒或答錯過的算式,之後會比較常出。</div>
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的每日暖身紀錄嗎?',()=>{S.warm={f:{},day:''};save();parentZone()})">清除暖身紀錄</button></div>
     <h3>計時(碼錶)</h3>
-    <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習、大魔王、段考'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
+    <label>要不要計時 <select onchange="S.timer=this.value;save()" style="font:inherit;padding:6px;max-width:100%">${[['off','不計時'],['mix','只有綜合挑戰、綜合練習、大魔王、段考'],['all','每一種練習都計時']].map(([v,l])=>`<option value="${v}"${(S.timer||'off')===v?' selected':''}>${l}</option>`).join('')}</select></label>
     <div style="color:#8a7a90">是碼錶,不是倒數:只記這回合花了多久,時間到不會結束,也不影響分數和貼紙。做題的時候畫面上只有一個 ⏱️ 小圖示,不會有跳動的數字;做完才顯示「這次花了多久」和自己的最快紀錄。最快紀錄只在 80 分以上才會更新,免得為了快而亂猜。切到別的 App 的時間不算。</div>
     <h3>神秘禮物拉霸</h3>
     <label><input type="checkbox" ${S.slotOff?'':'checked'} onchange="S.slotOff=!this.checked;save()"> 在禮物屋顯示拉霸(取消勾選就不顯示)</label>
@@ -2866,6 +3049,28 @@ function saveGifts(){
     return g}).filter(g=>g.n);
   l.forEach(g=>{if(g.z&&[...g.n].filter(c=>HAN.test(c)).length!==g.z.split(/\s+/).length)g.z=''}); // 注音數量不對就不顯示,避免標錯
   S.gifts=l.sort((a,b)=>(a.coin?1:0)-(b.coin?1:0)||(a.coin||a.c)-(b.coin||b.c));save();parentZone(); // 用貼紙換的排前面
+}
+// 生活約定扣點:i 是 FINES 的第幾個,−1 是爸媽自己打的理由
+function fineAsk(i){
+  const f=i>=0?FINES[i]:{n:$('#fineN').value.trim(),z:'',c:Math.round(+$('#fineC').value)};
+  if(!f.n)return $('#fineN').focus();if(!(f.c>=1))return $('#fineC').focus();
+  ask(`確定要扣 ${f.c} 點嗎?(理由:${f.n})`,()=>{
+    S.fines=S.fines||[];S.fines.unshift({t:Date.now(),n:f.n,z:f.z,c:f.c,seen:false});S.fines.length=Math.min(S.fines.length,200);
+    spend(f.c);save();parentZone();
+  });
+}
+function fineUndo(t){
+  const r=(S.fines||[]).find(x=>x.t===t);if(!r||r.undo)return;
+  ask(`要撤銷「${r.n} −${r.c}」嗎?點數會還回去。`,()=>{r.undo=true;S.spent=Math.max(0,(S.spent||0)-r.c);save();parentZone()});
+}
+// 孩子回到首頁:還沒看過的扣點,跳一張小卡說明
+function fineCard(){
+  const l=(S.fines||[]).filter(r=>!r.seen&&!r.undo);
+  if(scr!=='home'||!l.length||$('#modalBox').classList.contains('on'))return;
+  modal(`<div style="font-size:64px;display:inline-block">${bunnySvg()}</div><h2>${Z(FINE_T.title)}</h2>
+    <div style="font-size:22px;line-height:2">${l.map(r=>`<div>📌 ${zy(r.n,r.z)} <b style="color:#f06292;white-space:nowrap">${Z(FINE_T.k)} ${r.c} ${Z(FINE_T.p)}</b></div>`).join('')}</div>
+    <p>${Z(FINE_T.cheer)}</p><button class="btn" onclick="S.fines.forEach(r=>r.seen=true);save();closeModal()">${Z(FINE_T.ok)}</button>`);
+  speak(FINE_T.title[0]+'。'+l.map(r=>r.n+',扣'+r.c+'點。').join('')+FINE_T.cheer[0]);
 }
 function adjCoin(d){if(d<0&&coins()<=0)return;S.coinAdj=(S.coinAdj||0)+d;save();parentZone()}
 function adj(d){
@@ -3049,6 +3254,7 @@ function stepCheck(){
     G.combo=first?G.combo+1:0;G.maxCombo=Math.max(G.maxCombo||0,G.combo);prog();
     if([3,5,7,10].includes(G.combo)){confetti(60);talk([`連續答對 ${G.combo} 題!`,'ㄌㄧㄢˊ ㄒㄩˋ ㄉㄚˊ ㄉㄨㄟˋ ㄊㄧˊ'])}
     else talk(pick(first?PRAISE:PRAISE2));
+    moodPop(true);
     $('#stepBar').innerHTML=nextBtn;return;
   }
   sfx.bad();shake();
@@ -3057,7 +3263,7 @@ function stepCheck(){
     if(q.type==='c'){const b=c.querySelectorAll('.opt')[G.ans[i]];b.classList.remove('sel');b.classList.add('bad');G.ans[i]=null}
     const ag=pick(AGAIN); // 每次說的鼓勵話不一樣
     $('#fb'+i).innerHTML=`<div class="teach"><div class="tav">${bunnySvg()}</div><div class="sp"><div class="bubble">${Z(ag)}</div>${trap?`<div class="bubble trap">💡 ${Z(trap.tip)}</div>`:''}</div></div>`;
-    talk(ag,true);return speak(ag[0]+(trap?trap.tip[0]:''));
+    talk(ag,true);moodPop(false);return speak(ag[0]+(trap?trap.tip[0]:''));
   }
   G.pts[i]=0;c.classList.add('lock','wrong');c.insertAdjacentHTML('afterbegin','<span class="mark">❌</span>');
   if(q.type==='c')c.querySelectorAll('.opt').forEach((b,k)=>{if(q.opts[k].ok)b.classList.add('right');else if(k===G.ans[i])b.classList.add('wrong')});
@@ -5019,6 +5225,309 @@ function warmReport(){
   if(!all.length)return '<div>還沒有做過每日暖身。</div>';
   return `<div>做過 ${all.length} 種算式,其中 <b>${good}</b> 種又快又對(${WARM_FAST/1000} 秒以內)。</div>`+
     (weak.length?`<div style="margin-top:4px">還不熟的(可能還在數手指):</div><div class="wrep">${weak.map(([e,s])=>`<span>${esc(e.replace('?','□'))}　${s.ms?`平均 ${(s.ms/1000).toFixed(1)} 秒`:'還沒答對過'}${s.w?`,錯 ${s.w} 次`:''}</span>`).join('')}</div>`:'<div>目前沒有特別慢或常錯的算式。</div>');
+}
+
+/* ==================== 小偵探推理:二、三年級的單元裡參雜一點簡單的邏輯推理 ====================
+   不另外開單元,直接放進原本的單元(猜數字放在大數、排隊放在應用題、星期放在日曆……),單元練習、綜合練習、大魔王都會出現。
+   比「資優邏輯」簡單,數字和算法都在那個年級學過的範圍裡 */
+const RZ={
+  me2:['我是一個兩位數','ㄨㄛˇ ㄕˋ ㄧˊ ˙ㄍㄜ ㄌㄧㄤˇ ㄨㄟˋ ㄕㄨˋ'],tensMore:['十位比個位多','ㄕˊ ㄨㄟˋ ㄅㄧˇ ㄍㄜˋ ㄨㄟˋ ㄉㄨㄛ'],tensLess:['十位比個位少','ㄕˊ ㄨㄟˋ ㄅㄧˇ ㄍㄜˋ ㄨㄟˋ ㄕㄠˇ'],
+  sumIs:['兩個數字加起來是','ㄌㄧㄤˇ ˙ㄍㄜ ㄕㄨˋ ㄗˋ ㄐㄧㄚ ㄑㄧˇ ㄌㄞˊ ㄕˋ'],who:['我是誰?','ㄨㄛˇ ㄕˋ ㄕㄟˊ'],try:['試試看:','ㄕˋ ㄕˋ ㄎㄢˋ'],
+  me4:['我是一個四位數','ㄨㄛˇ ㄕˋ ㄧˊ ˙ㄍㄜ ㄙˋ ㄨㄟˋ ㄕㄨˋ'],th:['千位是','ㄑㄧㄢ ㄨㄟˋ ㄕˋ'],hMore:['百位比千位多','ㄅㄞˇ ㄨㄟˋ ㄅㄧˇ ㄑㄧㄢ ㄨㄟˋ ㄉㄨㄛ'],
+  hLess:['百位比千位少','ㄅㄞˇ ㄨㄟˋ ㄅㄧˇ ㄑㄧㄢ ㄨㄟˋ ㄕㄠˇ'],tIs:['十位是','ㄕˊ ㄨㄟˋ ㄕˋ'],tSame:['十位和百位一樣','ㄕˊ ㄨㄟˋ ㄏㄢˋ ㄅㄞˇ ㄨㄟˋ ㄧˊ ㄧㄤˋ'],
+  oSame:['個位和千位一樣','ㄍㄜˋ ㄨㄟˋ ㄏㄢˋ ㄑㄧㄢ ㄨㄟˋ ㄧˊ ㄧㄤˋ'],oMore:['個位比十位多','ㄍㄜˋ ㄨㄟˋ ㄅㄧˇ ㄕˊ ㄨㄟˋ ㄉㄨㄛ'],oneByOne:['一位一位找出來:','ㄧˊ ㄨㄟˋ ㄧˊ ㄨㄟˋ ㄓㄠˇ ㄔㄨ ㄌㄞˊ'],
+  lineUp:['排隊,從前面數是第','ㄆㄞˊ ㄉㄨㄟˋ ㄘㄨㄥˊ ㄑㄧㄢˊ ㄇㄧㄢˋ ㄕㄨˇ ㄕˋ ㄉㄧˋ'],fromBack:['從後面數是第','ㄘㄨㄥˊ ㄏㄡˋ ㄇㄧㄢˋ ㄕㄨˇ ㄕˋ ㄉㄧˋ'],
+  rowAll:['這一排一共有幾個人','ㄓㄜˋ ㄧˋ ㄆㄞˊ ㄧˊ ㄍㄨㄥˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄖㄣˊ'],rowHas:['這一排有','ㄓㄜˋ ㄧˋ ㄆㄞˊ ㄧㄡˇ'],
+  fromFront:['從前面數是第','ㄘㄨㄥˊ ㄑㄧㄢˊ ㄇㄧㄢˋ ㄕㄨˇ ㄕˋ ㄉㄧˋ'],backQ:['從後面數是第幾個','ㄘㄨㄥˊ ㄏㄡˋ ㄇㄧㄢˋ ㄕㄨˇ ㄕˋ ㄉㄧˋ ㄐㄧˇ ˙ㄍㄜ'],
+  twice:['她被算了兩次,所以要減 1。','ㄊㄚ ㄅㄟˋ ㄙㄨㄢˋ ˙ㄌㄜ ㄌㄧㄤˇ ㄘˋ ㄙㄨㄛˇ ㄧˇ ㄧㄠˋ ㄐㄧㄢˇ'],
+  behind:['先算她後面有幾個人,再加上她自己。','ㄒㄧㄢ ㄙㄨㄢˋ ㄊㄚ ㄏㄡˋ ㄇㄧㄢˋ ㄧㄡˇ ㄐㄧˇ ˙ㄍㄜ ㄖㄣˊ ㄗㄞˋ ㄐㄧㄚ ㄕㄤˋ ㄊㄚ ㄗˋ ㄐㄧˇ'],
+  today:['今天是','ㄐㄧㄣ ㄊㄧㄢ ㄕˋ'],after:['再過','ㄗㄞˋ ㄍㄨㄛˋ'],dayIs:['天是星期幾?','ㄊㄧㄢ ㄕˋ ㄒㄧㄥ ㄑㄧˊ ㄐㄧˇ'],ago:['天前是星期幾?','ㄊㄧㄢ ㄑㄧㄢˊ ㄕˋ ㄒㄧㄥ ㄑㄧˊ ㄐㄧˇ'],
+  week7:['一個星期有 7 天,每過 7 天就回到同一天。','ㄧˊ ˙ㄍㄜ ㄒㄧㄥ ㄑㄧˊ ㄧㄡˇ ㄊㄧㄢ ㄇㄟˇ ㄍㄨㄛˋ ㄊㄧㄢ ㄐㄧㄡˋ ㄏㄨㄟˊ ㄉㄠˋ ㄊㄨㄥˊ ㄧˋ ㄊㄧㄢ'],
+  fwd:['只要往後數','ㄓˇ ㄧㄠˋ ㄨㄤˇ ㄏㄡˋ ㄕㄨˇ'],bwd:['只要往前數','ㄓˇ ㄧㄠˋ ㄨㄤˇ ㄑㄧㄢˊ ㄕㄨˇ'],days:['天。','ㄊㄧㄢ'],
+  pay:['要付','ㄧㄠˋ ㄈㄨˋ'],coins:['元,可以用 50 元、10 元、5 元、1 元,最少要用幾個錢幣?','ㄩㄢˊ ㄎㄜˇ ㄧˇ ㄩㄥˋ ㄩㄢˊ ㄩㄢˊ ㄩㄢˊ ㄩㄢˊ ㄗㄨㄟˋ ㄕㄠˇ ㄧㄠˋ ㄩㄥˋ ㄐㄧˇ ˙ㄍㄜ ㄑㄧㄢˊ ㄅㄧˋ'],
+  bigFirst:['先用大的錢幣,不夠再用小的。','ㄒㄧㄢ ㄩㄥˋ ㄉㄚˋ ˙ㄉㄜ ㄑㄧㄢˊ ㄅㄧˋ ㄅㄨˊ ㄍㄡˋ ㄗㄞˋ ㄩㄥˋ ㄒㄧㄠˇ ˙ㄉㄜ'],
+  symQ:['每一種圖案代表一個數,? 是多少?','ㄇㄟˇ ㄧˋ ㄓㄨㄥˇ ㄊㄨˊ ㄢˋ ㄉㄞˋ ㄅㄧㄠˇ ㄧˊ ˙ㄍㄜ ㄕㄨˋ ㄕˋ ㄉㄨㄛ ㄕㄠˇ'],
+  twoSame:['兩個一樣的數合起來是','ㄌㄧㄤˇ ˙ㄍㄜ ㄧˊ ㄧㄤˋ ˙ㄉㄜ ㄕㄨˋ ㄏㄜˊ ㄑㄧˇ ㄌㄞˊ ㄕˋ'],
+  and:['和','ㄏㄢˋ'],sameW:['一樣重','ㄧˊ ㄧㄤˋ ㄓㄨㄥˋ'],howMany:['幾','ㄐㄧˇ'],
+  balT:['每一個都可以換成一樣多,用乘的。','ㄇㄟˇ ㄧˊ ˙ㄍㄜ ㄉㄡ ㄎㄜˇ ㄧˇ ㄏㄨㄢˋ ㄔㄥˊ ㄧˊ ㄧㄤˋ ㄉㄨㄛ ㄩㄥˋ ㄔㄥˊ ˙ㄉㄜ'],
+  kidsBoat:['個小朋友要坐船,每艘船最多坐','˙ㄍㄜ ㄒㄧㄠˇ ㄆㄥˊ ˙ㄧㄡ ㄧㄠˋ ㄗㄨㄛˋ ㄔㄨㄢˊ ㄇㄟˇ ㄙㄡ ㄔㄨㄢˊ ㄗㄨㄟˋ ㄉㄨㄛ ㄗㄨㄛˋ'],
+  boatQ:['人,至少要幾艘船?','ㄖㄣˊ ㄓˋ ㄕㄠˇ ㄧㄠˋ ㄐㄧˇ ㄙㄡ ㄔㄨㄢˊ'],boat:['艘','ㄙㄡ'],
+  boatTip:['剩下的人也要坐船,所以要多 1 艘。','ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ ㄖㄣˊ ㄧㄝˇ ㄧㄠˋ ㄗㄨㄛˋ ㄔㄨㄢˊ ㄙㄨㄛˇ ㄧˇ ㄧㄠˋ ㄉㄨㄛ ㄙㄡ'],
+  every:['每','ㄇㄟˇ'],box:['裝一盒','ㄓㄨㄤ ㄧˋ ㄏㄜˊ'],boxQ:['最多可以裝滿幾盒?','ㄗㄨㄟˋ ㄉㄨㄛ ㄎㄜˇ ㄧˇ ㄓㄨㄤ ㄇㄢˇ ㄐㄧˇ ㄏㄜˊ'],he:['盒','ㄏㄜˊ'],
+  boxTip:['剩下的不夠裝滿一盒,不算。','ㄕㄥˋ ㄒㄧㄚˋ ˙ㄉㄜ ㄅㄨˊ ㄍㄡˋ ㄓㄨㄤ ㄇㄢˇ ㄧˋ ㄏㄜˊ ㄅㄨˊ ㄙㄨㄢˋ'],
+  use:['用','ㄩㄥˋ'],straws:['根一樣長的吸管','ㄍㄣ ㄧˊ ㄧㄤˋ ㄔㄤˊ ˙ㄉㄜ ㄒㄧ ㄍㄨㄢˇ'],gen:['根','ㄍㄣ'],
+  sq:['圍成一個正方形,每一邊要用幾根?','ㄨㄟˊ ㄔㄥˊ ㄧˊ ˙ㄍㄜ ㄓㄥˋ ㄈㄤ ㄒㄧㄥˊ ㄇㄟˇ ㄧˋ ㄅㄧㄢ ㄧㄠˋ ㄩㄥˋ ㄐㄧˇ ㄍㄣ'],
+  rect:['圍成一個長方形,長邊每邊','ㄨㄟˊ ㄔㄥˊ ㄧˊ ˙ㄍㄜ ㄔㄤˊ ㄈㄤ ㄒㄧㄥˊ ㄔㄤˊ ㄅㄧㄢ ㄇㄟˇ ㄅㄧㄢ'],shortQ:['根,短邊每邊要幾根?','ㄍㄣ ㄉㄨㄢˇ ㄅㄧㄢ ㄇㄟˇ ㄅㄧㄢ ㄧㄠˋ ㄐㄧˇ ㄍㄣ'],
+  sq4:['正方形有 4 條一樣長的邊。','ㄓㄥˋ ㄈㄤ ㄒㄧㄥˊ ㄧㄡˇ ㄊㄧㄠˊ ㄧˊ ㄧㄤˋ ㄔㄤˊ ˙ㄉㄜ ㄅㄧㄢ'],
+  rect2:['長方形有 2 條長邊、2 條短邊。','ㄔㄤˊ ㄈㄤ ㄒㄧㄥˊ ㄧㄡˇ ㄊㄧㄠˊ ㄔㄤˊ ㄅㄧㄢ ㄊㄧㄠˊ ㄉㄨㄢˇ ㄅㄧㄢ']};
+const RZ_WD=[['星期日','ㄒㄧㄥ ㄑㄧˊ ㄖˋ'],['星期一','ㄒㄧㄥ ㄑㄧˊ ㄧ'],['星期二','ㄒㄧㄥ ㄑㄧˊ ㄦˋ'],['星期三','ㄒㄧㄥ ㄑㄧˊ ㄙㄢ'],['星期四','ㄒㄧㄥ ㄑㄧˊ ㄙˋ'],['星期五','ㄒㄧㄥ ㄑㄧˊ ㄨˇ'],['星期六','ㄒㄧㄥ ㄑㄧˊ ㄌㄧㄡˋ']];
+const RZ_BIG=[{e:'🍌',n:['香蕉','ㄒㄧㄤ ㄐㄧㄠ'],m:['根','ㄍㄣ']},{e:'🍍',n:['鳳梨','ㄈㄥˋ ㄌㄧˊ'],m:['顆','ㄎㄜ']}],
+  RZ_MELON={e:'🍉',n:['西瓜','ㄒㄧ ㄍㄨㄚ'],m:['顆','ㄎㄜ']},
+  RZ_SMALL=[{e:'🍓',n:['草莓','ㄘㄠˇ ㄇㄟˊ'],m:['顆','ㄎㄜ']},{e:'🍒',n:['櫻桃','ㄧㄥ ㄊㄠˊ'],m:['顆','ㄎㄜ']},{e:'🍬',n:['糖果','ㄊㄤˊ ㄍㄨㄛˇ'],m:['顆','ㄎㄜ']}];
+const rzStory=e=>`<div class="story">🕵️ ${e}</div>`; // 推理題的圖:前面放一個小偵探
+function rzNum2(type){ // 猜兩位數:十位比個位多(少)幾,兩個數字加起來是多少
+  let t,o;do{t=R(1,9);o=R(0,9)}while(t===o);
+  const more=t>o,d=Math.abs(t-o),s=t+o,ans=t*10+o,p=line([RZ.me2,C,more?RZ.tensMore:RZ.tensLess,d,C,RZ.sumIs,s,'。',RZ.who]);
+  return num(p.h,rzStory('🔢❓'),ans,type,{say:p.say,ds:[1,10,9],wrong:o?[o*10+t]:[],
+    teach:[[RZ.try,`${t} + ${o} = ${s}`],[more?`${t} − ${o} = ${d}`:`${o} − ${t} = ${d}`],[T.so,ans]]});
+}
+function rzNum3(type){ // 猜四位數:一位一位的線索
+  const a=R(1,8),up=R(0,1)||a===1,d=up?R(1,9-a):R(1,a-1),b=up?a+d:a-d;
+  const tSame=R(0,1),c=tSame?b:R(0,9),oSame=R(0,1)||c===9,d2=oSame?0:R(1,9-c),e=oSame?a:c+d2,ans=a*1000+b*100+c*10+e;
+  const p=line([RZ.me4,'。',RZ.th,a,C,up?RZ.hMore:RZ.hLess,d,C,...(tSame?[RZ.tSame]:[RZ.tIs,c]),C,...(oSame?[RZ.oSame]:[RZ.oMore,d2]),'。',RZ.who]);
+  return num(p.h,rzStory('🔢❓'),ans,type,{say:p.say,ds:[1000,100,10],
+    teach:[[RZ.oneByOne],[PL[3],':',a],[PL[2],':',up?`${a} + ${d} = ${b}`:`${a} − ${d} = ${b}`],[PL[1],':',c],[PL[0],':',oSame?e:`${c} + ${d2} = ${e}`],[T.so,ans]]});
+}
+function rzLine(type){ // 排隊:從前面數第幾、從後面數第幾
+  const w=someone();
+  if(R(0,1)){const a=R(3,9),b=R(3,9),ans=a+b-1,p=line([w,RZ.lineUp,a,TT.ge,C,RZ.fromBack,b,TT.ge,C,RZ.rowAll,Q]);
+    return num(p.h,rzStory('🧒🧒👧🧒🧒'),ans,type,{unit:Z(W.ren),say:p.say,ds:[1,2],wrong:[a+b],teach:[[RZ.twice],[`${a} + ${b} − 1 = ${ans}`]]})}
+  const n=R(8,15),a=R(2,n-2),ans=n-a+1,p=line([RZ.rowHas,n,W.people,C,w,RZ.fromFront,a,TT.ge,C,RZ.backQ,Q]);
+  return num(p.h,rzStory('🧒🧒👧🧒🧒'),ans,type,{say:p.say,ds:[1,2],wrong:[n-a],teach:[[RZ.behind],[`${n} − ${a} = ${n-a}`],[`${n-a} + 1 = ${ans}`]]});
+}
+function rzWeek(big){ // 今天星期幾,再過幾天(幾天前)是星期幾
+  let n;do{n=big?R(8,40):R(2,20)}while(n%7===0);
+  const x=R(0,6),fw=R(0,1),y=((fw?x+n:x-n)%7+7)%7,r=n%7,p=line(fw?[RZ.today,RZ_WD[x],C,RZ.after,n,RZ.dayIs]:[RZ.today,RZ_WD[x],C,n,RZ.ago]);
+  const ws=[y,(y+1)%7,(y+6)%7];
+  return lab(p.h,rzStory('📅'),ws.map(i=>({h:Z(RZ_WD[i]),ok:i===y})),{say:p.say,
+    teach:[[RZ.week7],...(n>=7?[[`${n} − ${n-r} = ${r}`]]:[]),[fw?RZ.fwd:RZ.bwd,r,RZ.days],[RZ_WD[x],' → ',RZ_WD[y]]]});
+}
+function rzCoin(type){ // 最少用幾個錢幣
+  const vs=[50,10,5,1];let A,c;
+  do{A=R(16,99);c=[];let r=A;vs.forEach((v,i)=>{c[i]=Math.floor(r/v);r%=v})}while(c.filter(Boolean).length<2); // 至少用到兩種錢幣
+  const ans=c.reduce((x,y)=>x+y,0),p=line([RZ.pay,A,RZ.coins]),used=vs.map((v,i)=>c[i]?[v,T.yuan,c[i],TT.ge]:null).filter(Boolean);
+  return num(p.h,rzStory('🪙💰'),ans,type,{unit:Z(TT.ge),say:p.say,ds:[1,2],
+    teach:[[RZ.bigFirst],used.flatMap((u,i)=>i?['、',...u]:u),[`${c.filter(Boolean).join(' + ')} = ${ans}`]]});
+}
+function rzSym(type,g3){ // 圖案代表數:🍎 + 🍎 = 14,🍎 + 🍌 = 20,🍌 = ?
+  const [A,B]=shuffle(['🍎','🍌','🍇','🍓','🍊']).slice(0,2),k=R(0,1),p=line([RZ.symQ]);let v,ans,teach;
+  if(!g3&&k===0){const x=R(6,25);v=`${A} + ${A} = ${2*x}<br>${A} = ?`;ans=x;teach=[[RZ.twoSame,2*x],[`${x} + ${x} = ${2*x}`]]}
+  else if(!g3){const x=R(4,20),s=x+R(3,25);v=`${A} + ${A} = ${2*x}<br>${A} + ${B} = ${s}<br>${B} = ?`;ans=s-x;teach=[[`${x} + ${x} = ${2*x}`],[`${s} − ${x} = ${ans}`]]}
+  else if(k===0){const x=R(4,15),m=R(3,5);v=`${Array(m).fill(A).join(' + ')} = ${m*x}<br>${A} = ?`;ans=x;teach=[[`${m*x} ÷ ${m} = ${x}`]]}
+  else{const x=R(3,12),m=R(3,8),d=R(2,20);v=`${A} × ${m} = ${m*x}<br>${B} = ${A} + ${d}<br>${B} = ?`;ans=x+d;teach=[[`${m*x} ÷ ${m} = ${x}`],[`${x} + ${d} = ${ans}`]]}
+  return num(p.h,`<div class="expr sm subst">${v}</div>`,ans,type,{say:p.say,ds:[1,2,3],teach});
+}
+function rzBal(type,g3){ // 天平推理:1 根香蕉和 3 顆草莓一樣重……
+  const s=pick(RZ_SMALL),b=pick(RZ_BIG),k=g3?R(0,1):2;let ans,parts,teach,ex;
+  if(k===0){const x=R(2,4),y=R(2,5);ans=x*y; // 三種東西接起來:西瓜 → 香蕉 → 草莓
+    parts=[1,RZ_MELON.m,RZ_MELON.n,RZ.and,x,b.m,b.n,RZ.sameW,C,1,b.m,b.n,RZ.and,y,s.m,s.n,RZ.sameW,C,1,RZ_MELON.m,RZ_MELON.n,RZ.and,RZ.howMany,s.m,s.n,RZ.sameW,Q];
+    ex=RZ_MELON.e+b.e+s.e;teach=[[RZ.balT],[`${x} × ${y} = ${ans}`]]}
+  else if(k===1){const a=R(2,5),per=R(2,6);ans=per; // 反過來:2 根香蕉和 6 顆草莓一樣重,1 根呢?
+    parts=[a,b.m,b.n,RZ.and,a*per,s.m,s.n,RZ.sameW,C,1,b.m,b.n,RZ.and,RZ.howMany,s.m,s.n,RZ.sameW,Q];ex=b.e+s.e;teach=[[`${a*per} ÷ ${a} = ${per}`]]}
+  else{const per=R(2,5),a=R(2,5);ans=a*per;
+    parts=[1,b.m,b.n,RZ.and,per,s.m,s.n,RZ.sameW,C,a,b.m,b.n,RZ.and,RZ.howMany,s.m,s.n,RZ.sameW,Q];ex=b.e+s.e;teach=[[RZ.balT],[`${a} × ${per} = ${ans}`]]}
+  const p=line(parts);
+  return num(p.h,rzStory('⚖️'+ex),ans,type,{unit:Z(s.m),say:p.say,ds:[1,2],teach});
+}
+function rzBoat(type){ // 有餘數的除法,要想一想:坐船要多 1 艘(無條件進位)、裝盒子剩下的不算(捨去)
+  const k=R(3,8);let n;do{n=R(13,60)}while(n%k===0||n/k>9);
+  const q=Math.floor(n/k),r=n%k;
+  if(R(0,1)){const p=line([W.has,n,RZ.kidsBoat,k,RZ.boatQ]);
+    return num(p.h,rzStory('⛵🌊'),q+1,type,{unit:Z(RZ.boat),say:p.say,ds:[1,2],wrong:[q],teach:[[`${n} ÷ ${k} = ${q} … ${r}`],[RZ.boatTip],[`${q} + 1 = ${q+1}`]]})}
+  const it=pick(ITEMS.filter(x=>x.food)),p=line([W.has,n,it.m,it.n,C,RZ.every,k,it.m,RZ.box,C,RZ.boxQ]);
+  return num(p.h,rzStory(it.e+'📦'),q,type,{unit:Z(RZ.he),say:p.say,ds:[1,2],wrong:[q+1],teach:[[`${n} ÷ ${k} = ${q} … ${r}`],[RZ.boxTip]]});
+}
+function rzStick(type){ // 用吸管圍正方形、長方形
+  if(R(0,1)){const s=R(2,9),n=4*s,p=line([RZ.use,n,RZ.straws,RZ.sq]);
+    return num(p.h,rzStory('🥤⬜'),s,type,{unit:Z(RZ.gen),say:p.say,ds:[1,2],wrong:[n/2],teach:[[RZ.sq4],[`${n} ÷ 4 = ${s}`]]})}
+  const b=R(2,6),a=b+R(1,4),n=2*(a+b),p=line([RZ.use,n,RZ.straws,RZ.rect,a,RZ.shortQ]);
+  return num(p.h,rzStory('🥤▭'),b,type,{unit:Z(RZ.gen),say:p.say,ds:[1,2],wrong:[n-a,n-2*a],teach:[[RZ.rect2],[`${a} + ${a} = ${2*a}`],[`${n} − ${2*a} = ${2*b}`],[`${2*b} ÷ 2 = ${b}`]]});
+}
+KINDS.push(
+  {id:'rzNum2',u:'big',types:'cf',n:['小偵探猜數字','ㄒㄧㄠˇ ㄓㄣ ㄊㄢˋ ㄘㄞ ㄕㄨˋ ㄗˋ'],gen:t=>rzNum2(t)},
+  {id:'rzLine',u:'w2',types:'cf',n:['排隊推理','ㄆㄞˊ ㄉㄨㄟˋ ㄊㄨㄟ ㄌㄧˇ'],gen:t=>rzLine(t)},
+  {id:'rzWeek',u:'cal2',types:'c',n:['星期推理','ㄒㄧㄥ ㄑㄧˊ ㄊㄨㄟ ㄌㄧˇ'],gen:()=>rzWeek()},
+  {id:'rzCoin',u:'mon2',types:'cf',n:['最少幾個錢幣','ㄗㄨㄟˋ ㄕㄠˇ ㄐㄧˇ ˙ㄍㄜ ㄑㄧㄢˊ ㄅㄧˋ'],gen:t=>rzCoin(t)},
+  {id:'rzSym2',u:'add2',types:'cf',n:['圖案代表數','ㄊㄨˊ ㄢˋ ㄉㄞˋ ㄅㄧㄠˇ ㄕㄨˋ'],gen:t=>rzSym(t)},
+  {id:'rzBal2',u:'wt',types:'cf',n:['天平推理','ㄊㄧㄢ ㄆㄧㄥˊ ㄊㄨㄟ ㄌㄧˇ'],gen:t=>rzBal(t)},
+  {id:'rzNum3',u:'big4',types:'cf',n:['小偵探猜數字','ㄒㄧㄠˇ ㄓㄣ ㄊㄢˋ ㄘㄞ ㄕㄨˋ ㄗˋ'],gen:t=>rzNum3(t)},
+  {id:'rzSym3',u:'mul3',types:'cf',n:['圖案代表數','ㄊㄨˊ ㄢˋ ㄉㄞˋ ㄅㄧㄠˇ ㄕㄨˋ'],gen:t=>rzSym(t,1)},
+  {id:'rzBoat',u:'div3',types:'cf',n:['餘數推理','ㄩˊ ㄕㄨˋ ㄊㄨㄟ ㄌㄧˇ'],gen:t=>rzBoat(t)},
+  {id:'rzBal3',u:'meas3',types:'cf',n:['天平推理','ㄊㄧㄢ ㄆㄧㄥˊ ㄊㄨㄟ ㄌㄧˇ'],gen:t=>rzBal(t,1)},
+  {id:'rzStick',u:'geo3',types:'cf',n:['吸管圍圖形','ㄒㄧ ㄍㄨㄢˇ ㄨㄟˊ ㄊㄨˊ ㄒㄧㄥˊ'],gen:t=>rzStick(t)},
+  {id:'rzWeek3',u:'time3',types:'c',n:['星期推理','ㄒㄧㄥ ㄑㄧˊ ㄊㄨㄟ ㄌㄧˇ'],gen:()=>rzWeek(1)},
+);
+BOSS_HARD[2].push('rzLine','rzNum2','rzSym2');BOSS_HARD[3].push('rzBoat','rzNum3','rzSym3');
+
+/* ==================== 數字賓果 ====================
+   3 × 3 的格子裡是 9 個不一樣的答案;上面出一題(二、三年級是九九乘法,一年級是 20 以內的加法),點對的格子蓋上星星,
+   直的、橫的、斜的連成一條線就賓果。點錯算一次「點錯」。是小遊戲,和其他小遊戲共用每天第一次過關的 1 張貼紙 */
+const BGT={title:['數字賓果','ㄕㄨˋ ㄗˋ ㄅㄧㄣ ㄍㄨㄛˇ'],
+  hint:['找到答案點下去,連成一條線就賓果!','ㄓㄠˇ ㄉㄠˋ ㄉㄚˊ ㄢˋ ㄉㄧㄢˇ ㄒㄧㄚˋ ㄑㄩˋ ㄌㄧㄢˊ ㄔㄥˊ ㄧˋ ㄊㄧㄠˊ ㄒㄧㄢˋ ㄐㄧㄡˋ ㄅㄧㄣ ㄍㄨㄛˇ'],
+  done:['賓果!你好棒!','ㄅㄧㄣ ㄍㄨㄛˇ ㄋㄧˇ ㄏㄠˇ ㄅㄤˋ']};
+const BG_LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+let BG=null;
+function bingo(){
+  const add=S.grade===1,cells=[],seen=new Set();
+  while(cells.length<9){const a=add?R(2,9):R(2,9),b=add?R(2,9):R(2,9),v=add?a+b:a*b;if(!seen.has(v)){seen.add(v);cells.push({a,b,v,op:add?'+':'×'})}}
+  BG={cells,order:shuffle([...cells.keys()]),k:-1,hit:new Set(),miss:0,busy:false};sfx.tap();
+  show('bingo',`
+  <div class="row">${homeBtn()}<span class="sp"></span><span class="hearts" id="bgprog"></span></div>
+  <div class="row center">${mascot()}<h1>🎯 ${Z(BGT.title)}</h1></div>
+  <div class="tip center">${Z(BGT.hint)}</div>
+  <div id="gres"></div><div class="card" id="bgcard" style="margin-top:12px;text-align:center"><div class="expr" id="bgq"></div>
+    <div class="bgo">${cells.map((c,i)=>`<button id="bg${i}" onclick="bgTap(${i})">${c.v}</button>`).join('')}</div></div>`);
+  talk(BGT.hint,true);bgNext();
+}
+function bgNext(){
+  if(scr!=='bingo'||!BG)return;
+  const c=BG.cells[BG.order[++BG.k]];BG.busy=false;
+  $('#bgq').textContent=`${c.a} ${c.op} ${c.b} = ?`;
+  $('#bgprog').textContent=`⭐ ${BG.hit.size}`;
+  speak(sayOps(`${c.a} ${c.op} ${c.b} = 多少`));
+}
+function bgTap(i){
+  if(!BG||BG.busy||BG.hit.has(i))return;
+  const want=BG.order[BG.k],b=$('#bg'+i);
+  if(i!==want){BG.miss++;sfx.bad();b.classList.remove('bad');void b.offsetWidth;b.classList.add('bad');return}
+  BG.busy=true;BG.hit.add(i);b.classList.add('hit');sfx.ok();const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,8);
+  const ln=BG_LINES.find(l=>l.every(x=>BG.hit.has(x)));
+  if(!ln)return setTimeout(bgNext,500);
+  ln.forEach(x=>$('#bg'+x).classList.add('line'));$('#bgq').textContent='🎉 BINGO!';$('#bgprog').textContent=`⭐ ${BG.hit.size}`;
+  const miss=BG.miss;BG=null;setTimeout(()=>{if(scr==='bingo')playEnd(miss,'bingo()',BGT.done,0,2)},900); // 這 0.9 秒裡按了 🏠 就不算過關
+}
+
+/* ==================== 九九乘法表 ====================
+   上面選 1~9 的乘法(或「大表」看全部 81 格);點一下會唸口訣(三七二十一)。
+   「蓋起來背背看」:答案先藏起來,點一下才打開;「考考我」:這一段 9 題打亂順序用數字鍵填,答錯的最後再考一次。
+   大表的考考我:2~9 的乘法隨機 10 題。跟每日暖身一樣只有星星,不送貼紙,也不佔用小遊戲每天那 1 張 */
+const TT9={
+  title:['九九乘法表','ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ ㄅㄧㄠˇ'],home:['九九乘法','ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ'],of:['的乘法','˙ㄉㄜ ㄔㄥˊ ㄈㄚˇ'],big:['大表','ㄉㄚˋ ㄅㄧㄠˇ'],
+  hint:['點一下,聽聽口訣!','ㄉㄧㄢˇ ㄧˊ ㄒㄧㄚˋ ㄊㄧㄥ ㄊㄧㄥ ㄎㄡˇ ㄐㄩㄝˊ'],
+  hide:['蓋起來背背看','ㄍㄞˋ ㄑㄧˇ ㄌㄞˊ ㄅㄟˋ ㄅㄟˋ ㄎㄢˋ'],open:['全部打開','ㄑㄩㄢˊ ㄅㄨˋ ㄉㄚˇ ㄎㄞ'],
+  quiz:['考考我','ㄎㄠˇ ㄎㄠˇ ㄨㄛˇ'],chain:['接力挑戰','ㄐㄧㄝ ㄌㄧˋ ㄊㄧㄠˇ ㄓㄢˋ'],
+  chainHint:['上一題的答案,就是下一題的第一個數!','ㄕㄤˋ ㄧˋ ㄊㄧˊ ˙ㄉㄜ ㄉㄚˊ ㄢˋ ㄐㄧㄡˋ ㄕˋ ㄒㄧㄚˋ ㄧˋ ㄊㄧˊ ˙ㄉㄜ ㄉㄧˋ ㄧ ˙ㄍㄜ ㄕㄨˋ'],
+  newChain:['新的一串','ㄒㄧㄣ ˙ㄉㄜ ㄧˊ ㄔㄨㄢˋ'],chainDone:['接力挑戰成功!','ㄐㄧㄝ ㄌㄧˋ ㄊㄧㄠˇ ㄓㄢˋ ㄔㄥˊ ㄍㄨㄥ'],done:['乘法表過關了!','ㄔㄥˊ ㄈㄚˇ ㄅㄧㄠˇ ㄍㄨㄛˋ ㄍㄨㄢ ˙ㄌㄜ'],
+  bigHint:['橫的和直的交叉的地方,就是答案。','ㄏㄥˊ ˙ㄉㄜ ㄏㄢˋ ㄓˊ ˙ㄉㄜ ㄐㄧㄠ ㄔㄚ ˙ㄉㄜ ㄉㄧˋ ㄈㄤ ㄐㄧㄡˋ ㄕˋ ㄉㄚˊ ㄢˋ'],
+  starHint:['考考我全對就亮一顆星,3 天都全對變金星!','ㄎㄠˇ ㄎㄠˇ ㄨㄛˇ ㄑㄩㄢˊ ㄉㄨㄟˋ ㄐㄧㄡˋ ㄌㄧㄤˋ ㄧˋ ㄎㄜ ㄒㄧㄥ ㄊㄧㄢ ㄉㄡ ㄑㄩㄢˊ ㄉㄨㄟˋ ㄅㄧㄢˋ ㄐㄧㄣ ㄒㄧㄥ'],
+  lit:['的乘法亮星星了!','˙ㄉㄜ ㄔㄥˊ ㄈㄚˇ ㄌㄧㄤˋ ㄒㄧㄥ ˙ㄒㄧㄥ ˙ㄌㄜ'],gold:['的乘法變成金星了!','˙ㄉㄜ ㄔㄥˊ ㄈㄚˇ ㄅㄧㄢˋ ㄔㄥˊ ㄐㄧㄣ ㄒㄧㄥ ˙ㄌㄜ'],
+  sing:['一起唸','ㄧˋ ㄑㄧˇ ㄋㄧㄢˋ'],stop:['停','ㄊㄧㄥˊ'],yourTurn:['換你唸唸看!','ㄏㄨㄢˋ ㄋㄧˇ ㄋㄧㄢˋ ㄋㄧㄢˋ ㄎㄢˋ'],
+  addUp:['加起來','ㄐㄧㄚ ㄑㄧˇ ㄌㄞˊ'],ok:['好','ㄏㄠˇ']};
+const T9E=['🍎','🍓','🍊','🍇','🌸','⭐','🐞','🦋','🍬']; // 排列圖用的圖案,每一段不一樣
+// 九九星星:這一段考考我全對過幾天。0 天 ☆、1~2 天 ⭐、3 天以上 🌟
+const t9Days=a=>((S.t9||{})[a]||[]).length,t9Star=a=>t9Days(a)>=3?'🌟':t9Days(a)?'⭐':'☆';
+const CN9=['','一','二','三','四','五','六','七','八','九'],CN9Z=['','ㄧ','ㄦˋ','ㄙㄢ','ㄙˋ','ㄨˇ','ㄌㄧㄡˋ','ㄑㄧ','ㄅㄚ','ㄐㄧㄡˇ'];
+// 口訣:[國字, 注音],例如 3、7 → 三七二十一;積是個位數用「得」(三三得九),10 唸「一十」(二五一十)
+function kj(a,b){
+  const p=a*b,t=p/10|0,u=p%10,h=[CN9[a],CN9[b]],z=[CN9Z[a],CN9Z[b]];
+  if(p<10){h.push('得',CN9[p]);z.push('ㄉㄜˊ',CN9Z[p])}
+  else{if(t>1||!u){h.push(CN9[t]);z.push(CN9Z[t])}h.push('十');z.push('ㄕˊ');if(u){h.push(CN9[u]);z.push(CN9Z[u])}}
+  return [h.join(''),z.join(' ')];
+}
+let T9=null; // a:現在看哪一段(0 是大表);hide:蓋起來背;open:蓋起來時打開了哪幾格;q:考考我
+function timesTable(a){
+  T9={a:a==null?(T9?T9.a:2):a,hide:false,open:new Set(),q:null};sfx.tap();
+  show('times',`
+  <div class="row">${homeBtn()}<span class="sp"></span><span class="hearts" id="wprog"></span></div>
+  <div class="row center">${mascot()}<h1>✖️ ${Z(TT9.title)}</h1></div>
+  <div id="gres"></div><div id="t9"></div>`);
+  t9Draw();setTimeout(()=>{if(scr==='times')talk(TT9.hint)},300);
+}
+function t9Draw(){
+  const a=T9.a,R9=[1,2,3,4,5,6,7,8,9];T9.q=null;T9.sing=0;closePad();
+  const lit=R9.filter(n=>t9Days(n)).length;$('#wprog').textContent=`⭐ ${lit} / 9`;
+  const tabs=`<div class="tip center">${Z(TT9.starHint)}</div>
+    <div class="t9tabs">${R9.map(n=>`<button class="${n===a?'on':''}" onclick="t9Go(${n})">${n}<span class="t9s">${t9Star(n)}</span></button>`).join('')}<button class="${a===0?'on':''}" onclick="t9Go(0)">${Z(TT9.big)}</button></div>`;
+  const body=a===0?`<div class="tip center">${Z(TT9.bigHint)}</div><div class="t9big"><table><tr><th>×</th>${R9.map(n=>`<th>${n}</th>`).join('')}</tr>
+      ${R9.map(r=>`<tr><th>${r}</th>${R9.map(c=>`<td class="${r===c?'sq':''}" onclick="t9Say(${r},${c})">${r*c}</td>`).join('')}</tr>`).join('')}</table></div>`
+    :`<h2 class="center" style="margin:12px 0 0">${a} ${Z(TT9.of)}</h2><div class="t9list">${R9.map(b=>{const k=kj(a,b),hid=T9.hide&&!T9.open.has(b);
+      return `<button class="t9row${hid?' hid':''}" onclick="t9Tap(${b})"><span class="t9e">${a} × ${b} = <b>${hid?'?':a*b}</b></span><span class="t9k">${hid?'':zy(k[0],k[1])}</span></button>`}).join('')}</div>`;
+  $('#t9').innerHTML=tabs+body+`<div class="row center" style="margin-top:14px">
+    ${a?`<button class="btn purple" id="t9singB" onclick="t9Sing()">🎵 ${Z(TT9.sing)}</button>
+    <button class="btn mint" onclick="T9.hide=!T9.hide;T9.open=new Set();sfx.tap();t9Draw()">${T9.hide?'👀 '+Z(TT9.open):'🙈 '+Z(TT9.hide)}</button>`:''}
+    <button class="btn" onclick="t9Quiz()">✏️ ${Z(TT9.quiz)}</button>
+    <button class="btn purple" onclick="t9Chain()">🔗 ${Z(TT9.chain)}</button></div>`;
+}
+/* 接力挑戰(進階):一串 3 題,上一題的答案接著乘下一個數,例如 9 × 9 = 81 → 81 × 2 = 162 → 162 × 3 = 486。
+   第一題是九九乘法,後面是兩、三位數乘以一位數(三年級的直式乘法);答案都不超過 999。一回合 4 串 */
+function t9Chain(){
+  const qs=[];
+  for(let n=0;n<4;n++){
+    let x=R(2,9),y=R(2,9);qs.push({x,y,head:1});
+    for(let s=0;s<2;s++){
+      x*=y;const cs=[2,3,4,5,6,7,8,9].filter(c=>x*c<=(s?999:499)); // 第二題留一點空間,第三題才乘得下去
+      y=pick(cs);qs.push({x,y});
+    }
+  }
+  T9.q={qs:qs.map(q=>Object.assign(q,{e:`${q.x} × ${q.y} = ?`,a:q.x*q.y})),i:-1,miss:0,val:'',busy:false,again:new Set(),chain:1};sfx.tap();
+  $('#gres').innerHTML='';$('#t9').innerHTML=`<div class="tip center">🔗 ${Z(TT9.chainHint)}</div><div class="card" id="wcard" style="margin-top:12px;text-align:center"></div>`;
+  talk(TT9.chainHint,true);t9Next();
+}
+function t9Go(n){sfx.tap();T9.a=n;T9.open=new Set();$('#gres').innerHTML='';t9Draw()}
+function t9Say(a,b){sfx.tap();t9Pic(a,b)}
+function t9Tap(b){
+  const a=T9.a;sfx.tap();T9.sing=0;
+  if(T9.hide&&!T9.open.has(b)){T9.open.add(b);t9Draw();return speak(kj(a,b)[0])} // 蓋起來背的時候:只打開這一格
+  t9Pic(a,b);
+}
+// 點一下算式:畫出 b 排、每排 a 個(台灣課本的 a × b 是「a 的 b 倍」,也就是 b 個 a),一排一排出現,旁邊寫累加到多少
+function t9Pic(a,b){
+  const k=kj(a,b),e=T9E[(a-1)%9],rows=Array.from({length:b},(_,i)=>`<div style="animation-delay:${.15+i*.35}s">${e.repeat(a)}<b>${a*(i+1)}</b></div>`).join('');
+  modal(`<h2 style="margin:4px 0">${a} × ${b} = ${a*b}</h2><div style="font-size:24px">🗣️ ${zy(k[0],k[1])}</div>
+    <div style="margin-top:6px">${line([b,TT.ge,a,TT9.addUp]).h}</div><div class="t9pic">${rows}</div>
+    <button class="btn" onclick="hush();closeModal()">${Z(TT9.ok)}</button>`);
+  speak(`${k[0]}。${b}個${a}加起來:`+Array.from({length:b},(_,i)=>a*(i+1)).join('、'));
+}
+// 一起唸:小兔子從 a × 1 唸到 a × 9,唸到的那一行亮起來;唸完換她自己唸(答案蓋起來,點一下打開)
+function t9Sing(){
+  if(T9.sing){T9.sing=0;hush();return t9Draw()} // 唸到一半再按一次就停
+  const a=T9.a,tok=Date.now();T9.hide=false;T9.open=new Set();t9Draw();T9.sing=tok;sfx.tap();
+  const b=$('#t9singB');if(b)b.innerHTML=`⏹️ ${Z(TT9.stop)}`;
+  const step=i=>{
+    if(scr!=='times'||T9.sing!==tok)return;
+    document.querySelectorAll('.t9row').forEach((r,j)=>r.classList.toggle('sing',j===i-1));
+    if(i>9){T9.sing=0;T9.hide=true;t9Draw();return talk(TT9.yourTurn)}
+    const r=document.querySelectorAll('.t9row')[i-1];if(r)r.scrollIntoView({block:'nearest',behavior:'smooth'});
+    let gone=false;const next=()=>{if(gone)return;gone=true;setTimeout(()=>step(i+1),250)};
+    if(S.voice===false||!('speechSynthesis' in window))setTimeout(next,1200);
+    else{speak(kj(a,i)[0],false,next);setTimeout(next,4000)} // 有些裝置唸完不會通知,4 秒後自己往下
+  };
+  step(1);
+}
+function t9Quiz(){
+  const a=T9.a,qs=a?shuffle([1,2,3,4,5,6,7,8,9]).map(b=>[a,b]):shuffle([2,3,4,5,6,7,8,9].flatMap(x=>[2,3,4,5,6,7,8,9].map(y=>[x,y]))).slice(0,10); // 大表:10 題不重複
+  T9.q={qs:qs.map(([x,y])=>({x,y,e:`${x} × ${y} = ?`,a:x*y})),i:-1,miss:0,val:'',busy:false,again:new Set()};sfx.tap();
+  $('#gres').innerHTML='';$('#t9').innerHTML=`<div class="card" id="wcard" style="margin-top:12px;text-align:center"></div>`;
+  t9Next();
+}
+function t9Next(){
+  const Q=T9&&T9.q;if(scr!=='times'||!Q)return;
+  if(++Q.i>=Q.qs.length){
+    const miss=Q.miss,a=T9.a,dk=dayKey();S.t9day=dk;let star=null;
+    if(!Q.chain&&a&&!miss){S.t9=S.t9||{};const d=S.t9[a]=S.t9[a]||[];if(!d.includes(dk)){d.push(dk);if(d.length===1)star=TT9.lit;else if(d.length===3)star=TT9.gold}} // 這一段全對:記下今天,亮星星
+    save();t9Draw();
+    Q.chain?playEnd(miss,'t9Chain()',TT9.chainDone,1,3,true):playEnd(miss,'t9Quiz()',TT9.done,0,2,true); // 乘法表是背誦工具,跟每日暖身一樣不送貼紙
+    if(star)setTimeout(()=>{if(scr==='times'){confetti(80);talk([a+star[0],star[1]])}},1200);
+    return;
+  }
+  const q=Q.qs[Q.i],pv=Q.chain&&!q.head&&Q.qs[Q.i-1];Q.val='';Q.busy=false;
+  $('#wprog').textContent=`${Q.chain?'🔗':'✖️'} ${Q.i+1} / ${Q.qs.length}`;
+  // 接力:上面用小字留著上一題,這一題的第一個數用粉紅色,看得出是接下來的
+  const top=pv?`<div style="font-size:22px;color:var(--purple-d)">${pv.x} × ${pv.y} = <b style="color:var(--pink-d)">${pv.a}</b> ⬇️</div>`:Q.chain&&Q.i?`<div class="tip center">🔗 ${Z(TT9.newChain)}</div>`:'';
+  $('#wcard').innerHTML=`${top}<div class="expr wexpr">${pv?`<b style="color:var(--pink-d)">${q.x}</b> × ${q.y} = `:q.e.replace('?','')}<span class="inp act" id="winp">?</span></div><div id="wfb"></div><div class="row center" id="wbtn" style="margin-top:10px"></div>`;
+  $('#pad').classList.add('on');document.body.classList.add('padon');
+  speak(sayOps(q.e.replace('?','多少')));
+}
+function t9Key(k){
+  const Q=T9&&T9.q;if(!Q||Q.busy)return;sfx.tap();
+  if(k==='del')Q.val=Q.val.slice(0,-1);else if(k!=='ok'&&Q.val.length<(Q.chain?3:2))Q.val=Q.val==='0'?k:Q.val+k;
+  const e=$('#winp');if(e)e.textContent=Q.val||'?';
+  if(k==='ok'&&Q.val)t9Check();
+}
+function t9Check(){
+  const Q=T9.q,q=Q.qs[Q.i],inp=$('#winp');Q.busy=true;
+  if(+Q.val===q.a){sfx.ok();inp.classList.remove('act');inp.classList.add('good');const r=inp.getBoundingClientRect();burst(r.left+r.width/2,r.top,6);return setTimeout(()=>{if(T9&&T9.q===Q)t9Next()},650)}
+  Q.miss++;sfx.bad();mascotAnim('sad');closePad();inp.textContent=q.a;inp.classList.add('good');
+  if(!Q.chain&&!Q.again.has(q.e)){Q.again.add(q.e);Q.qs.push(Object.assign({},q))} // 答錯的最後再考一次(接力的不行,會接不起來)
+  $('#wbtn').innerHTML=`<button class="btn" onclick="t9Next()">➡️ ${Z(T.wNext)}</button>`;
+  if(q.x>=10){ // 兩、三位數乘以一位數:畫直式,一步一步列出來
+    const L=mulSteps(q.x,q.y).map(line);
+    $('#wfb').innerHTML=`<div class="tip">${Z(T.wAns)} <b>${q.a}</b></div><div class="row center" style="align-items:flex-start;margin-top:8px">${vertMul(q.x,q.y)}<div class="explain" style="margin:0;text-align:left">${L.map(l=>`<div>${l.h}</div>`).join('')}</div></div>`;
+    return speak(L.map(l=>l.say).join('。'));
+  }
+  const k=kj(q.x,q.y);
+  $('#wfb').innerHTML=`<div class="tip">${Z(T.wAns)} <b>${q.a}</b>　🗣️ ${zy(k[0],k[1])}</div>`;
+  speak(k[0]);
 }
 
 /* ==================== 養成遊戲:我的小花園、我的寵物 ====================
