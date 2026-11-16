@@ -913,13 +913,13 @@ const FINE_T={
 const KEY='mathGarden.beta',KEY_OLD='mathGarden.v2';
 // spent:換禮物花掉的點數(貼好的貼紙不會被拿走);days:有練習的日子;streakPaid:連續練習的獎勵是哪一天領的
 // bestPaid:每個單元「比上次進步」的獎勵是哪一天領的(一天一次);gamePaid:數字配對的獎勵是哪一天領的
-const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails','badges','cnt','fines','t9','t9day','taskDay'];
+const KID_FIELDS=['name','grade','total','card','tray','owed','redeemed','best','log','stat','spent','days','streakPaid','bestPaid','gamePaid','coinAdj','grow','bestTime','warm','bossDay','bossFails','badges','cnt','fines','t9','taskDay'];
 // 養成遊戲的資料:hearts 練習答對得到的愛心;plant 正在種的花 {kind,step,g};garden 開過的花;pet 正在養的 {id,egg,step,g};pets 養大的;buddy 選來當小夥伴的
 // 養成遊戲的總開關:false 的時候首頁不顯示這一區,不能進入、也不累積愛心;等內容成熟了改成 true 就開放
 const GROW_READY=false;
 const GROW0=()=>({hearts:0,plant:null,garden:[],pet:null,pets:[],buddy:null});
-const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0,badges:{},cnt:{},fines:[],t9:{},t9day:'',taskDay:''});
-// t9:九九乘法表每一段「考考我」全對的日子 {7:['2026-11-16',…]};t9day:最近一次做乘法表考考我、接力的那天;taskDay:今日任務全部完成、已經慶祝過的那天
+const blankKid=name=>({name,grade:1,total:0,card:[],tray:[],owed:0,redeemed:[],best:{},log:[],stat:{},spent:0,days:[],streakPaid:'',bestPaid:{},gamePaid:'',coinAdj:0,grow:GROW0(),bestTime:{},warm:{f:{},day:''},bossDay:'',bossFails:0,badges:{},cnt:{},fines:[],t9:{},taskDay:''});
+// t9:九九乘法表每一段「考考我」全對的日子 {7:['2026-11-16',…]};taskDay:今日任務全部完成、已經慶祝並送過貼紙的那天
 const kidOf=o=>JSON.parse(JSON.stringify(Object.fromEntries(KID_FIELDS.map(k=>[k,o[k]]))));
 function useKid(i){S.cur=i;Object.assign(S,kidOf(S.kids[i]));pickOpts=null} // 換人:把那位小朋友的資料放到 S 上
 function load(){
@@ -2042,7 +2042,25 @@ function bossCard(){
 let scr='home',G=null;
 const app=$('#appRoot');
 function show(name,html){hush();closePad();$('#talkBox').classList.remove('on');app.classList.remove('graded','stepmode');scr=name;document.body.dataset.screen=name;app.innerHTML=html;document.body.classList.toggle('castle',S.total>=BIG);scrollTo(0,0)}
-const ptsBadge=()=>`<span class="hearts">🌟 × ${pts()}</span>`;
+const ptsBadge=()=>`<span class="hearts" style="cursor:pointer" onclick="stickerRules()">🌟 × ${pts()}</span>`; // 點一下看貼紙規則
+// 貼紙規則:首頁點 🌟 或「貼紙規則」打開,一條一條列出來並唸出來(給孩子看,附注音)
+const STKR={title:['貼紙規則','ㄊㄧㄝ ㄓˇ ㄍㄨㄟ ㄗㄜˊ'],get:['怎麼拿到貼紙','ㄗㄣˇ ˙ㄇㄜ ㄋㄚˊ ㄉㄠˋ ㄊㄧㄝ ㄓˇ'],use:['貼紙可以換什麼','ㄊㄧㄝ ㄓˇ ㄎㄜˇ ㄧˇ ㄏㄨㄢˋ ㄕㄣˊ ˙ㄇㄜ'],
+  boss:['打敗大魔王,再多 1 張。','ㄉㄚˇ ㄅㄞˋ ㄉㄚˋ ㄇㄛˊ ㄨㄤˊ ㄗㄞˋ ㄉㄨㄛ ㄓㄤ'],
+  effort:['練完錯題、比上次進步、連續練習 3 天,多 1 張(一回最多 1 張)。','ㄌㄧㄢˋ ㄨㄢˊ ㄘㄨㄛˋ ㄊㄧˊ ㄅㄧˇ ㄕㄤˋ ㄘˋ ㄐㄧㄣˋ ㄅㄨˋ ㄌㄧㄢˊ ㄒㄩˋ ㄌㄧㄢˋ ㄒㄧˊ ㄊㄧㄢ ㄉㄨㄛ ㄓㄤ ㄧˋ ㄏㄨㄟˊ ㄗㄨㄟˋ ㄉㄨㄛ ㄓㄤ'],
+  game:['小遊戲每天第一次過關,送 1 張。','ㄒㄧㄠˇ ㄧㄡˊ ㄒㄧˋ ㄇㄟˇ ㄊㄧㄢ ㄉㄧˋ ㄧ ㄘˋ ㄍㄨㄛˋ ㄍㄨㄢ ㄙㄨㄥˋ ㄓㄤ'],
+  task:['今天的任務三個都完成,送 1 張。','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ ㄙㄢ ˙ㄍㄜ ㄉㄡ ㄨㄢˊ ㄔㄥˊ ㄙㄨㄥˋ ㄓㄤ'],
+  none:['每日暖身和九九乘法表是練功夫,沒有貼紙喔。','ㄇㄟˇ ㄖˋ ㄋㄨㄢˇ ㄕㄣ ㄏㄢˋ ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ ㄅㄧㄠˇ ㄕˋ ㄌㄧㄢˋ ㄍㄨㄥ ˙ㄈㄨ ㄇㄟˊ ㄧㄡˇ ㄊㄧㄝ ㄓˇ ㄛ'],
+  fine:['沒有遵守生活約定,爸爸媽媽會扣點數。','ㄇㄟˊ ㄧㄡˇ ㄗㄨㄣ ㄕㄡˇ ㄕㄥ ㄏㄨㄛˊ ㄩㄝ ㄉㄧㄥˋ ㄅㄚˋ ˙ㄅㄚ ㄇㄚ ˙ㄇㄚ ㄏㄨㄟˋ ㄎㄡˋ ㄉㄧㄢˇ ㄕㄨˋ'],
+  ok:['我知道了','ㄨㄛˇ ㄓ ㄉㄠˋ ˙ㄌㄜ']};
+function stickerRules(){
+  sfx.tap();
+  const get=[['💯',T.rule1],['👹',STKR.boss],['💪',STKR.effort],['🎮',STKR.game],['📋',STKR.task]],use=[['🎁',T.rule2],['🪙',T.rule3]],warn=[['🔥',STKR.none],['📌',STKR.fine]];
+  const li=l=>l.map(([e,t])=>`<div style="display:flex;gap:8px;align-items:flex-start;margin:6px 0"><span>${e}</span><span>${Z(t)}</span></div>`).join('');
+  modal(`<h2 style="margin:4px 0">🌟 ${Z(STKR.title)}</h2><div style="text-align:left;font-size:19px;line-height:1.5">
+    <h3 style="margin:8px 0 2px">${Z(STKR.get)}</h3>${li(get)}<h3 style="margin:10px 0 2px">${Z(STKR.use)}</h3>${li(use)}<div style="margin-top:10px">${li(warn)}</div></div>
+    <button class="btn" style="margin-top:8px" onclick="hush();closeModal()">${Z(STKR.ok)}</button>`);
+  speak([...get,...use,...warn].map(([,t])=>t[0]).join(''));
+}
 const homeBtn=()=>`<button class="btn ghost small" onclick="goHome()">🏠 ${Z(T.home)}</button>`;
 function goHome(){ // 寫到一半要離開先問一下,免得不小心按到
   if(scr==='play'&&G&&G.done&&!G.fin)return finish(); // 交卷了、還在批改:先算分數給貼紙,不然這回合的成績會不見
@@ -2083,7 +2101,7 @@ function home(quiet){
   <div class="units">${curUnits().map(u=>`
     <button class="unit" onclick="start('${u.id}')">${bestTag(u.id)}
       <span class="ue">${u.e}</span><span>${Z(u.t)}</span></button>`).join('')}</div>
-  <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}<br>🪙 ${Z(T.rule3)}</div>
+  <div class="tip center">🌟 ${Z(T.rule1)}<br>🎁 ${Z(T.rule2)}<br>🪙 ${Z(T.rule3)}<br><button class="btn ghost small" style="margin-top:6px" onclick="stickerRules()">❓ ${Z(STKR.title)}</button></div>
   ${growOn()?`<h2 style="margin-top:16px">🌱 ${Z(GW.title)}　<span class="hearts" style="font-size:20px;vertical-align:middle">💗 × ${gw().hearts}</span></h2>
   <div class="hgrid" style="--n:2">
     <button class="btn mint" onclick="growGarden()">${hb('🌷',Z(GW.garden))}</button>
@@ -2121,25 +2139,30 @@ function home(quiet){
         <button class="btn ghost small" style="min-height:36px;font-size:15px" onclick="pasteRestore()">貼上備份文字</button>`:''}
   </div>`);
 }
-/* 今天的任務:首頁三張小卡,做完就打勾。不送貼紙,只是讓她知道今天要做什麼;三個都完成,當天第一次回首頁時放彩帶
-   ① 每日暖身 ② 完成一回練習 ③ 有錯題就「錯題再練」,沒有的話二、三年級是「九九乘法考考我」,一年級是「小遊戲過關一次」 */
-const TK={title:['今天的任務','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ'],one:['完成一回練習','ㄨㄢˊ ㄔㄥˊ ㄧˋ ㄏㄨㄟˊ ㄌㄧㄢˋ ㄒㄧˊ'],
-  t9:['九九乘法考考我','ㄐㄧㄡˇ ㄐㄧㄡˇ ㄔㄥˊ ㄈㄚˇ ㄎㄠˇ ㄎㄠˇ ㄨㄛˇ'],game:['小遊戲過關一次','ㄒㄧㄠˇ ㄧㄡˊ ㄒㄧˋ ㄍㄨㄛˋ ㄍㄨㄢ ㄧˊ ㄘˋ'],
+/* 今天的任務:首頁三張小卡,做完就打勾。三個都完成,當天第一次回首頁時放彩帶,並且送 1 張貼紙(一天最多 1 張)
+   ① 每日暖身 ② 綜合挑戰 ③ 錯題再練(錯題本裡沒有要練的題目時,直接打勾,寫「沒有錯題」) */
+const TK={title:['今天的任務','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ'],noDue:['沒有錯題','ㄇㄟˊ ㄧㄡˇ ㄘㄨㄛˋ ㄊㄧˊ'],
+  gift:['送你 1 張貼紙,快去貼紙簿貼上吧!','ㄙㄨㄥˋ ㄋㄧˇ ㄓㄤ ㄊㄧㄝ ㄓˇ ㄎㄨㄞˋ ㄑㄩˋ ㄊㄧㄝ ㄓˇ ㄅㄨˋ ㄊㄧㄝ ㄕㄤˋ ˙ㄅㄚ'],
   all:['今天的任務都完成了!','ㄐㄧㄣ ㄊㄧㄢ ˙ㄉㄜ ㄖㄣˋ ㄨˋ ㄉㄡ ㄨㄢˊ ㄔㄥˊ ˙ㄌㄜ']};
 function todayTasks(){
-  const dk=dayKey(),logs=S.log.filter(r=>dayKey(r.t)===dk),retried=logs.some(r=>r.u==='retry');
-  const t=[{e:'🔥',t:T.warm,ok:warmFix(S.warm).day===dk,go:'warm()'},{e:'✏️',t:TK.one,ok:logs.length>0,go:`start('mix2')`}];
-  if(retried||dueKinds().length)t.push({e:'📕',t:SPECIAL.retry.t,ok:retried,go:`start('retry')`});
-  else if(S.grade>=2)t.push({e:'✖️',t:TK.t9,ok:S.t9day===dk,go:'timesTable()'});
-  else t.push({e:'🎮',t:TK.game,ok:S.gamePaid===dk,go:'bingo()'});
-  return t;
+  const dk=dayKey(),logs=S.log.filter(r=>dayKey(r.t)===dk),retried=logs.some(r=>r.u==='retry'),none=!retried&&!dueKinds().length;
+  return [{e:'🔥',t:T.warm,ok:warmFix(S.warm).day===dk,go:'warm()'},
+    {e:MIXES.mix.e,t:MIXES.mix.t,ok:logs.some(r=>r.u==='mix'),go:`start('mix')`},
+    {e:'📕',t:none?TK.noDue:SPECIAL.retry.t,ok:retried||none,go:`start('retry')`}];
 }
 function tasksHtml(){
   const t=todayTasks(),n=t.filter(x=>x.ok).length;
   return `<div class="card" style="margin-top:10px;padding:12px 14px"><b>📋 ${Z(TK.title)}　${n} / ${t.length}${n===t.length?'　🎉':''}</b>
     <div class="tasks">${t.map(x=>`<button class="${x.ok?'ok':''}" ${x.ok?'':`onclick="${x.go}"`}><span class="tk">${x.ok?'✅':x.e}</span>${Z(x.t)}</button>`).join('')}</div></div>`;
 }
-function taskCheer(){const dk=dayKey();if(scr!=='home'||S.taskDay===dk||todayTasks().some(x=>!x.ok))return;S.taskDay=dk;save();confetti(100);talk(TK.all)}
+function taskCheer(){
+  const dk=dayKey();
+  if(scr!=='home'||S.taskDay===dk||todayTasks().some(x=>!x.ok)||$('#modalBox').classList.contains('on'))return; // 扣點小卡還開著的話,下次回首頁再送
+  S.taskDay=dk;S.owed++;save();sfx.win();confetti(120);mascotAnim('jump');
+  modal(`<div style="font-size:64px">🎉</div><h2>${Z(TK.all)}</h2><div class="tip">🌟 + 1　${Z(TK.gift)}</div>
+    <div class="row center" style="margin-top:10px"><button class="btn purple" onclick="closeModal();book()">📒 ${Z(T.goStick)}</button><button class="btn ghost" onclick="home(true)">${Z(TT9.ok)}</button></div>`);
+  speak(TK.all[0]+TK.gift[0]);
+}
 // 首頁格子按鈕的內容:圖示和文字各包一層,手機上才能排成「圖示在上、文字在下」
 function hb(e,h){return `<span class="hi">${e}</span><span class="hl">${h}</span>`}
 function switchKid(i){if(i===S.cur)return;save();useKid(i);save();sfx.tap();home()}
@@ -2990,7 +3013,7 @@ function parentZone(){
     <h3>弱點分析(${esc(S.name||'這位小朋友')})</h3>
     ${analysisHtml()}
     <div class="row" style="margin-top:6px"><button class="btn ghost" onclick="ask('確定要清除這位小朋友的弱點分析和錯題本嗎?',()=>{S.stat={};save();parentZone()})">清除弱點分析和錯題本</button></div>
-    <div style="color:#8a7a90">換禮物只會扣點數,貼好的貼紙會留在貼紙簿上。除了 80 分以上的貼紙,練完錯題、比上次進步、連續練習 3 天也會多送 1 張(每回合最多多 1 張;「比上次進步」同一個單元一天只送一次)。數字配對每天第一次過關也會送 1 張。</div>
+    <div style="color:#8a7a90">換禮物只會扣點數,貼好的貼紙會留在貼紙簿上。除了 80 分以上的貼紙,練完錯題、比上次進步、連續練習 3 天也會多送 1 張(每回合最多多 1 張;「比上次進步」同一個單元一天只送一次)。數字配對每天第一次過關也會送 1 張。首頁「今天的任務」(每日暖身、綜合挑戰、錯題再練)三個都完成,當天再送 1 張。</div>
     ${!GROW_READY?'<h3>養成遊戲(我的小花園、我的寵物)</h3><div style="color:#8a7a90">還在準備中,目前首頁不會顯示,也不會累積愛心。</div>':`<h3>養成遊戲(我的小花園、我的寵物)</h3>
     <label><input type="checkbox" ${growOn()?'checked':''} onchange="S.growOff=!this.checked;save();parentZone()"> 在首頁顯示養成遊戲(取消勾選就不顯示,也不再累積愛心)</label>
     <div class="row">💗 愛心 <b>${gw().hearts}</b> 顆;花園開了 ${gw().garden.length} 朵,養大了 ${gw().pets.length} 隻
@@ -5493,7 +5516,7 @@ function t9Quiz(){
 function t9Next(){
   const Q=T9&&T9.q;if(scr!=='times'||!Q)return;
   if(++Q.i>=Q.qs.length){
-    const miss=Q.miss,a=T9.a,dk=dayKey();S.t9day=dk;let star=null;
+    const miss=Q.miss,a=T9.a,dk=dayKey();let star=null;
     if(!Q.chain&&a&&!miss){S.t9=S.t9||{};const d=S.t9[a]=S.t9[a]||[];if(!d.includes(dk)){d.push(dk);if(d.length===1)star=TT9.lit;else if(d.length===3)star=TT9.gold}} // 這一段全對:記下今天,亮星星
     save();t9Draw();
     Q.chain?playEnd(miss,'t9Chain()',TT9.chainDone,1,3,true):playEnd(miss,'t9Quiz()',TT9.done,0,2,true); // 乘法表是背誦工具,跟每日暖身一樣不送貼紙
